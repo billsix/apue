@@ -1,5 +1,7 @@
 #include "apue.h"
+#ifdef LINUX
 #include <sys/sysmacros.h>
+#endif
 #ifdef SOLARIS
 #include <sys/mkdev.h>
 #endif
