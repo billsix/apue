@@ -1,0 +1,2 @@
+cd /apue/
+exec bash

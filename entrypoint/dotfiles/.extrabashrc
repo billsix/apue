@@ -1,0 +1,6 @@
+PS1='\[\e[36m\]┌─(\t) \[\e[32m\]\u@\h:\w\n\[\e[36m\]└─λ \[\e[0m\]'
+
+exit() {
+    echo "On shell exit"
+    builtin exit "$@"
+}
