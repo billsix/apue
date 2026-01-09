@@ -25,6 +25,8 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
                    tmux ;  \
     echo 'set debuginfod enabled off' > /root/.gdbinit
 
+COPY apue.3e /apue/apue.3e/
+COPY musl /apue/musl/
 
 COPY .clang-format /apue/
 
