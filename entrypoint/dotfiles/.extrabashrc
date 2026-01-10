@@ -4,3 +4,6 @@ exit() {
     echo "On shell exit"
     builtin exit "$@"
 }
+
+export PATH=/apue/musl/bldInstall/bin/:$PATH
+

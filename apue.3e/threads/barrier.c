@@ -12,12 +12,8 @@ long snums[NUMNUM];
 
 pthread_barrier_t b;
 
-#ifdef SOLARIS
 #define heapsort qsort
-#else
-extern int heapsort(void *, size_t, size_t,
-                    int (*)(const void *, const void *));
-#endif
+
 
 /*
  * Compare two long integers (helper function for heapsort)

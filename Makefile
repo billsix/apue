@@ -16,6 +16,8 @@ WAYLAND_FLAGS_FOR_CONTAINER = -e "WAYLAND_DISPLAY=${WAYLAND_DISPLAY}" \
                               -e "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}" \
                               -v "${XDG_RUNTIME_DIR}:${XDG_RUNTIME_DIR}"
 
+ALLOW_LLDB= --cap-add=SYS_ADMIN \
+            --security-opt seccomp=unconfined
 
 
 .PHONY: all
@@ -36,6 +38,7 @@ shell: image  ## Get Shell into a ephermeral container made from the image
 		$(FILES_TO_MOUNT) \
 		$(USE_X) \
 		$(WAYLAND_FLAGS_FOR_CONTAINER) \
+		$(ALLOW_LLDB) \
 		$(CONTAINER_NAME) \
 		/usr/local/bin/shell.sh
 

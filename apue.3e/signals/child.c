@@ -1,6 +1,10 @@
 #include "apue.h"
 #include <sys/wait.h>
 
+#ifndef SIGCLD
+#define SIGCLD SIGCHLD
+#endif
+
 static void sig_cld(int);
 
 int main() {
