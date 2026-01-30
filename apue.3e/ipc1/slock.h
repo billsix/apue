@@ -4,8 +4,8 @@
 #include <sys/stat.h>
 
 struct slock {
-  sem_t *semp;
-  char name[_POSIX_NAME_MAX];
+    sem_t *semp;
+    char name[_POSIX_NAME_MAX];
 };
 
 struct slock *s_alloc();

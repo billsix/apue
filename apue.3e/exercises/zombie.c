@@ -7,16 +7,17 @@
 #endif
 
 int main(void) {
-  pid_t pid;
+    pid_t pid;
 
-  if ((pid = fork()) < 0)
-    err_sys("fork error");
-  else if (pid == 0) /* child */
+    if ((pid = fork()) < 0) {
+        err_sys("fork error");
+    } else if (pid == 0) { /* child */
+        exit(0);
+    }
+
+    /* parent */
+    sleep(4);
+    system(PSCMD);
+
     exit(0);
-
-  /* parent */
-  sleep(4);
-  system(PSCMD);
-
-  exit(0);
 }

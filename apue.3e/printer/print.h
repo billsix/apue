@@ -57,10 +57,10 @@ extern int initserver(int, const struct sockaddr *, socklen_t, int);
  * Structure describing a print request.
  */
 struct printreq {
-  uint32_t size;           /* size in bytes */
-  uint32_t flags;          /* see below */
-  char usernm[USERNM_MAX]; /* user's name */
-  char jobnm[JOBNM_MAX];   /* job's name */
+    uint32_t size;           /* size in bytes */
+    uint32_t flags;          /* see below */
+    char usernm[USERNM_MAX]; /* user's name */
+    char jobnm[JOBNM_MAX];   /* job's name */
 };
 
 /*
@@ -72,9 +72,9 @@ struct printreq {
  * The response from the spooling daemon to the print command.
  */
 struct printresp {
-  uint32_t retcode;     /* 0=success, !0=error code */
-  uint32_t jobid;       /* job ID */
-  char msg[MSGLEN_MAX]; /* error message */
+    uint32_t retcode;     /* 0=success, !0=error code */
+    uint32_t jobid;       /* job ID */
+    char msg[MSGLEN_MAX]; /* error message */
 };
 
 #endif /* _PRINT_H */
