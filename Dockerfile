@@ -18,6 +18,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
                    lldb  \
                    libbsd \
                    libbsd-devel \
+                   llvm \
                    man  \
                    man-db  \
                    man-pages  \
@@ -25,7 +26,6 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
                    tmux ;  \
     echo 'set debuginfod enabled off' > /root/.gdbinit
 
-COPY apue.3e /apue/apue.3e/
 COPY musl /apue/musl/musl
 RUN mkdir /apue/musl/bld && mkdir /apue/musl/bldInstall && \
     cd /apue/musl/bld && \
@@ -36,5 +36,7 @@ COPY .clang-format /apue/
 COPY entrypoint/dotfiles/.lldbinit /root/.lldbinit
 
 RUN echo "source ~/.extrabashrc" >> ~/.bashrc
+
+COPY apue.3e /apue/apue.3e/
 
 ENTRYPOINT ["/entrypoint.sh"]
