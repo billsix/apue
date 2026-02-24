@@ -1,3 +1,4 @@
+#include "apue2.h"
 #include "apue.h"
 #if defined(SOLARIS)
 #include <netinet/in.h>

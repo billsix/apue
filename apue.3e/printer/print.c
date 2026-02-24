@@ -3,6 +3,7 @@
  * and sends it to the printer spooling daemon.  Usage:
  * 	print [-t] filename
  */
+#include "apue2.h"
 #include "apue.h"
 #include "print.h"
 #include <fcntl.h>

@@ -1,3 +1,4 @@
+#include "apue2.h"
 #include "apue.h"
 
 static void sig_catch(int signo) {

@@ -1,3 +1,4 @@
+#include "apue2.h"
 #include "apue.h"
 
 static int pfd1[2], pfd2[2];

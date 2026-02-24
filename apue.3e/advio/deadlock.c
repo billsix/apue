@@ -1,5 +1,9 @@
+#include <stdio.h> /* for printf */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for ftruncate */
+#include <fcntl.h> /* for creat */
+
 #include "apue.h"
-#include <fcntl.h>
 
 static void lockabyte(const char *name, int fd, off_t offset) {
     if (writew_lock(fd, offset, SEEK_SET, 1) < 0) {

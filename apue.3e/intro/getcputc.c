@@ -1,4 +1,6 @@
-#include "apue.h"
+#include <stdio.h> /* for getc and putc */
+#include <sys/types.h> /* for uid_t */
+#include <stdlib.h> /* for exit */
 
 int main(void) {
     int c;

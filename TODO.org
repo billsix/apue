@@ -1,0 +1,35 @@
+* TODO [#1] Inline headers
+    - [-] replace include apue2.h with specific headers, and explanation
+      - [X] advio
+      - [ ] daemons
+      - [ ] datafiles
+      - [ ] db
+      - [ ] environ
+      - [ ] exercises
+      - [ ] figlinks
+      - [ ] filedir
+      - [ ] fileio
+      - [ ] include
+      - [X] intro
+      - [ ] ipc1
+      - [ ] ipc2
+      - [ ] ipc2/open.fe
+      - [ ] ipc2/open
+      - [ ] ipc2/opend.fe
+      - [ ] ipc2/opend
+      - [ ] lib
+      - [ ] printer
+      - [ ] proc
+      - [ ] pty
+      - [ ] relation
+      - [ ] signals
+      - [ ] sockets
+      - [ ] standards
+      - [ ] stdio
+      - [ ] termios
+      - [ ] threadctl
+      - [ ] threads
+    - [ ] on every file, put  apue.h at end of includes
+      - [ ] maybe clang format the include to sort them
+    - [ ] remove apue2.h
+* TODO [#2] Replace build system with meson or autotools or cmake

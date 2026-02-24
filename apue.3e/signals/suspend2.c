@@ -1,3 +1,4 @@
+#include "apue2.h"
 #include "apue.h"
 
 volatile sig_atomic_t quitflag; /* set nonzero by signal handler */

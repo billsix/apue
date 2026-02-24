@@ -1,6 +1,12 @@
-#include "apue.h"
+#include <stddef.h> /* for size_t */
+#include <sys/types.h> /* for ssize_t */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for read */
+#include <stdio.h> /* for fprintf */
 #include <errno.h>
 #include <fcntl.h>
+
+#include "apue.h"
 
 char buf[500000];
 

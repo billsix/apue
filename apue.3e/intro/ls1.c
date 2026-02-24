@@ -1,5 +1,9 @@
+#include <stdio.h> /* for printf */
+#include <stdlib.h> /* for exit */
+#include <sys/types.h> /* needed for apue.h */
+#include <dirent.h> /* for opendir, readdir */
+
 #include "apue.h"
-#include <dirent.h>
 
 int main(int argc, char *argv[]) {
     DIR *dp;

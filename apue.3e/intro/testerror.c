@@ -1,3 +1,6 @@
+#include <stdio.h> /* for perror, fprintf */
+#include <unistd.h> /* for exit */
+#include <sys/types.h> /* needed for apue.h */
 #include "apue.h"
 #include <errno.h>
 

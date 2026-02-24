@@ -1,5 +1,6 @@
 /* Create a named stream pipe.  Called by server on initialization. */
 
+#include "apue2.h"
 #include "apue.h"
 #include <sys/socket.h>
 #include <sys/un.h>

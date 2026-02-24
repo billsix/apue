@@ -2,6 +2,7 @@
  * Error routines for programs that can run as a daemon.
  */
 
+#include "apue2.h"
 #include "apue.h"
 #include <errno.h>  /* for definition of errno */
 #include <stdarg.h> /* ISO C variable arguments */

@@ -1,3 +1,4 @@
+#include "apue2.h"
 #include "apue.h"
 
 void pr_stdio(const char *, FILE *);

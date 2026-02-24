@@ -1,7 +1,12 @@
-#include "apue.h"
-#include <errno.h>
+#include <sys/stat.h> /* for fstat */
+#include <stdio.h> /* for printf */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for write, fork, lseek, read */
+#include <errno.h> /* for errno */
 #include <fcntl.h>
-#include <sys/wait.h>
+#include <sys/wait.h> /* for waitpid */
+
+#include "apue.h"
 
 int main(int argc, char *argv[]) {
     int fd;

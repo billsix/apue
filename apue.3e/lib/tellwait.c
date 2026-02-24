@@ -1,3 +1,4 @@
+#include "apue2.h"
 #include "apue.h"
 
 static volatile sig_atomic_t sigflag; /* set nonzero by sig handler */

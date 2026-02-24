@@ -1,3 +1,7 @@
+#include <stddef.h> /* for size_t */
+#include <sys/types.h> /* for ssize_t */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for fsync, read, write */
 #include "apue.h"
 #include <ctype.h>
 #include <fcntl.h>

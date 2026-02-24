@@ -1,5 +1,13 @@
+#include <stdio.h> /* for fgets */
+#include <string.h> /* for strlen */
+#include <unistd.h> /* for fork */
+#include <stdlib.h> /* for exit */
+#include <sys/types.h> /* needed for apue.h */
 #include "apue.h"
 #include <sys/wait.h>
+
+
+
 
 int main(void) {
     char buf[MAXLINE]; /* from apue.h */

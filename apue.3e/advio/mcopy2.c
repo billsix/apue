@@ -1,6 +1,11 @@
-#include "apue.h"
+#include <sys/stat.h> /* for struct stat */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for memcpy */
+#include <unistd.h> /* for ftruncate */
 #include <fcntl.h>
 #include <sys/mman.h>
+
+#include "apue.h"
 
 #define COPYINCR (1024 * 1024 * 1024) /* 1 GB */
 

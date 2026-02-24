@@ -1,3 +1,4 @@
+#include "apue2.h"
 #include "apue.h"
 #include <syslog.h>
 #include <fcntl.h>
