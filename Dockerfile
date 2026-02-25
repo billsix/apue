@@ -15,6 +15,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
                    g++  \
                    gcc  \
                    gdb  \
+                   htop  \
                    lldb  \
                    libbsd \
                    libbsd-devel \
@@ -23,6 +24,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
                    man-db  \
                    man-pages  \
                    nano  \
+                   ps  \
                    tmux ;  \
     echo 'set debuginfod enabled off' > /root/.gdbinit
 
