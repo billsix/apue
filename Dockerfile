@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:43
+FROM registry.fedoraproject.org/fedora:44
 
 
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
