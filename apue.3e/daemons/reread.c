@@ -3,7 +3,6 @@
 #include <signal.h>     /* for sigaction, sigemptyset, sigfillset, sigwait, sigset_t, SIG_DFL, SIGHUP, SIGTERM */
 #include <syslog.h>     /* for syslog, LOG_ERR, LOG_INFO */
 #include <pthread.h>    /* for pthread_t, pthread_create, pthread_sigmask, SIG_BLOCK */
-#include <sys/types.h>  /* needed for apue.h */
 
 #include "apue.h"
 

@@ -2,7 +2,6 @@
 #include <stdlib.h>    /* for exit */
 #include <unistd.h>    /* for sleep */
 #include <pthread.h>   /* for pthread_create, pthread_join, pthread_self, pthread_exit, pthread_t */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

@@ -10,7 +10,6 @@
 #include <fcntl.h>      /* for open, O_RDONLY */
 #include <errno.h>      /* for errno */
 #include <pwd.h>        /* for getpwuid, struct passwd */
-#include <sys/types.h>  /* needed for apue.h */
 #include <sys/stat.h>   /* for fstat, struct stat, S_ISREG */
 #include <sys/socket.h> /* for AF_INET, SOCK_STREAM */
 #include <arpa/inet.h>  /* for htonl, ntohl */

@@ -1,5 +1,4 @@
 #include <stddef.h>    /* for NULL */
-#include <sys/types.h> /* needed for apue.h */
 #include <sys/time.h>  /* for select, struct timeval */
 
 #include "apue.h"

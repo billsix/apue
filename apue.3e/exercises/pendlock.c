@@ -5,7 +5,6 @@
 #include <fcntl.h>     /* for open, O_RDWR, O_CREAT, F_SETLK, F_SETLKW, F_RDLCK, F_WRLCK */
 #include <errno.h>     /* for errno */
 #include <signal.h>    /* for kill, SIGINT */
-#include <sys/types.h> /* for pid_t, needed for apue.h */
 
 #include "apue.h"
 

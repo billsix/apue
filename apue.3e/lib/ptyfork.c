@@ -1,6 +1,5 @@
 #include <string.h>    /* for strncpy */
 #include <unistd.h>    /* for fork, setsid, close, dup2, STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO */
-#include <sys/types.h> /* for pid_t; needed for apue.h */
 #include <termios.h>   /* for struct termios, struct winsize, tcsetattr, TCSANOW */
 #if defined(MACOS) || !defined(TIOCGWINSZ)
 #include <sys/ioctl.h> /* for ioctl, TIOCSWINSZ, TIOCSCTTY */

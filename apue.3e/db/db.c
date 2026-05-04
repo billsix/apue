@@ -5,7 +5,6 @@
 #include <fcntl.h>     /* for open, O_CREAT, O_TRUNC, F_SETLK, F_SETLKW, F_RDLCK, F_WRLCK, F_UNLCK */
 #include <errno.h>     /* for errno, EINVAL, ENOENT */
 #include <stdarg.h>    /* for va_list, va_start, va_arg, va_end */
-#include <sys/types.h> /* for off_t, ssize_t, needed for apue.h */
 #include <sys/stat.h>  /* for fstat, struct stat */
 #include <sys/uio.h>   /* for readv, writev, struct iovec */
 

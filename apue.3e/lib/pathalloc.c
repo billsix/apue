@@ -3,7 +3,6 @@
 #include <errno.h>     /* for errno */
 #include <limits.h>    /* for PATH_MAX */
 #include <unistd.h>    /* for sysconf, pathconf, _SC_VERSION, _SC_XOPEN_VERSION, _PC_PATH_MAX */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

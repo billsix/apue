@@ -3,7 +3,6 @@
 #include <unistd.h>     /* for read */
 #include <errno.h>      /* for errno, ETIME, ETIMEDOUT */
 #include <ctype.h>      /* for character classification */
-#include <sys/types.h>  /* needed for apue.h */
 #include <sys/select.h> /* for select, fd_set, FD_ZERO, FD_SET, struct timeval */
 #include <sys/socket.h> /* for AI_CANONNAME, AF_INET, SOCK_STREAM */
 

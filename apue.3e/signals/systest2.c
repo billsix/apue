@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for printf */
 #include <stdlib.h>    /* for exit, system */
 #include <signal.h>    /* for signal, SIG_ERR, SIGINT, SIGCHLD */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

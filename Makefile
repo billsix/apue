@@ -60,6 +60,22 @@ format: image ## Format the C code
 		/usr/local/bin/format.sh
 
 
+.PHONY: build
+build: image ## Configure + compile + test the meson build inside the container
+	$(CONTAINER_CMD) run -it --rm \
+		--entrypoint /bin/bash \
+		$(FILES_TO_MOUNT) \
+		$(CONTAINER_NAME) \
+		-c 'cd /apue/apue.3e && \
+		    if [ -d build ]; then \
+		        meson setup --wipe build --native-file native-linux.ini; \
+		    else \
+		        meson setup build --native-file native-linux.ini; \
+		    fi && \
+		    meson compile -C build && \
+		    meson test -C build --print-errorlogs'
+
+
 .PHONY: help
 help:
 	@grep --extended-regexp '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

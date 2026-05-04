@@ -1,6 +1,8 @@
 
 /*
- * Our own header, to be included before all standard system headers.
+ * Our own header. Self-contained — pulls in the system headers needed
+ * by the prototypes and macros declared below, so callers do not have
+ * to remember to pre-include <sys/types.h> etc. just to satisfy us.
  */
 #ifndef _APUE_H
 #define _APUE_H
@@ -13,6 +15,16 @@
 #define _XOPEN_SOURCE 700
 #endif
 
+#include <sys/types.h> /* for pid_t, off_t, ssize_t, uid_t (used in
+                          prototypes and the lock_reg/lock_test family) */
+#include <sys/stat.h>  /* for the S_I* mode bits used by
+                          FILE_MODE / DIR_MODE below */
+#include <termios.h>   /* for struct termios (tty_termios) and on some
+                          systems struct winsize */
+#if defined(MACOS) || !defined(TIOCGWINSZ)
+#include <sys/ioctl.h> /* for struct winsize when termios.h doesn't
+                          provide it (Linux + macOS) */
+#endif
 
 #define MAXLINE 4096 /* max line length */
 

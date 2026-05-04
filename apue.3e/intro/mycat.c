@@ -1,6 +1,5 @@
 #include <unistd.h>    /* for read, write, STDIN_FILENO, STDOUT_FILENO */
 #include <stdlib.h>    /* for exit */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

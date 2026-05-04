@@ -2,7 +2,6 @@
 #include <time.h>      /* for clock_gettime, clock_nanosleep, struct timespec, CLOCK_REALTIME */
 #include <sys/time.h>  /* for gettimeofday, struct timeval */
 #include <pthread.h>   /* for pthread_mutex_init, pthread_mutex_lock, pthread_mutex_unlock, pthread_mutexattr_init, pthread_mutexattr_settype, pthread_mutex_t, pthread_mutexattr_t, PTHREAD_MUTEX_RECURSIVE */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

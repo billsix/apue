@@ -3,7 +3,6 @@
 #include <string.h>    /* for strlen */
 #include <unistd.h>    /* for chdir, getcwd */
 #include <fcntl.h>     /* for creat */
-#include <sys/types.h> /* needed for apue.h */
 #include <sys/stat.h>  /* for mkdir, FILE_MODE/DIR_MODE constants */
 
 #include "apue.h"

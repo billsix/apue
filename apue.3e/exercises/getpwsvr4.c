@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for printf */
 #include <stdlib.h>    /* for exit */
 #include <shadow.h>    /* for getspnam, struct spwd */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

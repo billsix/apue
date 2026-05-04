@@ -1,6 +1,5 @@
 #include <stdio.h>     /* for printf */
 #include <stdlib.h>    /* for atexit */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

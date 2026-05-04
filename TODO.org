@@ -32,5 +32,10 @@
     - [X] on every file, put apue.h at end of includes
       - [ ] maybe clang format the include to sort them
     - [X] remove apue2.h
-* TODO [#2] Replace build system with meson or autotools or cmake
-  - See /apue/plans/02-meson-build.md for the plan.
+* DONE [#2] Replace build system with meson
+  - Replaced recursive make with meson + ninja.
+  - Linux (musl-clang via native-linux.ini) + macOS (system clang) supported;
+    freebsd / solaris paths dropped per plans/02-meson-build.md scope cuts.
+  - Plan: plans/02-meson-build.md
+  - Build: =cd apue.3e && meson setup build --native-file native-linux.ini=
+            then =meson compile -C build= (or =make build= from /apue).

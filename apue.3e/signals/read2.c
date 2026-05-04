@@ -2,7 +2,6 @@
 #include <unistd.h>    /* for read, write, alarm, STDIN_FILENO, STDOUT_FILENO */
 #include <signal.h>    /* for signal, SIG_ERR, SIGALRM */
 #include <setjmp.h>    /* for jmp_buf, setjmp, longjmp */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

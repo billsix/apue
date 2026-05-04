@@ -1,6 +1,5 @@
 #include <stdio.h>      /* for printf */
 #include <stdlib.h>     /* for exit */
-#include <sys/types.h>  /* needed for apue.h */
 #include <sys/socket.h> /* for AF_INET, AF_INET6, AF_UNIX, AF_UNSPEC, SOCK_STREAM, SOCK_DGRAM, SOCK_SEQPACKET, SOCK_RAW */
 #include <netinet/in.h> /* for struct sockaddr_in, IPPROTO_TCP, IPPROTO_UDP, IPPROTO_RAW */
 #include <arpa/inet.h>  /* for inet_ntop, ntohs, INET_ADDRSTRLEN */

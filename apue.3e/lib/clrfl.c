@@ -1,5 +1,4 @@
 #include <fcntl.h>     /* for fcntl, F_GETFL, F_SETFL */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

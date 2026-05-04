@@ -1,7 +1,6 @@
 #include <stdlib.h>    /* for exit */
 #include <unistd.h>    /* for write, lseek */
 #include <fcntl.h>     /* for creat */
-#include <sys/types.h> /* needed for apue.h */
 #include <sys/stat.h>  /* for S_I* constants used by FILE_MODE */
 
 #include "apue.h"

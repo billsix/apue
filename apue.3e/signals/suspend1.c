@@ -1,6 +1,5 @@
 #include <stdlib.h>    /* for exit */
 #include <signal.h>    /* for signal, sigemptyset, sigaddset, sigprocmask, sigsuspend, sigset_t, SIG_ERR, SIG_BLOCK, SIG_SETMASK, SIGINT, SIGUSR1 */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

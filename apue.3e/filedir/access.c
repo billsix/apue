@@ -2,7 +2,6 @@
 #include <stdlib.h>    /* for exit */
 #include <unistd.h>    /* for access, R_OK */
 #include <fcntl.h>     /* for open, O_RDONLY */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

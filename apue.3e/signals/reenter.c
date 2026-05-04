@@ -3,7 +3,6 @@
 #include <unistd.h>    /* for alarm */
 #include <signal.h>    /* for signal, SIGALRM */
 #include <pwd.h>       /* for getpwnam, struct passwd */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

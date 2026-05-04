@@ -2,7 +2,6 @@
 #include <stdlib.h>    /* for exit, system */
 #include <unistd.h>    /* for sysconf, _SC_CLK_TCK */
 #include <sys/times.h> /* for times, struct tms, clock_t */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

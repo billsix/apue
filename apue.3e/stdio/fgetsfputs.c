@@ -1,6 +1,5 @@
 #include <stdio.h>     /* for fgets, fputs, ferror, EOF, stdin, stdout */
 #include <stdlib.h>    /* for exit */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

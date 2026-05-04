@@ -23,7 +23,9 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
                    man  \
                    man-db  \
                    man-pages  \
+                   meson  \
                    nano  \
+                   ninja-build  \
                    ps  \
                    tmux ;  \
     echo 'set debuginfod enabled off' > /root/.gdbinit
@@ -41,4 +43,8 @@ RUN echo "source ~/.extrabashrc" >> ~/.bashrc
 
 COPY apue.3e /apue/apue.3e/
 
-ENTRYPOINT ["/entrypoint.sh"]
+# No ENTRYPOINT: every `make` target sets --entrypoint /bin/bash
+# explicitly. The previous /entrypoint.sh was stale (referenced a
+# different project's docs build) and was never copied into the image
+# anyway, so docker would have errored on container start without
+# the --entrypoint override.

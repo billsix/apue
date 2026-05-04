@@ -1,6 +1,5 @@
 #include <stdio.h>     /* for FILE, fopen, popen, pclose, fgets, fputs, ferror, EOF */
 #include <stdlib.h>    /* for exit */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

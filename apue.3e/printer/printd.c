@@ -16,7 +16,6 @@
 #include <pthread.h>    /* for pthread_create, pthread_mutex_*, pthread_cond_*, pthread_sigmask, pthread_self, pthread_exit, pthread_cleanup_*, pthread_cancel */
 #include <pwd.h>        /* for getpwnam, struct passwd */
 #include <dirent.h>     /* for opendir, readdir, closedir, DIR, struct dirent */
-#include <sys/types.h>  /* needed for apue.h */
 #include <sys/stat.h>   /* for fstat, struct stat, S_IRUSR, S_IWUSR */
 #include <sys/select.h> /* for select, fd_set, FD_ZERO, FD_SET, FD_ISSET */
 #include <sys/uio.h>    /* for writev, struct iovec */

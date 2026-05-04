@@ -1,5 +1,4 @@
 #include <fcntl.h>     /* for fcntl, struct flock, F_GETLK, F_UNLCK */
-#include <sys/types.h> /* for pid_t, off_t; needed for apue.h */
 
 #include "apue.h"
 

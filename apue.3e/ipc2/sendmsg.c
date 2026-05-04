@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for fprintf, stderr */
 #include <stdlib.h>    /* for exit, strtol */
 #include <string.h>    /* for memset, strncpy, strlen */
-#include <sys/types.h> /* for key_t, needed for apue.h */
 #include <sys/ipc.h>   /* for key_t */
 #include <sys/msg.h>   /* for msgget, msgsnd */
 

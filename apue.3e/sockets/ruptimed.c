@@ -4,7 +4,6 @@
 #include <unistd.h>     /* for close, sysconf, gethostname, _SC_HOST_NAME_MAX */
 #include <errno.h>      /* for errno */
 #include <syslog.h>     /* for syslog, LOG_ERR */
-#include <sys/types.h>  /* needed for apue.h */
 #include <sys/socket.h> /* for accept, send, struct sockaddr, socklen_t, SOCK_STREAM */
 #include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo, AI_CANONNAME */
 

@@ -1,5 +1,4 @@
 #include <string.h>    /* for strlen */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

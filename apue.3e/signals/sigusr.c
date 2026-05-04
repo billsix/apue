@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for printf */
 #include <unistd.h>    /* for pause */
 #include <signal.h>    /* for signal, SIG_ERR, SIGUSR1, SIGUSR2 */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

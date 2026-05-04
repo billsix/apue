@@ -2,7 +2,6 @@
 #include <string.h>     /* for memset */
 #include <unistd.h>     /* for write, STDOUT_FILENO */
 #include <errno.h>      /* for errno */
-#include <sys/types.h>  /* needed for apue.h */
 #include <sys/socket.h> /* for recv, struct sockaddr, socklen_t, SOCK_STREAM */
 #include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo */
 

@@ -1,6 +1,5 @@
 #include <stdio.h>     /* for fgets, stdin */
 #include <stdlib.h>    /* for exit */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for printf */
 #include <errno.h>     /* for errno */
 #include <signal.h>    /* for sigprocmask, sigismember, sigset_t, SIGINT, SIGQUIT, SIGUSR1, SIGALRM */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

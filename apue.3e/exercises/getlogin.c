@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for FILE, fopen, fprintf */
 #include <stdlib.h>    /* for exit */
 #include <unistd.h>    /* for getlogin */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

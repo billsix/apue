@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for printf */
 #include <stdlib.h>    /* for exit */
 #include <pthread.h>   /* for pthread_create, pthread_join, pthread_exit, pthread_cleanup_push, pthread_cleanup_pop, pthread_t */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

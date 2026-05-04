@@ -1,5 +1,4 @@
 #include <unistd.h>    /* for read */
-#include <sys/types.h> /* for ssize_t, size_t; needed for apue.h */
 
 #include "apue.h"
 

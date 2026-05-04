@@ -3,7 +3,6 @@
 #include <pthread.h>    /* for pthread_create, pthread_barrier_init, pthread_barrier_wait, pthread_t, pthread_barrier_t */
 #include <limits.h>     /* for LONG_MAX */
 #include <sys/time.h>   /* for gettimeofday, struct timeval */
-#include <sys/types.h>  /* needed for apue.h */
 
 #include "apue.h"
 

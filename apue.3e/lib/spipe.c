@@ -1,4 +1,3 @@
-#include <sys/types.h>  /* needed for apue.h */
 #include <sys/socket.h> /* for socketpair, AF_UNIX, SOCK_STREAM */
 
 #include "apue.h"

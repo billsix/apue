@@ -6,7 +6,6 @@
 #ifndef TIOCGWINSZ
 #include <sys/ioctl.h> /* for ioctl, TIOCGWINSZ, struct winsize */
 #endif
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

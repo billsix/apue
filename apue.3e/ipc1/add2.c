@@ -2,7 +2,6 @@
 #include <stdlib.h>    /* for exit */
 #include <string.h>    /* for strlen */
 #include <unistd.h>    /* for read, write, STDIN_FILENO, STDOUT_FILENO */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

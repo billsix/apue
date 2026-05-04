@@ -2,7 +2,6 @@
 #include <stdlib.h>    /* for exit */
 #include <string.h>    /* for strerror */
 #include <errno.h>     /* for errno, EACCES, ENOENT */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

@@ -3,7 +3,6 @@
 #include <string.h>    /* for strlen, strcpy, strcmp */
 #include <limits.h>    /* for NAME_MAX */
 #include <dirent.h>    /* for DIR, struct dirent, opendir, readdir, closedir */
-#include <sys/types.h> /* needed for apue.h */
 #include <sys/stat.h>  /* for struct stat, lstat, S_ISDIR, S_IF* constants */
 
 #include "apue.h"

@@ -1,6 +1,5 @@
 #include <stdio.h>     /* for FILE, L_tmpnam, tmpnam, tmpfile, fputs, fgets, rewind, printf, stdout */
 #include <stdlib.h>    /* for exit */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

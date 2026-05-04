@@ -1,6 +1,5 @@
 #include <stddef.h>    /* for NULL */
 #include <string.h>    /* for strtok */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

@@ -1,4 +1,3 @@
-#include <sys/types.h> /* for uid_t, needed for apue.h */
 #include <errno.h>     /* for errno */
 
 #include "apue.h"

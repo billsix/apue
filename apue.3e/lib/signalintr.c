@@ -1,5 +1,4 @@
 #include <signal.h>    /* for sigaction, sigemptyset, struct sigaction, SIG_ERR */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

@@ -1,6 +1,5 @@
 #include <unistd.h>        /* for sysconf, _SC_OPEN_MAX */
 #include <limits.h>        /* for LONG_MAX */
-#include <sys/types.h>     /* needed for apue.h */
 #include <sys/resource.h>  /* for getrlimit, RLIMIT_NOFILE, RLIM_INFINITY, struct rlimit */
 
 #include "apue.h"

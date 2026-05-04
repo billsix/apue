@@ -1,6 +1,5 @@
 #include <stdio.h>     /* for FILE, fmemopen, fprintf, fflush, fseek, fclose, printf, SEEK_SET */
 #include <string.h>    /* for memset, strlen */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

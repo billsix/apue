@@ -2,7 +2,6 @@
 #include <unistd.h>    /* for close */
 #include <fcntl.h>     /* for open, O_RDWR, O_TRUNC */
 #include <time.h>      /* for struct timespec */
-#include <sys/types.h> /* needed for apue.h */
 #include <sys/stat.h>  /* for struct stat, stat, futimens */
 
 #include "apue.h"

@@ -1,5 +1,4 @@
 #include <stdlib.h>    /* for exit, system */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

@@ -1,6 +1,5 @@
 #include <stdio.h> /* for getc, putc, ferror, stdin, stdout, EOF */
 #include <stdlib.h> /* for exit */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

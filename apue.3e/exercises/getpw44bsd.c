@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for printf */
 #include <stdlib.h>    /* for exit */
 #include <pwd.h>       /* for getpwnam, struct passwd */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

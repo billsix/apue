@@ -2,7 +2,6 @@
 #include <stdlib.h>     /* for exit */
 #include <string.h>     /* for memset */
 #include <unistd.h>     /* for read, write */
-#include <sys/types.h>  /* needed for apue.h */
 #include <poll.h>       /* for poll, struct pollfd, POLLIN */
 #include <pthread.h>    /* for pthread_create, pthread_t */
 #include <sys/ipc.h>    /* for IPC_CREAT */

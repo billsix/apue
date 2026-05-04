@@ -1,6 +1,5 @@
 #include <stdlib.h>     /* for malloc */
 #include <unistd.h>     /* for STDERR_FILENO */
-#include <sys/types.h>  /* for ssize_t, size_t; needed for apue.h */
 #include <sys/socket.h> /* for recvmsg, struct msghdr, struct cmsghdr, struct iovec, CMSG_LEN, CMSG_DATA */
 
 #include "apue.h"

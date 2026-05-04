@@ -1,6 +1,5 @@
 #include <errno.h>     /* for errno, EINVAL */
 #include <termios.h>   /* for tcgetattr, tcsetattr, struct termios, ECHO, ICANON, IEXTEN, ISIG, BRKINT, ICRNL, INPCK, ISTRIP, IXON, CSIZE, PARENB, CS8, OPOST, VMIN, VTIME, TCSAFLUSH */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

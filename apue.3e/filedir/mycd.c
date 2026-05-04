@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for printf */
 #include <stdlib.h>    /* for exit */
 #include <unistd.h>    /* for chdir */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

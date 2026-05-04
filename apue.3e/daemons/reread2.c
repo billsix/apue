@@ -3,7 +3,6 @@
 #include <errno.h>     /* for errno */
 #include <signal.h>    /* for sigaction, sigemptyset, sigaddset, SIGTERM, SIGHUP */
 #include <syslog.h>    /* for syslog, LOG_INFO, LOG_ERR */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

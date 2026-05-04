@@ -1,5 +1,4 @@
 #include <unistd.h>    /* for _exit, vfork */
-#include <sys/types.h> /* for pid_t, needed for apue.h */
 
 #include "apue.h"
 

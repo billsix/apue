@@ -1,5 +1,4 @@
 #include <stdio.h>     /* for printf */
-#include <sys/types.h> /* needed for apue.h */
 #include <sys/wait.h>  /* for WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG */
 
 #include "apue.h"

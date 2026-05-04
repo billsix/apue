@@ -3,7 +3,6 @@
 #include <string.h>    /* for strerror, strlen, strcat */
 #include <errno.h>     /* for errno */
 #include <stdarg.h>    /* for va_list, va_start, va_end */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

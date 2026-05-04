@@ -1,7 +1,6 @@
 #include <stdio.h>     /* for getchar, putchar, fflush, stdout, EOF */
 #include <stdlib.h>    /* for exit */
 #include <ctype.h>     /* for isupper, tolower */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

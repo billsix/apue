@@ -2,7 +2,6 @@
 #include <stdlib.h>    /* for exit */
 #include <unistd.h>    /* for read, STDIN_FILENO */
 #include <signal.h>    /* for signal, SIGINT, SIGQUIT, SIGTERM, SIG_ERR */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

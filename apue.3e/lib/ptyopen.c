@@ -4,7 +4,6 @@
 #include <fcntl.h>     /* for open, posix_openpt, O_RDWR */
 #include <stdlib.h>    /* for grantpt, unlockpt, ptsname */
 #include <unistd.h>    /* for close */
-#include <sys/types.h> /* needed for apue.h */
 #if defined(SOLARIS)
 #include <stropts.h>   /* for ioctl, I_FIND, I_PUSH (Solaris STREAMS) */
 #endif

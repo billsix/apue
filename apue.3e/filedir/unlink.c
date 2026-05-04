@@ -2,7 +2,6 @@
 #include <stdlib.h>    /* for exit */
 #include <unistd.h>    /* for unlink, sleep */
 #include <fcntl.h>     /* for open, O_RDWR */
-#include <sys/types.h> /* needed for apue.h */
 
 #include "apue.h"
 

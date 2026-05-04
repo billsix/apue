@@ -4,7 +4,6 @@
 #include <unistd.h>     /* for read, write */
 #include <poll.h>       /* for poll, struct pollfd, POLLIN */
 #include <pthread.h>    /* for pthread_create, pthread_mutex_*, pthread_cond_*, pthread_t */
-#include <sys/types.h>  /* needed for apue.h */
 #include <sys/ipc.h>    /* for IPC_CREAT */
 #include <sys/msg.h>    /* for msgget, msgrcv, MSG_NOERROR */
 #include <sys/socket.h> /* for socketpair, AF_UNIX, SOCK_DGRAM */
