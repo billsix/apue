@@ -1,9 +1,14 @@
-#include "apue2.h"
+#include <stdio.h>      /* for FILE, sprintf, fgets, popen, pclose */
+#include <stdlib.h>     /* for exit, malloc */
+#include <string.h>     /* for memset, strlen, strerror */
+#include <unistd.h>     /* for sysconf, gethostname, _SC_HOST_NAME_MAX */
+#include <errno.h>      /* for errno */
+#include <syslog.h>     /* for syslog, LOG_ERR */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for recvfrom, sendto, struct sockaddr, socklen_t, SOCK_DGRAM */
+#include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo, AI_CANONNAME */
+
 #include "apue.h"
-#include <netdb.h>
-#include <errno.h>
-#include <syslog.h>
-#include <sys/socket.h>
 
 #define BUFLEN 128
 #define MAXADDRLEN 256

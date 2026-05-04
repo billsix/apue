@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/stat.h>  /* for struct stat, lstat, S_ISREG, S_ISDIR, S_ISCHR, S_ISBLK, S_ISFIFO, S_ISLNK, S_ISSOCK */
+
 #include "apue.h"
 
 int main(int argc, char *argv[]) {

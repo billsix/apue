@@ -1,6 +1,11 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <string.h>    /* for strcmp */
+#include <unistd.h>    /* for alarm */
+#include <signal.h>    /* for signal, SIGALRM */
+#include <pwd.h>       /* for getpwnam, struct passwd */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <pwd.h>
 
 static void my_alarm(int signo) {
     struct passwd *rootptr;

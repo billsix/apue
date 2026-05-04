@@ -1,17 +1,29 @@
 /*
  * Print server daemon.
  */
-#include "apue2.h"
-#include "apue.h"
-#include <fcntl.h>
-#include <dirent.h>
-#include <ctype.h>
-#include <pwd.h>
-#include <pthread.h>
-#include <strings.h>
-#include <sys/select.h>
-#include <sys/uio.h>
+#include <stdio.h>      /* for printf, sprintf */
+#include <stdlib.h>     /* for malloc, free, realloc, atol, atoi, exit */
+#include <stddef.h>     /* for offsetof */
+#include <stdint.h>     /* for int16_t, int32_t */
+#include <string.h>     /* for memcpy, strcpy, strncpy, strncmp, strlen, strerror, strsignal */
+#include <strings.h>    /* for strncasecmp */
+#include <unistd.h>     /* for read, write, close, unlink, lseek, sysconf, gethostname, setgid, setuid */
+#include <fcntl.h>      /* for open, creat, O_CREAT, O_RDWR, O_RDONLY */
+#include <ctype.h>      /* for isspace, isdigit */
+#include <errno.h>      /* for errno, EIO */
+#include <signal.h>     /* for sigaction, sigemptyset, sigaddset, sigwait, sigset_t, SIG_IGN, SIGPIPE, SIGHUP, SIGTERM */
+#include <time.h>       /* for nanosleep, struct timespec */
+#include <pthread.h>    /* for pthread_create, pthread_mutex_*, pthread_cond_*, pthread_sigmask, pthread_self, pthread_exit, pthread_cleanup_*, pthread_cancel */
+#include <pwd.h>        /* for getpwnam, struct passwd */
+#include <dirent.h>     /* for opendir, readdir, closedir, DIR, struct dirent */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/stat.h>   /* for fstat, struct stat, S_IRUSR, S_IWUSR */
+#include <sys/select.h> /* for select, fd_set, FD_ZERO, FD_SET, FD_ISSET */
+#include <sys/uio.h>    /* for writev, struct iovec */
+#include <sys/socket.h> /* for accept, SOCK_STREAM */
+#include <arpa/inet.h>  /* for htonl, htons, ntohs, ntohl */
 
+#include "apue.h"
 #include "print.h"
 #include "ipp.h"
 

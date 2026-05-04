@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf, fopen, fread, ferror, FILE */
+#include <stdlib.h>    /* for exit */
+#include <sys/acct.h>  /* for struct acct, comp_t, AFORK, ASU */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <sys/acct.h>
 
 #if defined(BSD) /* different structure in FreeBSD */
 #define acct acctv2

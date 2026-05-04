@@ -2,11 +2,15 @@
  * Error routines for programs that can run as a daemon.
  */
 
-#include "apue2.h"
+#include <stdio.h>     /* for vsnprintf, snprintf, fflush, fputs, stdout, stderr */
+#include <stdlib.h>    /* for exit */
+#include <string.h>    /* for strerror, strlen, strcat */
+#include <errno.h>     /* for errno */
+#include <stdarg.h>    /* for va_list, va_start, va_end */
+#include <syslog.h>    /* for openlog, syslog, LOG_ERR */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <errno.h>  /* for definition of errno */
-#include <stdarg.h> /* ISO C variable arguments */
-#include <syslog.h>
 
 static void log_doit(int, int, int, const char *, va_list ap);
 

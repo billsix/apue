@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for isatty, fpathconf, _PC_VDISABLE, STDIN_FILENO */
+#include <termios.h>   /* for struct termios, tcgetattr, tcsetattr, TCSAFLUSH, VINTR, VEOF */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <termios.h>
 
 int main(void) {
     struct termios term;

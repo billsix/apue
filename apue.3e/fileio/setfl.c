@@ -1,6 +1,7 @@
-#include "apue2.h"
+#include <fcntl.h>     /* for fcntl, F_GETFL, F_SETFL */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <fcntl.h>
 
 void set_fl(int fd, int flags) /* flags are file status flags to turn on */
 {

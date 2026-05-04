@@ -1,6 +1,12 @@
-#include "apue2.h"
+#include <string.h>    /* for strncpy */
+#include <unistd.h>    /* for fork, setsid, close, dup2, STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO */
+#include <sys/types.h> /* for pid_t; needed for apue.h */
+#include <termios.h>   /* for struct termios, struct winsize, tcsetattr, TCSANOW */
+#if defined(MACOS) || !defined(TIOCGWINSZ)
+#include <sys/ioctl.h> /* for ioctl, TIOCSWINSZ, TIOCSCTTY */
+#endif
+
 #include "apue.h"
-#include <termios.h>
 
 pid_t pty_fork(int *ptrfdm, char *slave_name, int slave_namesz,
                const struct termios *slave_termios,

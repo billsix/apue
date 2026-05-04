@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for fork, read, getppid, STDIN_FILENO, STDOUT_FILENO */
+#include <signal.h>    /* for kill, sig_atomic_t, SIGTERM, SIG_ERR */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
 
 #define BUFFSIZE 512

@@ -4,10 +4,13 @@
 /*
  * Print server header file.
  */
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <errno.h>
+#include <stdint.h>     /* for uint32_t */
+#include <sys/types.h>  /* for ssize_t, size_t */
+#include <sys/stat.h>   /* for S_IRUSR, S_IWUSR (in FILEPERM) */
+#include <sys/socket.h> /* for struct sockaddr, socklen_t */
+#include <arpa/inet.h>  /* for in_addr conversions */
+#include <netdb.h>      /* for struct addrinfo */
+#include <errno.h>      /* for ETIMEDOUT */
 
 #define CONFIG_FILE "/etc/printer.conf"
 #define SPOOLDIR "/var/spool/printer"

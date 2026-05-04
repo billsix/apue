@@ -1,9 +1,12 @@
 /* Create a named stream pipe.  Called by server on initialization. */
 
-#include "apue2.h"
+#include <string.h>     /* for memset, strcpy, strlen */
+#include <unistd.h>     /* for unlink */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for bind, AF_UNIX, struct sockaddr */
+#include <sys/un.h>     /* for struct sockaddr_un */
+
 #include "apue.h"
-#include <sys/socket.h>
-#include <sys/un.h>
 
 int /* returns 0 if all OK, -1 if error (with errno set) */
 ns_pipe(const char *name, int fd[2]) {

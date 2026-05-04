@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <signal.h>    /* for sigemptyset, sigaddset, sigprocmask, sigwait, sigset_t, SIGINT, SIGQUIT, SIG_BLOCK, SIG_SETMASK */
+#include <pthread.h>   /* for pthread_create, pthread_sigmask, pthread_mutex_lock, pthread_mutex_unlock, pthread_cond_wait, pthread_cond_signal, pthread_mutex_t, pthread_cond_t, pthread_t, PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <pthread.h>
 
 int quitflag; /* set nonzero by thread */
 sigset_t mask;

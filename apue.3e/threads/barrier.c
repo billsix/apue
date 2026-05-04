@@ -1,8 +1,11 @@
-#include "apue2.h"
+#include <stdio.h>      /* for printf */
+#include <stdlib.h>     /* for exit, qsort, srandom, random */
+#include <pthread.h>    /* for pthread_create, pthread_barrier_init, pthread_barrier_wait, pthread_t, pthread_barrier_t */
+#include <limits.h>     /* for LONG_MAX */
+#include <sys/time.h>   /* for gettimeofday, struct timeval */
+#include <sys/types.h>  /* needed for apue.h */
+
 #include "apue.h"
-#include <pthread.h>
-#include <limits.h>
-#include <sys/time.h>
 
 #define NTHR 8               /* number of threads */
 #define NUMNUM 8000000L      /* number of numbers to sort */

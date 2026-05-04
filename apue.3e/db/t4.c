@@ -1,7 +1,10 @@
-#include "apue2.h"
+#include <stdlib.h>     /* for exit */
+#include <fcntl.h>      /* for O_RDWR, O_CREAT, O_TRUNC */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/stat.h>   /* for FILE_MODE constants (S_I*) */
+
 #include "apue.h"
 #include "apue_db.h"
-#include <fcntl.h>
 
 int main(void) {
     DBHANDLE db;

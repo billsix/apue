@@ -1,7 +1,11 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for alarm, pause */
+#include <signal.h>    /* for signal, SIG_ERR, sig_atomic_t, SIGUSR1, SIGALRM */
+#include <setjmp.h>    /* for sigjmp_buf, sigsetjmp, siglongjmp */
+#include <time.h>      /* for time, time_t */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <setjmp.h>
-#include <time.h>
 
 static void sig_usr1(int);
 static void sig_alrm(int);

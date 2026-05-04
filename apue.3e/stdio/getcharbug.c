@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h> /* for getchar, putchar, EOF */
 
 int main(void) {
     char c;

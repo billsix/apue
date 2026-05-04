@@ -1,6 +1,8 @@
-#include "apue2.h"
+#include <stdio.h>     /* for FILE, popen, pclose, fputs, fflush, fgets, putchar, stdout, EOF */
+#include <stdlib.h>    /* for exit */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <sys/wait.h>
 
 int main(void) {
     char line[MAXLINE];

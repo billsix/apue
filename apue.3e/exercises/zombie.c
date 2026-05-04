@@ -1,4 +1,7 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit, system */
+#include <unistd.h>    /* for fork, sleep */
+#include <sys/types.h> /* for pid_t, needed for apue.h */
+
 #include "apue.h"
 
 #ifdef SOLARIS

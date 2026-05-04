@@ -1,8 +1,14 @@
-#include "apue2.h"
+#include <stddef.h>     /* for offsetof */
+#include <stdio.h>      /* for printf, sprintf */
+#include <string.h>     /* for memset, strlen, strcpy */
+#include <errno.h>      /* for errno, ENAMETOOLONG */
+#include <unistd.h>     /* for getpid, unlink, close */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/stat.h>   /* for chmod, S_IRWXU */
+#include <sys/socket.h> /* for socket, bind, connect, AF_UNIX, SOCK_STREAM, struct sockaddr */
+#include <sys/un.h>     /* for struct sockaddr_un */
+
 #include "apue.h"
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <errno.h>
 
 #define CLI_PATH "/var/tmp/"
 #define CLI_PERM S_IRWXU /* rwx for user only */

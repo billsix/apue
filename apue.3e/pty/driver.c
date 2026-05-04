@@ -1,4 +1,6 @@
-#include "apue2.h"
+#include <unistd.h>    /* for fork, close, dup2, execlp, STDIN_FILENO, STDOUT_FILENO */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
 
 void do_driver(char *driver) {

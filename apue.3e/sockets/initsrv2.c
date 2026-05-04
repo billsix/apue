@@ -1,7 +1,6 @@
-#include "apue2.h"
-#include "apue.h"
-#include <errno.h>
-#include <sys/socket.h>
+#include <unistd.h>     /* for close */
+#include <errno.h>      /* for errno */
+#include <sys/socket.h> /* for socket, setsockopt, bind, listen, struct sockaddr, socklen_t, SOCK_STREAM, SOCK_SEQPACKET, SOL_SOCKET, SO_REUSEADDR */
 
 int initserver(int type, const struct sockaddr *addr, socklen_t alen,
                int qlen) {

@@ -1,5 +1,5 @@
-#include "apue2.h"
-#include "apue.h"
+#include <unistd.h> /* for alarm */
+#include <signal.h> /* for sigaction, sigprocmask, sigemptyset, sigaddset, sigdelset, sigsuspend, sigset_t, struct sigaction, SIGALRM, SIG_BLOCK, SIG_SETMASK */
 
 static void sig_alrm(int signo) {
     /* nothing to do, just returning wakes up sigsuspend() */

@@ -1,5 +1,5 @@
-#include <limits.h>
-#include <string.h>
+#include <stddef.h> /* for NULL */
+#include <string.h> /* for strlen, strncmp, strncpy */
 
 #define MAXSTRINGSZ 4096
 

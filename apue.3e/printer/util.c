@@ -1,8 +1,14 @@
-#include "apue2.h"
+#include <stdio.h>      /* for FILE, fopen, fclose, fgets, sscanf, sprintf */
+#include <string.h>     /* for strcmp */
+#include <unistd.h>     /* for read */
+#include <errno.h>      /* for errno, ETIME, ETIMEDOUT */
+#include <ctype.h>      /* for character classification */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/select.h> /* for select, fd_set, FD_ZERO, FD_SET, struct timeval */
+#include <sys/socket.h> /* for AI_CANONNAME, AF_INET, SOCK_STREAM */
+
 #include "apue.h"
 #include "print.h"
-#include <ctype.h>
-#include <sys/select.h>
 
 #define MAXCFGLINE 512
 #define MAXKWLEN 16

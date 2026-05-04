@@ -1,8 +1,10 @@
-#include <stdio.h> /* for perror, fprintf */
-#include <unistd.h> /* for exit */
+#include <stdio.h>     /* for perror, fprintf, stderr */
+#include <stdlib.h>    /* for exit */
+#include <string.h>    /* for strerror */
+#include <errno.h>     /* for errno, EACCES, ENOENT */
 #include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <errno.h>
 
 int main(int argc, char *argv[]) {
     fprintf(stderr, "EACCES: %s\n", strerror(EACCES));

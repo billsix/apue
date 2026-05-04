@@ -1,10 +1,9 @@
-#include <sys/stat.h>
-#include <dirent.h>
-#include <limits.h>
-#include <string.h>
-#include <termios.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include <stdlib.h>   /* for malloc, free */
+#include <string.h>   /* for strlen, strcmp, strdup, strcpy, strcat, strncpy */
+#include <unistd.h>   /* for isatty */
+#include <limits.h>   /* for _POSIX_PATH_MAX */
+#include <dirent.h>   /* for DIR, struct dirent, opendir, readdir, closedir */
+#include <sys/stat.h> /* for struct stat, stat, fstat, S_ISDIR, S_ISCHR */
 
 struct devdir {
     struct devdir *d_next;

@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for chdir, getcwd */
+#include <sys/types.h> /* for size_t, needed for apue.h */
+
 #include "apue.h"
 
 int main(void) {

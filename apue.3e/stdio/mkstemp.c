@@ -1,6 +1,11 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit, mkstemp */
+#include <unistd.h>    /* for close, unlink */
+#include <errno.h>     /* for errno, ENOENT */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/stat.h>  /* for struct stat, stat */
+
 #include "apue.h"
-#include <errno.h>
 
 void make_temp(char *template);
 

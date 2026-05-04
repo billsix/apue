@@ -1,7 +1,11 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <string.h>    /* for strrchr, strerror */
+#include <errno.h>     /* for errno */
+#include <signal.h>    /* for sigaction, sigemptyset, sigaddset, SIGTERM, SIGHUP */
+#include <syslog.h>    /* for syslog, LOG_INFO, LOG_ERR */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <syslog.h>
-#include <errno.h>
 
 extern int lockfile(int);
 extern int already_running(void);

@@ -1,5 +1,10 @@
+#include <stdio.h>  /* for fgets, stdin */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for strlen */
+#include <unistd.h> /* for read, write, close, STDOUT_FILENO */
+#include <fcntl.h>  /* for O_RDONLY */
+
 #include "open.h"
-#include <fcntl.h>
 
 #define BUFFSIZE 8192
 

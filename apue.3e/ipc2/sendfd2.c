@@ -1,6 +1,8 @@
-#include "apue2.h"
-#include "apue.h"
-#include <sys/socket.h>
+#include <stdlib.h>     /* for malloc */
+#include <unistd.h>     /* for geteuid, getegid, getpid */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for sendmsg, struct msghdr, struct cmsghdr, CMSG_*, SOL_SOCKET, SCM_RIGHTS */
+#include <sys/uio.h>    /* for struct iovec */
 
 #if defined(SCM_CREDS) /* BSD interface */
 #define CREDSTRUCT cmsgcred

@@ -1,7 +1,11 @@
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <string.h>    /* for strerror */
+#include <time.h>      /* for clock_gettime, localtime, strftime, struct timespec, struct tm, CLOCK_REALTIME */
+#include <pthread.h>   /* for pthread_mutex_lock, pthread_mutex_timedlock, pthread_mutex_t, PTHREAD_MUTEX_INITIALIZER */
+#include <sys/types.h> /* needed for apue.h */
 
-#include "apue2.h"
 #include "apue.h"
-#include <pthread.h>
 
 int main(void) {
     int err;

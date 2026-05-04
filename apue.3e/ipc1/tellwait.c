@@ -1,4 +1,6 @@
-#include "apue2.h"
+#include <unistd.h>    /* for pipe, read, write */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
 
 static int pfd1[2], pfd2[2];

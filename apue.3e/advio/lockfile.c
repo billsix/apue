@@ -1,5 +1,5 @@
-#include <unistd.h>
-#include <fcntl.h>
+#include <unistd.h> /* for SEEK_SET */
+#include <fcntl.h>  /* for fcntl, struct flock, F_WRLCK, F_SETLK */
 
 int lockfile(int fd) {
     struct flock fl;

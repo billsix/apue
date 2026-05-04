@@ -1,4 +1,7 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
 
 char *getpass(const char *);

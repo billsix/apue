@@ -1,9 +1,15 @@
-#include "apue2.h"
+#include <stdio.h>      /* for printf */
+#include <stdlib.h>     /* for exit */
+#include <string.h>     /* for memset */
+#include <unistd.h>     /* for read, write */
+#include <sys/types.h>  /* needed for apue.h */
+#include <poll.h>       /* for poll, struct pollfd, POLLIN */
+#include <pthread.h>    /* for pthread_create, pthread_t */
+#include <sys/ipc.h>    /* for IPC_CREAT */
+#include <sys/msg.h>    /* for msgget, msgrcv, MSG_NOERROR */
+#include <sys/socket.h> /* for socketpair, AF_UNIX, SOCK_DGRAM */
+
 #include "apue.h"
-#include <poll.h>
-#include <pthread.h>
-#include <sys/msg.h>
-#include <sys/socket.h>
 
 #define NQ 3       /* number of queues */
 #define MAXMSZ 512 /* maximum message size */

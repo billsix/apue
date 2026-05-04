@@ -1,7 +1,11 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf, fputs, stdout */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for sysconf, pathconf */
+#include <errno.h>     /* for errno, EINVAL */
+#include <limits.h>    /* for ARG_MAX and other limit macros */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <errno.h>
-#include <limits.h>
 
 static void	pr_sysconf(char *, int);
 static void	pr_pathconf(char *, char *, int);

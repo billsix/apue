@@ -1,6 +1,7 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit, system */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <sys/wait.h>
 
 int main(void) {
     int status;

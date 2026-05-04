@@ -1,6 +1,6 @@
-#include "apue2.h"
-#include "apue.h"
-#include <setjmp.h>
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
+#include <setjmp.h> /* for jmp_buf, setjmp, longjmp */
 
 static void f1(int, int, int, int);
 static void f2(void);

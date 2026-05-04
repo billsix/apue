@@ -1,11 +1,15 @@
-#include "apue2.h"
-#include "apue.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/stat.h>  /* for struct stat, stat, S_ISCHR, S_ISBLK */
 #ifdef SOLARIS
-#include <sys/mkdev.h>
+#include <sys/mkdev.h> /* for major, minor */
 #endif
 #ifdef LINUX
-#include <sys/sysmacros.h>
+#include <sys/sysmacros.h> /* for major, minor */
 #endif
+
+#include "apue.h"
 
 int main(int argc, char *argv[]) {
     int i;

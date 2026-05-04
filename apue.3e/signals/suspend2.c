@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <signal.h>    /* for signal, sigemptyset, sigaddset, sigprocmask, sigsuspend, sig_atomic_t, sigset_t, SIG_ERR, SIG_BLOCK, SIG_SETMASK, SIGINT, SIGQUIT */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
 
 volatile sig_atomic_t quitflag; /* set nonzero by signal handler */

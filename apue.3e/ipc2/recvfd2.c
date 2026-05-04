@@ -1,7 +1,11 @@
-#include "apue2.h"
+#include <stdlib.h>     /* for malloc */
+#include <unistd.h>     /* for STDERR_FILENO */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for recvmsg, setsockopt, struct msghdr, struct cmsghdr, CMSG_*, SOL_SOCKET, SCM_RIGHTS */
+#include <sys/uio.h>    /* for struct iovec */
+#include <sys/un.h>     /* for SCM_CREDS / SCM_CREDENTIALS feature test */
+
 #include "apue.h"
-#include <sys/socket.h> /* struct msghdr */
-#include <sys/un.h>
 
 #if defined(SCM_CREDS) /* BSD interface */
 #define CREDSTRUCT cmsgcred

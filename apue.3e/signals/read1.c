@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for read, write, alarm, STDIN_FILENO, STDOUT_FILENO */
+#include <signal.h>    /* for signal, SIG_ERR, SIGALRM */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
 
 static void sig_alrm(int);

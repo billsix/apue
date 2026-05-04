@@ -1,4 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf, fgets, fputs, ferror, stdin, stdout, EOF */
+#include <stdlib.h>    /* for exit */
+#include <string.h>    /* for strlen */
+#include <unistd.h>    /* for pipe, fork, close, read, write, dup2, execl, STDIN_FILENO, STDOUT_FILENO */
+#include <signal.h>    /* for signal, SIGPIPE, SIG_ERR */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
 
 static void sig_pipe(int); /* our signal handler */

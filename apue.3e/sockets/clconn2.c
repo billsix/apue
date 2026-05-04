@@ -1,6 +1,5 @@
-#include "apue2.h"
-#include "apue.h"
-#include <sys/socket.h>
+#include <unistd.h>     /* for close, sleep */
+#include <sys/socket.h> /* for socket, connect, struct sockaddr, socklen_t */
 
 #define MAXSLEEP 128
 

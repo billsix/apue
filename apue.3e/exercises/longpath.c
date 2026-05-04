@@ -1,6 +1,12 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for realloc, exit */
+#include <string.h>    /* for strlen */
+#include <unistd.h>    /* for chdir, getcwd */
+#include <fcntl.h>     /* for creat */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/stat.h>  /* for mkdir, FILE_MODE/DIR_MODE constants */
+
 #include "apue.h"
-#include <fcntl.h>
 
 #define DEPTH 1000 /* directory depth */
 #define STARTDIR "/tmp"

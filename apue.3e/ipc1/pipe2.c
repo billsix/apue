@@ -1,6 +1,11 @@
-#include "apue2.h"
+#include <stdio.h>     /* for FILE, fopen, fgets, ferror */
+#include <stdlib.h>    /* for exit, getenv */
+#include <string.h>    /* for strlen, strrchr */
+#include <unistd.h>    /* for pipe, fork, close, write, dup2, execl, STDIN_FILENO */
+#include <sys/wait.h>  /* for waitpid */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
-#include <sys/wait.h>
 
 #define DEF_PAGER "/bin/more" /* default pager program */
 

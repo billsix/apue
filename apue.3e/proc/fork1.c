@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for write, fork, sleep, getpid, STDOUT_FILENO */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
 
 int globvar = 6; /* external variable in initialized data */

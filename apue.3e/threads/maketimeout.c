@@ -1,5 +1,5 @@
-#include <sys/time.h>
-#include <stdlib.h>
+#include <sys/time.h> /* for gettimeofday, struct timeval */
+#include <time.h>     /* for struct timespec */
 
 void maketimeout(struct timespec *tsp, long minutes) {
     struct timeval now;

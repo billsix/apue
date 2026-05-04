@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for access, R_OK */
+#include <fcntl.h>     /* for open, O_RDONLY */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <fcntl.h>
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {

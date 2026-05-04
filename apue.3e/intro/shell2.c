@@ -1,10 +1,12 @@
-#include <stdio.h> /* for fgets */
-#include <string.h> /* for strlen */
-#include <unistd.h> /* for fork */
-#include <stdlib.h> /* for exit */
-#include <sys/types.h> /* needed for apue.h */
+#include <stdio.h>     /* for fgets, printf, stdin */
+#include <string.h>    /* for strlen */
+#include <unistd.h>    /* for fork, execlp */
+#include <stdlib.h>    /* for exit */
+#include <signal.h>    /* for signal, SIGINT, SIG_ERR */
+#include <sys/types.h> /* for pid_t */
+#include <sys/wait.h>  /* for waitpid */
+
 #include "apue.h"
-#include <sys/wait.h>
 
 static void sig_int(int); /* our signal-catching function */
 

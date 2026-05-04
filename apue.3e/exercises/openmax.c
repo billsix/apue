@@ -1,7 +1,9 @@
-#include "apue2.h"
+#include <unistd.h>        /* for sysconf, _SC_OPEN_MAX */
+#include <limits.h>        /* for LONG_MAX */
+#include <sys/types.h>     /* needed for apue.h */
+#include <sys/resource.h>  /* for getrlimit, RLIMIT_NOFILE, RLIM_INFINITY, struct rlimit */
+
 #include "apue.h"
-#include <limits.h>
-#include <sys/resource.h>
 
 #define OPEN_MAX_GUESS 256
 

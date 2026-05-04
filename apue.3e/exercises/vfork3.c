@@ -1,4 +1,6 @@
-#include "apue2.h"
+#include <unistd.h>    /* for _exit, vfork */
+#include <sys/types.h> /* for pid_t, needed for apue.h */
+
 #include "apue.h"
 
 static void f1(void), f2(void);

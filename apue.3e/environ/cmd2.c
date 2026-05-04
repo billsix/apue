@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf, fgets, stdin */
+#include <stdlib.h>    /* for exit */
+#include <setjmp.h>    /* for jmp_buf, setjmp, longjmp */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <setjmp.h>
 
 #define TOK_ADD 5
 

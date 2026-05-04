@@ -1,7 +1,6 @@
-#include <limits.h>
-#include <string.h>
-#include <pthread.h>
-#include <stdlib.h>
+#include <stdlib.h>  /* for malloc, free, NULL */
+#include <string.h>  /* for strlen, strncmp, strncpy */
+#include <pthread.h> /* for pthread_key_create, pthread_once, pthread_getspecific, pthread_setspecific, pthread_mutex_lock, pthread_mutex_unlock, pthread_key_t, pthread_once_t, pthread_mutex_t, PTHREAD_ONCE_INIT, PTHREAD_MUTEX_INITIALIZER */
 
 #define MAXSTRINGSZ 4096
 

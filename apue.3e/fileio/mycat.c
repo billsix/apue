@@ -1,4 +1,7 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for read, write, STDIN_FILENO, STDOUT_FILENO */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
 
 #define BUFFSIZE 4096

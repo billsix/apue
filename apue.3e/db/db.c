@@ -1,10 +1,16 @@
-#include "apue2.h"
+#include <stdio.h>     /* for sprintf */
+#include <stdlib.h>    /* for malloc, calloc, free, atol, atoi */
+#include <string.h>    /* for strlen, strcpy, strcat, strchr, strcmp */
+#include <unistd.h>    /* for read, write, close, lseek */
+#include <fcntl.h>     /* for open, O_CREAT, O_TRUNC, F_SETLK, F_SETLKW, F_RDLCK, F_WRLCK, F_UNLCK */
+#include <errno.h>     /* for errno, EINVAL, ENOENT */
+#include <stdarg.h>    /* for va_list, va_start, va_arg, va_end */
+#include <sys/types.h> /* for off_t, ssize_t, needed for apue.h */
+#include <sys/stat.h>  /* for fstat, struct stat */
+#include <sys/uio.h>   /* for readv, writev, struct iovec */
+
 #include "apue.h"
 #include "apue_db.h"
-#include <fcntl.h> /* open & db_open flags */
-#include <stdarg.h>
-#include <errno.h>
-#include <sys/uio.h> /* struct iovec */
 
 /*
  * Internal index file constants.

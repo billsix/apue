@@ -1,5 +1,9 @@
+#include <stdio.h>   /* for sprintf */
+#include <string.h>  /* for strlen */
+#include <unistd.h>  /* for fork, close, dup2, execl, write, STDIN_FILENO, STDOUT_FILENO */
+#include <sys/uio.h> /* for writev, struct iovec */
+
 #include "open.h"
-#include <sys/uio.h> /* struct iovec */
 
 /*
  * Open the file by sending the "name" and "oflag" to the

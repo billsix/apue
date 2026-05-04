@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <signal.h>    /* for signal, SIG_ERR, SIGINT */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
 
 unsigned int sleep2(unsigned int);

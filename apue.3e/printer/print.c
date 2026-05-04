@@ -3,11 +3,21 @@
  * and sends it to the printer spooling daemon.  Usage:
  * 	print [-t] filename
  */
-#include "apue2.h"
+#include <stdio.h>      /* for printf */
+#include <stdlib.h>     /* for exit */
+#include <string.h>     /* for strcpy, strncpy, strncat, strlen */
+#include <unistd.h>     /* for getopt, optind, read, geteuid */
+#include <fcntl.h>      /* for open, O_RDONLY */
+#include <errno.h>      /* for errno */
+#include <pwd.h>        /* for getpwuid, struct passwd */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/stat.h>   /* for fstat, struct stat, S_ISREG */
+#include <sys/socket.h> /* for AF_INET, SOCK_STREAM */
+#include <arpa/inet.h>  /* for htonl, ntohl */
+#include <netdb.h>      /* for struct addrinfo, gai_strerror */
+
 #include "apue.h"
 #include "print.h"
-#include <fcntl.h>
-#include <pwd.h>
 
 /*
  * Needed for logging funtions.

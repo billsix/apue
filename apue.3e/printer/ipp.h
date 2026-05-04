@@ -5,6 +5,7 @@
  * Defines parts of the IPP protocol between the scheduler
  * and the printer.  Based on RFC2911 and RFC2910.
  */
+#include <stdint.h> /* for int8_t, int16_t, int32_t */
 
 /*
  * Status code classes.

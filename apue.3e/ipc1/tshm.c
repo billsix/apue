@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for malloc, exit */
+#include <sys/ipc.h>   /* for IPC_PRIVATE, IPC_RMID */
+#include <sys/shm.h>   /* for shmget, shmat, shmctl */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <sys/shm.h>
 
 #define ARRAY_SIZE 40000
 #define MALLOC_SIZE 100000

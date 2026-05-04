@@ -1,5 +1,5 @@
-#include <stdlib.h>
-#include <pthread.h>
+#include <stddef.h>  /* for NULL */
+#include <pthread.h> /* for pthread_rwlock_init, pthread_rwlock_wrlock, pthread_rwlock_rdlock, pthread_rwlock_unlock, pthread_equal, pthread_t, pthread_rwlock_t */
 
 struct job {
     struct job *j_next;

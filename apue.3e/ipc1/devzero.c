@@ -1,7 +1,10 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for fork, getppid, close */
+#include <fcntl.h>     /* for open, O_RDWR */
+#include <sys/mman.h>  /* for mmap, PROT_READ, PROT_WRITE, MAP_SHARED, MAP_FAILED */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
-#include <fcntl.h>
-#include <sys/mman.h>
 
 #define NLOOPS 1000
 #define SIZE sizeof(long) /* size of shared memory area */

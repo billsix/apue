@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for pipe, write */
+#include <fcntl.h>     /* for O_NONBLOCK */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <fcntl.h>
 
 int main(void) {
     int i, n;

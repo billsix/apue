@@ -1,8 +1,12 @@
 #!/usr/bin/awk -f
 BEGIN	{
-	printf("#include \"apue2.h\"\n")
+	printf("#include <stdio.h>     /* for printf, fputs, stdout */\n")
+	printf("#include <stdlib.h>    /* for exit */\n")
+	printf("#include <unistd.h>    /* for sysconf, pathconf */\n")
+	printf("#include <errno.h>     /* for errno, EINVAL */\n")
+	printf("#include <sys/types.h> /* needed for apue.h */\n")
+	printf("\n")
 	printf("#include \"apue.h\"\n")
-	printf("#include <errno.h>\n")
 	printf("\n")
 	printf("static void	pr_sysconf(char *, int);\n")
 	printf("static void	pr_pathconf(char *, char *, int);\n")

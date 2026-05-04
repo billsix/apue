@@ -1,8 +1,9 @@
+#include <stdlib.h> /* for malloc, free, NULL */
+#include <stdio.h>  /* for snprintf */
+#include <unistd.h> /* for getpid */
+#include <errno.h>  /* for errno, EEXIST */
+
 #include "slock.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
 
 struct slock *s_alloc() {
     struct slock *sp;

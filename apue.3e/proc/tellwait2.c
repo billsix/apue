@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdio.h>     /* for setbuf, putc, stdout */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for fork */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
 
 static void charatatime(char *);

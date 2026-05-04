@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for read, write, getpid, STDIN_FILENO, STDOUT_FILENO */
+#include <signal.h>    /* for signal, sigemptyset, sigaddset, sigprocmask, kill, sigset_t, SIG_DFL, SIG_IGN, SIG_UNBLOCK, SIGTSTP */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
 
 #define BUFFSIZE 1024

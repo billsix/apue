@@ -1,6 +1,7 @@
-#include "apue2.h"
+#include <fcntl.h>     /* for fcntl, F_GETFD, F_SETFD, FD_CLOEXEC */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <fcntl.h>
 
 int set_cloexec(int fd) {
     int val;

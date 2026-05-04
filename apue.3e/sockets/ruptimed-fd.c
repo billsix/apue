@@ -1,11 +1,14 @@
-#include "apue2.h"
+#include <stdlib.h>     /* for exit, malloc */
+#include <string.h>     /* for memset, strerror */
+#include <unistd.h>     /* for fork, dup2, close, execl, sysconf, gethostname, STDOUT_FILENO, STDERR_FILENO, _SC_HOST_NAME_MAX */
+#include <errno.h>      /* for errno */
+#include <syslog.h>     /* for syslog, LOG_ERR */
+#include <sys/types.h>  /* for pid_t */
+#include <sys/wait.h>   /* for waitpid */
+#include <sys/socket.h> /* for accept, struct sockaddr, socklen_t, SOCK_STREAM */
+#include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo, AI_CANONNAME */
+
 #include "apue.h"
-#include <netdb.h>
-#include <errno.h>
-#include <syslog.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <sys/wait.h>
 
 #define QLEN 10
 

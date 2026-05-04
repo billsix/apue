@@ -1,3 +1,6 @@
+#include <stdlib.h> /* for atoi */
+#include <string.h> /* for strcmp, strcpy */
+
 #include "opend.h"
 
 /*

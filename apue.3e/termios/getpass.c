@@ -1,6 +1,6 @@
-#include <signal.h>
-#include <stdio.h>
-#include <termios.h>
+#include <stdio.h>   /* for FILE, fopen, fclose, fputs, fileno, getc, putc, setbuf, EOF */
+#include <signal.h>  /* for sigset_t, sigemptyset, sigaddset, sigprocmask, SIGINT, SIGTSTP, SIG_BLOCK, SIG_SETMASK */
+#include <termios.h> /* for struct termios, tcgetattr, tcsetattr, TCSAFLUSH, ECHO, ECHOE, ECHOK, ECHONL */
 
 #define MAX_PASS_LEN 8 /* max #chars for user to enter */
 

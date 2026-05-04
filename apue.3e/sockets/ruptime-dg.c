@@ -1,8 +1,14 @@
-#include "apue2.h"
+#include <stdio.h>      /* for fprintf, stderr */
+#include <stdlib.h>     /* for exit */
+#include <string.h>     /* for memset, strerror */
+#include <unistd.h>     /* for write, alarm, STDOUT_FILENO */
+#include <signal.h>     /* for sigaction, sigemptyset, struct sigaction, SIGALRM */
+#include <errno.h>      /* for errno, EINTR */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for socket, sendto, recvfrom, SOCK_DGRAM */
+#include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo */
+
 #include "apue.h"
-#include <netdb.h>
-#include <errno.h>
-#include <sys/socket.h>
 
 #define BUFLEN 128
 #define TIMEOUT 20

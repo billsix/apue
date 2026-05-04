@@ -1,7 +1,12 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit, realloc */
+#include <string.h>    /* for strlen, strcpy, strcmp */
+#include <limits.h>    /* for NAME_MAX */
+#include <dirent.h>    /* for DIR, struct dirent, opendir, readdir, closedir */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/stat.h>  /* for struct stat, lstat, S_ISDIR, S_IF* constants */
+
 #include "apue.h"
-#include <dirent.h>
-#include <limits.h>
 
 /* function type that is called for each filename */
 typedef int Myfunc(const char *, const struct stat *, int);

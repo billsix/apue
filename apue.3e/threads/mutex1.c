@@ -1,5 +1,5 @@
-#include <stdlib.h>
-#include <pthread.h>
+#include <stdlib.h>  /* for malloc, free, NULL */
+#include <pthread.h> /* for pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock, pthread_mutex_unlock, pthread_mutex_t */
 
 struct foo {
     int f_count;

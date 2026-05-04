@@ -1,4 +1,5 @@
-#include <pthread.h>
+#include <stddef.h>  /* for NULL */
+#include <pthread.h> /* for pthread_mutex_lock, pthread_mutex_unlock, pthread_cond_wait, pthread_cond_signal, pthread_mutex_t, pthread_cond_t, PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER */
 
 struct msg {
     struct msg *m_next;

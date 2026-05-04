@@ -1,5 +1,9 @@
+#include <stdio.h>  /* for snprintf */
+#include <string.h> /* for strerror */
+#include <unistd.h> /* for close */
+#include <fcntl.h>  /* for open */
+
 #include "opend.h"
-#include <fcntl.h>
 
 void handle_request(char *buf, int nread, int fd) {
     int newfd;

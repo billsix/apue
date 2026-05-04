@@ -1,6 +1,7 @@
-#include "apue2.h"
+#include <fcntl.h>     /* for fcntl, struct flock, F_GETLK, F_UNLCK */
+#include <sys/types.h> /* for pid_t, off_t; needed for apue.h */
+
 #include "apue.h"
-#include <fcntl.h>
 
 pid_t lock_test(int fd, int type, off_t offset, int whence, off_t len) {
     struct flock lock;

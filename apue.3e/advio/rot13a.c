@@ -1,10 +1,11 @@
-#include <stddef.h> /* for size_t */
+#include <stddef.h>    /* for size_t */
 #include <sys/types.h> /* for ssize_t */
-#include <stdlib.h> /* for exit */
-#include <unistd.h> /* for fsync, read, write */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for fsync, read, write */
+#include <ctype.h>     /* for isalpha */
+#include <fcntl.h>     /* for open, O_RDONLY, O_RDWR, O_CREAT, O_TRUNC */
+
 #include "apue.h"
-#include <ctype.h>
-#include <fcntl.h>
 
 #define BSZ 4096
 

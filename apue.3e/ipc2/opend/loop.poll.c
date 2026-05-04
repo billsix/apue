@@ -1,5 +1,8 @@
+#include <stdlib.h> /* for malloc, realloc */
+#include <unistd.h> /* for read, close */
+#include <poll.h>   /* for poll, struct pollfd, POLLIN, POLLHUP */
+
 #include "opend.h"
-#include <poll.h>
 
 #define NALLOC 10 /* # pollfd structs to alloc/realloc */
 

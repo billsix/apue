@@ -1,4 +1,4 @@
-#include <termios.h>
+#include <termios.h> /* for struct termios, tcgetattr */
 
 int isatty(int fd) {
     struct termios ts;

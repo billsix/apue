@@ -1,7 +1,9 @@
-#include "apue2.h"
-#include "apue.h"
-#include <errno.h>
-#include <sys/time.h>
+#include <stdio.h>     /* for printf, setbuf, stdout */
+#include <stdlib.h>    /* for exit, strtol */
+#include <unistd.h>    /* for fork, nice, sysconf, _SC_NZERO */
+#include <errno.h>     /* for errno */
+#include <sys/time.h>  /* for gettimeofday, struct timeval */
+#include <sys/types.h> /* for pid_t */
 
 #if defined(MACOS)
 #include <sys/syslimits.h>
@@ -10,6 +12,8 @@
 #elif defined(BSD)
 #include <sys/param.h>
 #endif
+
+#include "apue.h"
 
 unsigned long long count;
 struct timeval end;

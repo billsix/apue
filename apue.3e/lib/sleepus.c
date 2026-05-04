@@ -1,6 +1,8 @@
-#include "apue2.h"
+#include <stddef.h>    /* for NULL */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/time.h>  /* for select, struct timeval */
+
 #include "apue.h"
-#include <sys/time.h>
 
 void sleep_us(unsigned int nusecs) {
     struct timeval tval;

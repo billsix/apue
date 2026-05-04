@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <string.h>
+#include <stdio.h>  /* for L_ctermid */
+#include <string.h> /* for strcpy */
 
 static char ctermid_name[L_ctermid];
 

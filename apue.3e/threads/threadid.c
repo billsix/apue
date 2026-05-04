@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for getpid, sleep */
+#include <pthread.h>   /* for pthread_create, pthread_self, pthread_t */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
-#include <pthread.h>
 
 pthread_t ntid;
 

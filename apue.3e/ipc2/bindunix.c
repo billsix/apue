@@ -1,7 +1,12 @@
-#include "apue2.h"
+#include <stdio.h>      /* for printf */
+#include <stdlib.h>     /* for exit */
+#include <string.h>     /* for strcpy, strlen */
+#include <stddef.h>     /* for offsetof */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for socket, bind, AF_UNIX, SOCK_STREAM, struct sockaddr */
+#include <sys/un.h>     /* for struct sockaddr_un */
+
 #include "apue.h"
-#include <sys/socket.h>
-#include <sys/un.h>
 
 int main(void) {
     int fd, size;

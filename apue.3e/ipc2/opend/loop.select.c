@@ -1,5 +1,7 @@
+#include <unistd.h>     /* for read, close */
+#include <sys/select.h> /* for select, fd_set, FD_ZERO, FD_SET, FD_ISSET, FD_CLR */
+
 #include "opend.h"
-#include <sys/select.h>
 
 void loop(void) {
     int i, n, maxfd, maxi, listenfd, clifd, nread;

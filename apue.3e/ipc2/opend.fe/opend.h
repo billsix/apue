@@ -1,6 +1,7 @@
-#include "apue2.h"
+#include <sys/types.h> /* needed for apue.h */
+#include <errno.h>     /* for errno */
+
 #include "apue.h"
-#include <errno.h>
 
 #define CL_OPEN "open" /* client's request for server */
 

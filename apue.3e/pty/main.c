@@ -1,6 +1,11 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf, fprintf, stderr, EOF */
+#include <stdlib.h>    /* for exit, atexit */
+#include <unistd.h>    /* for isatty, getopt, execvp, optarg, optind, opterr, optopt, STDIN_FILENO */
+#include <termios.h>   /* for struct termios, tcgetattr, tcsetattr, TCSANOW, ECHO, ECHOE, ECHOK, ECHONL, ONLCR */
+#include <sys/types.h> /* for pid_t */
+#include <sys/ioctl.h> /* for ioctl, TIOCGWINSZ, struct winsize */
+
 #include "apue.h"
-#include <termios.h>
 
 #ifdef LINUX
 #define OPTSTR "+d:einv"

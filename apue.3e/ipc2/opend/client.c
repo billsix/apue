@@ -1,3 +1,5 @@
+#include <stdlib.h> /* for malloc, realloc */
+
 #include "opend.h"
 
 #define NALLOC 10 /* # client structs to alloc/realloc for */

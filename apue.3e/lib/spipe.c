@@ -1,6 +1,7 @@
-#include "apue2.h"
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for socketpair, AF_UNIX, SOCK_STREAM */
+
 #include "apue.h"
-#include <sys/socket.h>
 
 /*
  * Returns a full-duplex pipe (a UNIX domain socket) with

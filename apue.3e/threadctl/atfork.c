@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for fork, sleep, pause */
+#include <pthread.h>   /* for pthread_atfork, pthread_create, pthread_mutex_lock, pthread_mutex_unlock, pthread_mutex_t, pthread_t, PTHREAD_MUTEX_INITIALIZER */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
-#include <pthread.h>
 
 pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;

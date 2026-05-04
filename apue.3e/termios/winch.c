@@ -1,9 +1,14 @@
-#include "apue2.h"
-#include "apue.h"
-#include <termios.h>
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for isatty, pause, STDIN_FILENO */
+#include <signal.h>    /* for signal, SIGWINCH, SIG_ERR */
+#include <termios.h>   /* for TIOCGWINSZ on platforms that define it here */
 #ifndef TIOCGWINSZ
-#include <sys/ioctl.h>
+#include <sys/ioctl.h> /* for ioctl, TIOCGWINSZ, struct winsize */
 #endif
+#include <sys/types.h> /* needed for apue.h */
+
+#include "apue.h"
 
 static void pr_winsize(int fd) {
     struct winsize size;

@@ -1,7 +1,8 @@
-#include "apue2.h"
+#include <errno.h>     /* for errno, EINVAL */
+#include <termios.h>   /* for tcgetattr, tcsetattr, struct termios, ECHO, ICANON, IEXTEN, ISIG, BRKINT, ICRNL, INPCK, ISTRIP, IXON, CSIZE, PARENB, CS8, OPOST, VMIN, VTIME, TCSAFLUSH */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <termios.h>
-#include <errno.h>
 
 static struct termios save_termios;
 static int ttysavefd = -1;

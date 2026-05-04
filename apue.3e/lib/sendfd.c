@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stddef.h>     /* for NULL */
+#include <stdlib.h>     /* for malloc */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for sendmsg, struct msghdr, struct cmsghdr, struct iovec, CMSG_LEN, CMSG_DATA, SOL_SOCKET, SCM_RIGHTS */
+
 #include "apue.h"
-#include <sys/socket.h>
 
 /* size of control buffer to send/recv one file descriptor */
 #define CONTROLLEN CMSG_LEN(sizeof(int))

@@ -1,8 +1,11 @@
-#include "apue2.h"
+#include <stdio.h>     /* for FILE, fdopen, fileno, fclose, EOF, NULL */
+#include <stdlib.h>    /* for calloc */
+#include <errno.h>     /* for errno, EINVAL, EMFILE, EINTR */
+#include <unistd.h>    /* for pipe, fork, close, dup2, execl, _exit, STDIN_FILENO, STDOUT_FILENO */
+#include <sys/types.h> /* for pid_t; needed for apue.h */
+#include <sys/wait.h>  /* for waitpid */
+
 #include "apue.h"
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/wait.h>
 
 /*
  * Pointer to array allocated at run-time.

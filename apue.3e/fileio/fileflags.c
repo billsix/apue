@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf, putchar */
+#include <stdlib.h>    /* for exit, atoi */
+#include <fcntl.h>     /* for fcntl, F_GETFL, O_ACCMODE, O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_NONBLOCK, O_SYNC, O_FSYNC */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <fcntl.h>
 
 int main(int argc, char *argv[]) {
     int val;

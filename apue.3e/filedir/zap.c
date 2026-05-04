@@ -1,6 +1,11 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for close */
+#include <fcntl.h>     /* for open, O_RDWR, O_TRUNC */
+#include <time.h>      /* for struct timespec */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/stat.h>  /* for struct stat, stat, futimens */
+
 #include "apue.h"
-#include <fcntl.h>
 
 int main(int argc, char *argv[]) {
     int i, fd;

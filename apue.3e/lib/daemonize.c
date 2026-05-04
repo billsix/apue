@@ -1,8 +1,13 @@
-#include "apue2.h"
+#include <stdlib.h>        /* for exit */
+#include <unistd.h>        /* for fork, setsid, chdir, close, dup */
+#include <fcntl.h>         /* for open, O_RDWR */
+#include <signal.h>        /* for sigaction, sigemptyset, SIG_IGN, SIGHUP */
+#include <syslog.h>        /* for openlog, syslog, LOG_CONS, LOG_DAEMON, LOG_ERR */
+#include <sys/types.h>     /* for pid_t; needed for apue.h */
+#include <sys/stat.h>      /* for umask */
+#include <sys/resource.h>  /* for getrlimit, struct rlimit, RLIMIT_NOFILE, RLIM_INFINITY */
+
 #include "apue.h"
-#include <syslog.h>
-#include <fcntl.h>
-#include <sys/resource.h>
 
 void daemonize(const char *cmd) {
     int i, fd0, fd1, fd2;

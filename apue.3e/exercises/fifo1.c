@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for unlink */
+#include <fcntl.h>     /* for open, O_RDONLY, O_WRONLY, O_NONBLOCK */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/stat.h>  /* for mkfifo, FILE_MODE constants */
+
 #include "apue.h"
-#include <fcntl.h>
 
 #define FIFO "temp.fifo"
 

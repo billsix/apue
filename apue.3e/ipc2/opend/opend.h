@@ -1,6 +1,7 @@
-#include "apue2.h"
+#include <sys/types.h> /* for uid_t, needed for apue.h */
+#include <errno.h>     /* for errno */
+
 #include "apue.h"
-#include <errno.h>
 
 #define CS_OPEN "/tmp/opend.socket" /* well-known name */
 #define CL_OPEN "open"              /* client's request for server */

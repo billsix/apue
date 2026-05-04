@@ -1,7 +1,9 @@
-#include "apue2.h"
+#include <errno.h>     /* for errno */
+#include <limits.h>    /* for OPEN_MAX */
+#include <unistd.h>    /* for sysconf, _SC_OPEN_MAX */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <errno.h>
-#include <limits.h>
 
 #ifdef OPEN_MAX
 static long openmax = OPEN_MAX;

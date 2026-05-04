@@ -1,4 +1,8 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit, abort */
+#include <unistd.h>    /* for fork, sleep, execl, getpid */
+#include <signal.h>    /* for kill, SIGKILL */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
 
 int main(void) {

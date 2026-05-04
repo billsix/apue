@@ -1,11 +1,9 @@
-#include "apue2.h"
-#include "apue.h"
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
+#include <unistd.h>     /* for getpid */
+#include <fcntl.h>      /* for fcntl, F_SETOWN */
+#include <sys/socket.h> /* for socket-related constants */
+#include <sys/ioctl.h>  /* for ioctl, FIOASYNC */
 #if defined(BSD) || defined(MACOS) || defined(SOLARIS)
-#include <sys/filio.h>
+#include <sys/filio.h>  /* for FIOASYNC on BSD/MacOS/Solaris */
 #endif
 
 int setasync(int sockfd) {

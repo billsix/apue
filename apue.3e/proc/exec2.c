@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for fork, execl */
+#include <sys/types.h> /* for pid_t */
+#include <sys/wait.h>  /* for waitpid */
+
 #include "apue.h"
-#include <sys/wait.h>
 
 int main(void) {
     pid_t pid;

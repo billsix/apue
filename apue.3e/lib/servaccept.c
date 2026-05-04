@@ -1,9 +1,15 @@
-#include "apue2.h"
+#include <stddef.h>     /* for offsetof, NULL */
+#include <stdlib.h>     /* for malloc, free */
+#include <string.h>     /* for memcpy */
+#include <time.h>       /* for time, time_t */
+#include <errno.h>      /* for errno */
+#include <unistd.h>     /* for unlink, close */
+#include <sys/types.h>  /* for uid_t; needed for apue.h */
+#include <sys/stat.h>   /* for stat, struct stat, S_ISSOCK, S_IRWXG, S_IRWXO, S_IRWXU */
+#include <sys/socket.h> /* for accept, socklen_t, struct sockaddr */
+#include <sys/un.h>     /* for struct sockaddr_un */
+
 #include "apue.h"
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <time.h>
-#include <errno.h>
 
 #define STALE 30 /* client's name can't be older than this (sec) */
 

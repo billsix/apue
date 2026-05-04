@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf, setbuf, stdout */
+#include <stdlib.h>    /* for exit, system */
+#include <unistd.h>    /* for sysconf, _SC_CLK_TCK */
+#include <sys/times.h> /* for times, struct tms, clock_t */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <sys/times.h>
 
 static void pr_times(clock_t, struct tms *, struct tms *);
 static void do_cmd(char *);

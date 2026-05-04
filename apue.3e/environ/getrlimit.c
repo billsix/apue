@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stdio.h>        /* for printf, putchar */
+#include <stdlib.h>       /* for exit */
+#include <sys/types.h>    /* needed for apue.h */
+#include <sys/resource.h> /* for struct rlimit, getrlimit, RLIMIT_*, RLIM_INFINITY */
+
 #include "apue.h"
-#include <sys/resource.h>
 
 #define doit(name) pr_limits(#name, name)
 

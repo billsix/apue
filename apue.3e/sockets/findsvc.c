@@ -1,14 +1,12 @@
-#include "apue2.h"
+#include <stdio.h>      /* for printf */
+#include <stdlib.h>     /* for exit */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for AF_INET, AF_INET6, AF_UNIX, AF_UNSPEC, SOCK_STREAM, SOCK_DGRAM, SOCK_SEQPACKET, SOCK_RAW */
+#include <netinet/in.h> /* for struct sockaddr_in, IPPROTO_TCP, IPPROTO_UDP, IPPROTO_RAW */
+#include <arpa/inet.h>  /* for inet_ntop, ntohs, INET_ADDRSTRLEN */
+#include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo, AI_CANONNAME, AI_PASSIVE, AI_NUMERICHOST, AI_NUMERICSERV, AI_V4MAPPED, AI_ALL */
+
 #include "apue.h"
-#if defined(SOLARIS)
-#include <netinet/in.h>
-#endif
-#include <netdb.h>
-#include <arpa/inet.h>
-#if defined(BSD)
-#include <sys/socket.h>
-#include <netinet/in.h>
-#endif
 
 void print_family(struct addrinfo *aip) {
     printf(" family ");

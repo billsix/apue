@@ -1,6 +1,9 @@
-#include "apue2.h"
-#include "apue.h"
-#include <sys/wait.h>
+#include <stdio.h>    /* for printf, perror */
+#include <stdlib.h>   /* for exit */
+#include <unistd.h>   /* for fork, _exit, sleep, pause */
+#include <signal.h>   /* for signal, SIG_ERR, SIGCHLD */
+#include <sys/types.h> /* for pid_t */
+#include <sys/wait.h> /* for wait */
 
 #ifndef SIGCLD
 #define SIGCLD SIGCHLD

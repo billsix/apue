@@ -1,35 +1,36 @@
-* TODO [#1] Inline headers
-    - [-] replace include apue2.h with specific headers, and explanation
+* DONE [#1] Inline headers
+    - [X] replace include apue2.h with specific headers, and explanation
       - [X] advio
-      - [ ] daemons
-      - [ ] datafiles
-      - [ ] db
-      - [ ] environ
-      - [ ] exercises
-      - [ ] figlinks
-      - [ ] filedir
-      - [ ] fileio
-      - [ ] include
+      - [X] daemons
+      - [X] datafiles
+      - [X] db
+      - [X] environ
+      - [X] exercises
+      - [X] figlinks (all symlinks - nothing to convert)
+      - [X] filedir
+      - [X] fileio
+      - [X] include
       - [X] intro
-      - [ ] ipc1
-      - [ ] ipc2
-      - [ ] ipc2/open.fe
-      - [ ] ipc2/open
-      - [ ] ipc2/opend.fe
-      - [ ] ipc2/opend
-      - [ ] lib
-      - [ ] printer
-      - [ ] proc
-      - [ ] pty
-      - [ ] relation
-      - [ ] signals
-      - [ ] sockets
-      - [ ] standards
-      - [ ] stdio
-      - [ ] termios
-      - [ ] threadctl
-      - [ ] threads
-    - [ ] on every file, put  apue.h at end of includes
+      - [X] ipc1
+      - [X] ipc2
+      - [X] ipc2/open.fe
+      - [X] ipc2/open
+      - [X] ipc2/opend.fe
+      - [X] ipc2/opend
+      - [X] lib
+      - [X] printer
+      - [X] proc
+      - [X] pty
+      - [X] relation
+      - [X] signals
+      - [X] sockets
+      - [X] standards (incl. makeconf.awk / makeopt.awk codegen)
+      - [X] stdio
+      - [X] termios
+      - [X] threadctl
+      - [X] threads
+    - [X] on every file, put apue.h at end of includes
       - [ ] maybe clang format the include to sort them
-    - [ ] remove apue2.h
+    - [X] remove apue2.h
 * TODO [#2] Replace build system with meson or autotools or cmake
+  - See /apue/plans/02-meson-build.md for the plan.

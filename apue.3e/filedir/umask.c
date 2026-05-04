@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <fcntl.h>     /* for creat */
+#include <sys/types.h> /* needed for apue.h */
+#include <sys/stat.h>  /* for umask, S_IRUSR, S_IWUSR, S_IRGRP, S_IWGRP, S_IROTH, S_IWOTH */
+
 #include "apue.h"
-#include <fcntl.h>
 
 #define RWRWRW (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
 

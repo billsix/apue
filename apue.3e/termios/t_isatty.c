@@ -1,5 +1,6 @@
-#include "apue2.h"
-#include "apue.h"
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for isatty */
 
 int main(void) {
     printf("fd 0: %s\n", isatty(0) ? "tty" : "not a tty");

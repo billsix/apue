@@ -1,4 +1,6 @@
-#include "apue2.h"
+#include <unistd.h>    /* for read */
+#include <sys/types.h> /* for ssize_t, size_t; needed for apue.h */
+
 #include "apue.h"
 
 ssize_t /* Read "n" bytes from a descriptor  */

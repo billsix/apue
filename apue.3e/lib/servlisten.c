@@ -1,8 +1,12 @@
-#include "apue2.h"
+#include <stddef.h>     /* for offsetof */
+#include <string.h>     /* for memset, strcpy, strlen */
+#include <errno.h>      /* for errno, ENAMETOOLONG */
+#include <unistd.h>     /* for unlink, close */
+#include <sys/types.h>  /* needed for apue.h */
+#include <sys/socket.h> /* for socket, bind, listen, AF_UNIX, SOCK_STREAM, struct sockaddr */
+#include <sys/un.h>     /* for struct sockaddr_un */
+
 #include "apue.h"
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <errno.h>
 
 #define QLEN 10
 

@@ -1,7 +1,7 @@
-#include <string.h>
-#include <errno.h>
-#include <pthread.h>
-#include <stdlib.h>
+#include <stddef.h>  /* for NULL */
+#include <string.h>  /* for strlen, strncmp, strcpy */
+#include <errno.h>   /* for ENOSPC, ENOENT */
+#include <pthread.h> /* for pthread_mutex_init, pthread_mutex_lock, pthread_mutex_unlock, pthread_mutexattr_init, pthread_mutexattr_settype, pthread_mutexattr_destroy, pthread_once, pthread_mutex_t, pthread_mutexattr_t, pthread_once_t, PTHREAD_ONCE_INIT, PTHREAD_MUTEX_RECURSIVE */
 
 extern char **environ;
 

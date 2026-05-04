@@ -1,10 +1,15 @@
-#include "apue2.h"
-#include "apue.h"
-#include <errno.h>
-#include <fcntl.h>
+#include <stddef.h>    /* for NULL */
+#include <string.h>    /* for strncpy */
+#include <errno.h>     /* for errno */
+#include <fcntl.h>     /* for open, posix_openpt, O_RDWR */
+#include <stdlib.h>    /* for grantpt, unlockpt, ptsname */
+#include <unistd.h>    /* for close */
+#include <sys/types.h> /* needed for apue.h */
 #if defined(SOLARIS)
-#include <stropts.h>
+#include <stropts.h>   /* for ioctl, I_FIND, I_PUSH (Solaris STREAMS) */
 #endif
+
+#include "apue.h"
 
 int ptym_open(char *pts_name, int pts_namesz) {
     char *ptr;

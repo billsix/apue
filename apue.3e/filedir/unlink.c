@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for unlink, sleep */
+#include <fcntl.h>     /* for open, O_RDWR */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <fcntl.h>
 
 int main(void) {
     if (open("tempfile", O_RDWR) < 0) {

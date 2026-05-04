@@ -1,4 +1,7 @@
-#include "apue2.h"
+#include <stdio.h>     /* for FILE, fputs, getchar, fopen, getc, printf, EOF, stdin, stdout, stderr */
+#include <stdlib.h>    /* for exit */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
 
 void pr_stdio(const char *, FILE *);

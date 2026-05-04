@@ -1,4 +1,7 @@
-#include "apue2.h"
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for pipe, fork, close, read, write, STDOUT_FILENO */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
 
 int main(void) {

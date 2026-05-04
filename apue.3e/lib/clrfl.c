@@ -1,6 +1,7 @@
-#include "apue2.h"
+#include <fcntl.h>     /* for fcntl, F_GETFL, F_SETFL */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <fcntl.h>
 
 void clr_fl(int fd, int flags)
 /* flags are the file status flags to turn off */

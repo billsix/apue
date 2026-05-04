@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h> /* for FILE, fopen, setvbuf, BUFSIZ, _IOLBF */
 
 FILE *open_data(void) {
     FILE *fp;

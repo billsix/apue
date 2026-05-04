@@ -1,6 +1,9 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <pthread.h>   /* for pthread_create, pthread_join, pthread_exit, pthread_cleanup_push, pthread_cleanup_pop, pthread_t */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <pthread.h>
 
 void cleanup(void *arg) { printf("cleanup: %s\n", (char *)arg); }
 

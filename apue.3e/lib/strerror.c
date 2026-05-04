@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h> /* for sprintf */
 
 #ifndef LINUX
 extern char *sys_errlist[];

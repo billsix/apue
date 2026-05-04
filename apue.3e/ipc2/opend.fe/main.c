@@ -1,3 +1,6 @@
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for read, STDIN_FILENO, STDOUT_FILENO */
+
 #include "opend.h"
 
 char errmsg[MAXLINE];

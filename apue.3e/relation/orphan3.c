@@ -1,6 +1,11 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf, fflush, stdout */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for getpid, getppid, getpgrp, tcgetpgrp, fork, sleep, read, STDIN_FILENO */
+#include <errno.h>     /* for errno */
+#include <signal.h>    /* for signal, kill, SIGHUP, SIGTSTP */
+#include <sys/types.h> /* for pid_t */
+
 #include "apue.h"
-#include <errno.h>
 
 static void sig_hup(int signo) {
     printf("SIGHUP received, pid = %ld\n", (long)getpid());

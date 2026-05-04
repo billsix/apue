@@ -27,11 +27,12 @@
  * functions.
  */
 
-#include "apue2.h"
+#include <errno.h>     /* for errno, EINVAL */
+#include <sys/types.h> /* for key_t; needed for apue.h */
+#include <sys/ipc.h>   /* for IPC_PRIVATE, IPC_CREAT, IPC_RMID */
+#include <sys/sem.h>   /* for semget, semop, semctl, struct sembuf, struct semid_ds, SEM_UNDO, SETVAL, GETVAL */
+
 #include "apue.h"
-#include <sys/ipc.h>
-#include <sys/sem.h>
-#include <errno.h>
 
 void sem_op(int, int);
 int sem_create(key_t, int);

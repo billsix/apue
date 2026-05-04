@@ -1,6 +1,10 @@
-#include "apue2.h"
+#include <stdio.h>     /* for printf */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for STDIN_FILENO */
+#include <termios.h>   /* for struct termios, tcgetattr, tcsetattr, TCSANOW, CSIZE, CS5, CS6, CS7, CS8 */
+#include <sys/types.h> /* needed for apue.h */
+
 #include "apue.h"
-#include <termios.h>
 
 int main(void) {
     struct termios term;
