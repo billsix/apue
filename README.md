@@ -30,7 +30,7 @@ container starts with ptrace capability and ASLR disabled.
 | `apue.3e/` | The textbook example tree (chapters + `lib/libapue.a` + `include/apue.h`) |
 | `musl/` | Vendored musl, built debuggable into the image |
 | `entrypoint/` | Container shell + dotfiles |
-| `plans/` | Design notes for the modernization |
+| `tasks/` | Active work; `tasks/archive/<YYYY>/<MM>/<DD>/` holds completed work, including the modernization design notes |
 
 `make help` lists the targets.
 

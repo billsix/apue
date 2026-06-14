@@ -13,10 +13,11 @@ environment for UNIX systems programming.
   in `apue.3e/build/`.
 - **Toolchains:** Linux via **musl-clang** (built from source in the image,
   selected through `native-linux.ini`); macOS via system clang. FreeBSD/Solaris
-  were dropped — see `plans/02-meson-build.md`.
+  were dropped — see `tasks/archive/2026/05/04/02-meson-build.md`.
 - **Header inlining done:** each `.c` now `#include`s exactly the system headers
   it uses (with `/* for … */` comments) instead of the old grab-bag `apue2.h`;
-  `apue.h` is last in the include list. See `plans/01-header-inlining.md`.
+  `apue.h` is last in the include list. See
+  `tasks/archive/2026/05/04/01-header-inlining.md`.
 
 ## Layout
 
@@ -30,8 +31,10 @@ environment for UNIX systems programming.
 - `entrypoint/` — `shell.sh` (cd `/apue`, exec bash) and `dotfiles/`
   (`.extrabashrc` puts musl-clang on `PATH`; `.lldbinit` disables ASLR + shows
   breakpoint context).
-- `plans/` — design docs (`01-header-inlining.md`, `02-meson-build.md`,
-  `03-musl-clang-warnings.md`), all **done**.
+- `tasks/` — in-flight work; `tasks/archive/<YYYY>/<MM>/<DD>/` holds completed
+  work, including the now-finished modernization design docs
+  (`2026/05/04/01-header-inlining.md`, `02-meson-build.md`,
+  `03-musl-clang-warnings.md`).
 - `Dockerfile`, `Makefile`, `TODO.org`.
 
 ## Build / container workflow
@@ -58,12 +61,14 @@ programs need a TTY/stdin and aren't auto-tested.
 ## Conventions
 
 - Clang-format: Google style, 80 cols, pointer-right, **`SortIncludes: Never`**
-  (include order is curated — see `plans/01`).
+  (include order is curated — see
+  `tasks/archive/2026/05/04/01-header-inlining.md`).
 - Match the textbook's style; this is reference code for learners. Keep each
   file's includes explicit and commented.
 
-## Tasks (in-flight)
+## Tasks
 
-Per the global convention, short-lived work goes in `tasks/`. The completed
-design docs live in `plans/` (header inlining, Meson port, musl-clang warning
-suppression — all done).
+Per the global convention, active work goes in `tasks/`; completed work is moved
+to `tasks/archive/<YYYY>/<MM>/<DD>/`. The modernization design docs (header
+inlining, Meson port, musl-clang warning suppression — all done) live under
+`tasks/archive/2026/05/04/`.
