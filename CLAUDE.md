@@ -41,8 +41,9 @@ environment for UNIX systems programming.
 
 Fedora-44 + podman, the usual family template. `make` targets:
 
+- `make help` *(default)* — list the documented targets.
 - `make image` — build the image (`apue`); compiles musl-clang from source.
-- `make shell` *(default)* — ephemeral container, mounts `apue.3e/`, drops to bash.
+- `make shell` — ephemeral container, mounts `apue.3e/`, drops to bash.
   Adds `--cap-add=SYS_ADMIN --security-opt seccomp=unconfined` so lldb/gdb can ptrace.
 - `make build` — inside the container: `meson setup build --native-file
   native-linux.ini && meson compile -C build && meson test -C build`.
