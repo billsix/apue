@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := shell
+.DEFAULT_GOAL := help
 
 TMUX_FILE := $(HOME)/.tmux.conf
 TMUX_REAL_PATH := $(shell readlink -f $(TMUX_FILE))
