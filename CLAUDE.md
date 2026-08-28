@@ -72,3 +72,8 @@ Per the global convention, active work goes in `tasks/`; completed work is moved
 to `tasks/archive/<YYYY>/<MM>/<DD>/`. The modernization design docs (header
 inlining, Meson port, musl-clang warning suppression — all done) live under
 `tasks/archive/2026/05/04/`.
+
+**Reference docs:** `tasks/reference/build-toolchain-musl-clang.md` (added 2026-08-27) —
+how the examples build through the two-stage musl-clang wrapper + the meson native file;
+read it before touching the build (it explains why the sanitizer gate needs a separate
+glibc-clang config).
