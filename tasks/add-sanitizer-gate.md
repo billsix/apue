@@ -2,6 +2,10 @@
 
 **Status:** proposed — needs go-ahead
 **Created:** 2026-06-16
+**See:** `tasks/reference/build-toolchain-musl-clang.md` (added 2026-08-27) — explains *why* the gate
+can't run through the musl-clang native file (the link wrapper links only musl `-lc` with `-nostdlib`,
+so Fedora's glibc-built ASan/UBSan `compiler-rt` can't link/load), grounding the "run under a separate
+stock-clang + glibc meson config" resolution.
 
 ## Goal
 
