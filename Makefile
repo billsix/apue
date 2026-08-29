@@ -7,6 +7,15 @@ TMUX_MOUNT := $(shell if [ -f $(TMUX_REAL_PATH) ]; then echo "-v $(TMUX_REAL_PAT
 
 CONTAINER_CMD = podman
 CONTAINER_NAME = apue
+
+# Extra flags for every container `run`. Auto-set when running nested inside a
+# runClaudeInContainer/runCrushInContainer sandbox (which exports NESTED_PODMAN=1,
+# making --cgroups=disabled apply so podman-in-podman works); empty — and
+# byte-identical behavior — on a normal host. Overridable:
+#   make shell PODMAN_RUN_FLAGS='--cgroups=disabled --network=host'
+# On `run` lines only, never `build` (podman build rejects --cgroups). Convention:
+# runClaudeInContainer tasks/reference/nested-podman-design.md.
+PODMAN_RUN_FLAGS ?= $(if $(filter 1,$(NESTED_PODMAN)),--cgroups=disabled)
 FILES_TO_MOUNT = -v $(shell pwd)/apue.3e:/apue/apue.3e:Z \
                  -v ./entrypoint/shell.sh:/usr/local/bin/shell.sh:Z \
                  -v ./entrypoint/dotfiles/.extrabashrc:/root/.extrabashrc:Z \
@@ -57,18 +66,18 @@ SHELL_EXEC_ARGS = -c 'cd $(REPO_MOUNT) && $(if $(CMD),$(CMD),exec bash $(SCRIPT)
 
 .PHONY: shell
 shell: image  ## Get Shell into a ephermeral container made from the image
-	$(CONTAINER_CMD) run -it --rm $(SHELL_RUN_FLAGS) $(CONTAINER_NAME) /usr/local/bin/shell.sh
+	$(CONTAINER_CMD) run $(PODMAN_RUN_FLAGS) -it --rm $(SHELL_RUN_FLAGS) $(CONTAINER_NAME) /usr/local/bin/shell.sh
 
 .PHONY: shell-exec
 shell-exec: image ## Run a script/command in the container env (no TTY): make shell-exec SCRIPT=path | CMD='...'
 	@[ -n "$(SCRIPT)$(CMD)" ] || { echo 'usage: make shell-exec SCRIPT=<mounted path> | CMD="..."'; exit 2; }
-	$(CONTAINER_CMD) run --rm $(SHELL_RUN_FLAGS) $(CONTAINER_NAME) /usr/local/bin/shell.sh $(SHELL_EXEC_ARGS)
+	$(CONTAINER_CMD) run $(PODMAN_RUN_FLAGS) --rm $(SHELL_RUN_FLAGS) $(CONTAINER_NAME) /usr/local/bin/shell.sh $(SHELL_EXEC_ARGS)
 
 
 
 .PHONY: format
 format: image ## Format the C code
-	$(CONTAINER_CMD) run -it --rm \
+	$(CONTAINER_CMD) run $(PODMAN_RUN_FLAGS) -it --rm \
 		--entrypoint /bin/bash \
 		$(FILES_TO_MOUNT) \
 		$(X_FLAGS_FOR_CONTAINER) \
@@ -78,7 +87,7 @@ format: image ## Format the C code
 
 .PHONY: build
 build: image ## Configure + compile + test the meson build inside the container
-	$(CONTAINER_CMD) run -it --rm \
+	$(CONTAINER_CMD) run $(PODMAN_RUN_FLAGS) -it --rm \
 		--entrypoint /bin/bash \
 		$(FILES_TO_MOUNT) \
 		$(CONTAINER_NAME) \
