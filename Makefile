@@ -15,7 +15,7 @@ FILES_TO_MOUNT = -v $(shell pwd)/apue.3e:/apue/apue.3e:Z \
 
 
 
-USE_X = -e DISPLAY=$(DISPLAY) \
+X_FLAGS_FOR_CONTAINER = -e DISPLAY=$(DISPLAY) \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \
 	--security-opt label=type:container_runtime_t
 WAYLAND_FLAGS_FOR_CONTAINER = -e "WAYLAND_DISPLAY=${WAYLAND_DISPLAY}" \
@@ -44,7 +44,7 @@ image: ## Build podman image to run the examples
 SHELL_RUN_FLAGS = \
 		--entrypoint /bin/bash \
 		$(FILES_TO_MOUNT) \
-		$(USE_X) \
+		$(X_FLAGS_FOR_CONTAINER) \
 		$(WAYLAND_FLAGS_FOR_CONTAINER) \
 		$(ALLOW_LLDB)
 
@@ -71,7 +71,7 @@ format: image ## Format the C code
 	$(CONTAINER_CMD) run -it --rm \
 		--entrypoint /bin/bash \
 		$(FILES_TO_MOUNT) \
-		$(USE_X) \
+		$(X_FLAGS_FOR_CONTAINER) \
 		$(CONTAINER_NAME) \
 		/usr/local/bin/format.sh
 

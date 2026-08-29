@@ -28,7 +28,7 @@ environment for UNIX systems programming.
   `native-macos.ini` are the Meson native files.
 - `musl/` — vendored musl + its own Make; built into the image with `clang -g -O0`
   and installed to `/apue/musl/bldInstall` (a debuggable libc).
-- `entrypoint/` — `shell.sh` (cd `/apue`, exec bash) and `dotfiles/`
+- `entrypoint/` — `shell.sh` (`set -e`, cd `/apue`, `exec bash "$@"` — powers `make shell` and its batch twin `make shell-exec`) and `dotfiles/`
   (`.extrabashrc` puts musl-clang on `PATH`; `.lldbinit` disables ASLR + shows
   breakpoint context).
 - `tasks/` — in-flight work; `tasks/archive/<YYYY>/<MM>/<DD>/` holds completed
