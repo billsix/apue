@@ -1,12 +1,12 @@
 # Review the example code for idiosyncrasies (main signatures, unused argc, etc.)
 
-**Status:** blocked
-**Priority:** 6
+**Status:** SUPERSEDED (2026-10-15) by `tasks/modernize-to-modern-c.md`
+**Priority:** 9
 **Difficulty:** 4
 **Started:** 2026-08-27 (William Emerison Six <billsix@gmail.com>)
-**Blocked on:** maintainer answers the Open questions below (scope: whole tree vs quirk-class sweep; and
-intent: normalize vs catalog, given this is textbook-faithful Stevens code).
-**Recheck:** the Open questions below are answered (maintainer-gated; `/recheck-blocked` surfaces it).
+**Superseded:** 2026-10-15 — the maintainer's modern-C decisions (c23, tree-wide rewrite, whole tree)
+resolve this task's scope/intent blocker. The `main`-signature and unused-`argc` work is now Tier B of
+`tasks/modernize-to-modern-c.md`. Archive this doc when that task's step-task umbrella is scaffolded.
 
 ## Goal
 
