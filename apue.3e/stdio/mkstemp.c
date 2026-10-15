@@ -1,14 +1,14 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit, mkstemp */
-#include <unistd.h>    /* for close, unlink */
-#include <errno.h>     /* for errno, ENOENT */
-#include <sys/stat.h>  /* for struct stat, stat */
+#include <stdio.h>    /* for printf */
+#include <stdlib.h>   /* for exit, mkstemp */
+#include <unistd.h>   /* for close, unlink */
+#include <errno.h>    /* for errno, ENOENT */
+#include <sys/stat.h> /* for struct stat, stat */
 
 #include "apue.h"
 
 void make_temp(char *template);
 
-int main() {
+int main(void) {
     char good_template[] = "/tmp/dirXXXXXX"; /* right way */
     char *bad_template = "/tmp/dirXXXXXX";   /* wrong way*/
 
@@ -20,14 +20,13 @@ int main() {
 }
 
 void make_temp(char *template) {
-    int fd;
-    struct stat sbuf;
-
-    if ((fd = mkstemp(template)) < 0) {
+    const int fd = mkstemp(template);
+    if (fd < 0) {
         err_sys("can't create temp file");
     }
     printf("temp name = %s\n", template);
     close(fd);
+    struct stat sbuf;
     if (stat(template, &sbuf) < 0) {
         if (errno == ENOENT) {
             printf("file doesn't exist\n");

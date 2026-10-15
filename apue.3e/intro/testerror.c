@@ -1,11 +1,11 @@
-#include <stdio.h>     /* for perror, fprintf, stderr */
-#include <stdlib.h>    /* for exit */
-#include <string.h>    /* for strerror */
-#include <errno.h>     /* for errno, EACCES, ENOENT */
+#include <stdio.h>  /* for perror, fprintf, stderr */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for strerror */
+#include <errno.h>  /* for errno, EACCES, ENOENT */
 
 #include "apue.h"
 
-int main(int argc, char *argv[]) {
+int main([[maybe_unused]] int argc, char *argv[]) {
     fprintf(stderr, "EACCES: %s\n", strerror(EACCES));
     errno = ENOENT;
     perror(argv[0]);

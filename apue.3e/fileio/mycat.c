@@ -1,5 +1,5 @@
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for read, write, STDIN_FILENO, STDOUT_FILENO */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for read, write, STDIN_FILENO, STDOUT_FILENO */
 
 #include "apue.h"
 

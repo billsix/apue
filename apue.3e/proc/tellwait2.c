@@ -5,14 +5,13 @@
 
 #include "apue.h"
 
-static void charatatime(char *);
+static void charatatime(const char *);
 
 int main(void) {
-    pid_t pid;
-
     TELL_WAIT();
 
-    if ((pid = fork()) < 0) {
+    const pid_t pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) {
         WAIT_PARENT(); /* parent goes first */
@@ -24,12 +23,11 @@ int main(void) {
     exit(0);
 }
 
-static void charatatime(char *str) {
-    char *ptr;
+static void charatatime(const char *str) {
     int c;
 
-    setbuf(stdout, NULL); /* set unbuffered */
-    for (ptr = str; (c = *ptr++) != 0;) {
+    setbuf(stdout, nullptr); /* set unbuffered */
+    for (const char *ptr = str; (c = *ptr++) != 0;) {
         putc(c, stdout);
     }
 }

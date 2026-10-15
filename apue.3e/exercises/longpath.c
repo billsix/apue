@@ -1,9 +1,9 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for realloc, exit */
-#include <string.h>    /* for strlen */
-#include <unistd.h>    /* for chdir, getcwd */
-#include <fcntl.h>     /* for creat */
-#include <sys/stat.h>  /* for mkdir, FILE_MODE/DIR_MODE constants */
+#include <stdio.h>    /* for printf */
+#include <stdlib.h>   /* for realloc, exit */
+#include <string.h>   /* for strlen */
+#include <unistd.h>   /* for chdir, getcwd */
+#include <fcntl.h>    /* for creat */
+#include <sys/stat.h> /* for mkdir, FILE_MODE/DIR_MODE constants */
 
 #include "apue.h"
 
@@ -13,15 +13,11 @@
 #define MAXSZ (10 * 8192)
 
 int main(void) {
-    int i;
-    size_t size;
-    char *path;
-
     if (chdir(STARTDIR) < 0) {
         err_sys("chdir error");
     }
 
-    for (i = 0; i < DEPTH; i++) {
+    for (int i = 0; i < DEPTH; i++) {
         if (mkdir(NAME, DIR_MODE) < 0) {
             err_sys("mkdir failed, i = %d", i);
         }
@@ -38,9 +34,10 @@ int main(void) {
      * The deep directory is created, with a file at the leaf.
      * Now let's try to obtain its pathname.
      */
-    path = path_alloc(&size);
+    size_t size;
+    char *path = path_alloc(&size);
     for (;;) {
-        if (getcwd(path, size) != NULL) {
+        if (getcwd(path, size) != nullptr) {
             break;
         } else {
             err_ret("getcwd failed, size = %ld", (long)size);
@@ -48,7 +45,7 @@ int main(void) {
             if (size > MAXSZ) {
                 err_quit("giving up");
             }
-            if ((path = realloc(path, size)) == NULL) {
+            if ((path = realloc(path, size)) == nullptr) {
                 err_sys("realloc error");
             }
         }

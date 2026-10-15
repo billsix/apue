@@ -1,12 +1,12 @@
 # Review the example code for idiosyncrasies (main signatures, unused argc, etc.)
 
-**Status:** SUPERSEDED (2026-10-15) by `tasks/modernize-to-modern-c.md`
+**Status:** SUPERSEDED (2026-10-15) by `tasks/archive/2026/10/16/modernize-to-modern-c.md`
 **Priority:** 9
 **Difficulty:** 4
 **Started:** 2026-08-27 (William Emerison Six <billsix@gmail.com>)
 **Superseded:** 2026-10-15 — the maintainer's modern-C decisions (c23, tree-wide rewrite, whole tree)
 resolve this task's scope/intent blocker. The `main`-signature and unused-`argc` work is now Tier B of
-`tasks/modernize-to-modern-c.md`. Archive this doc when that task's step-task umbrella is scaffolded.
+`tasks/archive/2026/10/16/modernize-to-modern-c.md`. Archive this doc when that task's step-task umbrella is scaffolded.
 
 ## Goal
 

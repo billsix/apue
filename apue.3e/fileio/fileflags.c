@@ -1,17 +1,16 @@
-#include <stdio.h>     /* for printf, putchar */
-#include <stdlib.h>    /* for exit, atoi */
-#include <fcntl.h>     /* for fcntl, F_GETFL, O_ACCMODE, O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_NONBLOCK, O_SYNC, O_FSYNC */
+#include <stdio.h>  /* for printf, putchar */
+#include <stdlib.h> /* for exit, atoi */
+#include <fcntl.h> /* for fcntl, F_GETFL, O_ACCMODE, O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_NONBLOCK, O_SYNC, O_FSYNC */
 
 #include "apue.h"
 
 int main(int argc, char *argv[]) {
-    int val;
-
     if (argc != 2) {
         err_quit("usage: a.out <descriptor#>");
     }
 
-    if ((val = fcntl(atoi(argv[1]), F_GETFL, 0)) < 0) {
+    const int val = fcntl(atoi(argv[1]), F_GETFL, 0);
+    if (val < 0) {
         err_sys("fcntl error for fd %d", atoi(argv[1]));
     }
 

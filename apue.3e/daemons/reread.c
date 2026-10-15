@@ -1,8 +1,8 @@
-#include <stdlib.h>     /* for exit */
-#include <string.h>     /* for strrchr */
-#include <signal.h>     /* for sigaction, sigemptyset, sigfillset, sigwait, sigset_t, SIG_DFL, SIGHUP, SIGTERM */
-#include <syslog.h>     /* for syslog, LOG_ERR, LOG_INFO */
-#include <pthread.h>    /* for pthread_t, pthread_create, pthread_sigmask, SIG_BLOCK */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for strrchr */
+#include <signal.h> /* for sigaction, sigemptyset, sigfillset, sigwait, sigset_t, SIG_DFL, SIGHUP, SIGTERM */
+#include <syslog.h> /* for syslog, LOG_ERR, LOG_INFO */
+#include <pthread.h> /* for pthread_t, pthread_create, pthread_sigmask, SIG_BLOCK */
 
 #include "apue.h"
 
@@ -12,11 +12,10 @@ extern int already_running(void);
 
 void reread(void) { /* ... */ }
 
-void *thr_fn(void *arg) {
-    int err, signo;
-
+void *thr_fn([[maybe_unused]] void *arg) {
     for (;;) {
-        err = sigwait(&mask, &signo);
+        int signo;
+        const int err = sigwait(&mask, &signo);
         if (err != 0) {
             syslog(LOG_ERR, "sigwait failed");
             exit(1);
@@ -36,16 +35,12 @@ void *thr_fn(void *arg) {
                 syslog(LOG_INFO, "unexpected signal %d\n", signo);
         }
     }
-    return (0);
+    return (nullptr);
 }
 
-int main(int argc, char *argv[]) {
-    int err;
-    pthread_t tid;
-    char *cmd;
-    struct sigaction sa;
-
-    if ((cmd = strrchr(argv[0], '/')) == NULL) {
+int main([[maybe_unused]] int argc, char *argv[]) {
+    char *cmd = strrchr(argv[0], '/');
+    if (cmd == nullptr) {
         cmd = argv[0];
     } else {
         cmd++;
@@ -67,21 +62,24 @@ int main(int argc, char *argv[]) {
     /*
      * Restore SIGHUP default and block all signals.
      */
+    struct sigaction sa;
     sa.sa_handler = SIG_DFL;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
-    if (sigaction(SIGHUP, &sa, NULL) < 0) {
+    if (sigaction(SIGHUP, &sa, nullptr) < 0) {
         err_quit("%s: can't restore SIGHUP default");
     }
     sigfillset(&mask);
-    if ((err = pthread_sigmask(SIG_BLOCK, &mask, NULL)) != 0) {
+    int err = pthread_sigmask(SIG_BLOCK, &mask, nullptr);
+    if (err != 0) {
         err_exit(err, "SIG_BLOCK error");
     }
 
     /*
      * Create a thread to handle SIGHUP and SIGTERM.
      */
-    err = pthread_create(&tid, NULL, thr_fn, 0);
+    pthread_t tid;
+    err = pthread_create(&tid, nullptr, thr_fn, nullptr);
     if (err != 0) {
         err_exit(err, "can't create thread");
     }

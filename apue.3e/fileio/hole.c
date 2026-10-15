@@ -1,17 +1,16 @@
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for write, lseek */
-#include <fcntl.h>     /* for creat */
-#include <sys/stat.h>  /* for S_I* constants used by FILE_MODE */
+#include <stdlib.h>   /* for exit */
+#include <unistd.h>   /* for write, lseek */
+#include <fcntl.h>    /* for creat */
+#include <sys/stat.h> /* for S_I* constants used by FILE_MODE */
 
 #include "apue.h"
 
-char buf1[] = "abcdefghij";
-char buf2[] = "ABCDEFGHIJ";
+const char buf1[] = "abcdefghij";
+const char buf2[] = "ABCDEFGHIJ";
 
 int main(void) {
-    int fd;
-
-    if ((fd = creat("file.hole", FILE_MODE)) < 0) {
+    const int fd = creat("file.hole", FILE_MODE);
+    if (fd < 0) {
         err_sys("creat error");
     }
 

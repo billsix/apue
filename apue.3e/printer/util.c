@@ -23,18 +23,16 @@
  */
 int getaddrlist(const char *host, const char *service,
                 struct addrinfo **ailistpp) {
-    int err;
     struct addrinfo hint;
-
     hint.ai_flags = AI_CANONNAME;
     hint.ai_family = AF_INET;
     hint.ai_socktype = SOCK_STREAM;
     hint.ai_protocol = 0;
     hint.ai_addrlen = 0;
-    hint.ai_canonname = NULL;
-    hint.ai_addr = NULL;
-    hint.ai_next = NULL;
-    err = getaddrinfo(host, service, &hint, ailistpp);
+    hint.ai_canonname = nullptr;
+    hint.ai_addr = nullptr;
+    hint.ai_next = nullptr;
+    const int err = getaddrinfo(host, service, &hint, ailistpp);
     return (err);
 }
 
@@ -44,30 +42,31 @@ int getaddrlist(const char *host, const char *service,
  *
  * LOCKING: none.
  */
-static char *scan_configfile(char *keyword) {
-    int n, match;
-    FILE *fp;
-    char keybuf[MAXKWLEN], pattern[MAXFMTLEN];
+static char *scan_configfile(const char *keyword) {
+    char keybuf[MAXKWLEN];
+    char pattern[MAXFMTLEN];
     char line[MAXCFGLINE];
     static char valbuf[MAXCFGLINE];
 
-    if ((fp = fopen(CONFIG_FILE, "r")) == NULL) {
+    FILE *fp = fopen(CONFIG_FILE, "r");
+    if (fp == nullptr) {
         log_sys("can't open %s", CONFIG_FILE);
     }
-    sprintf(pattern, "%%%ds %%%ds", MAXKWLEN - 1, MAXCFGLINE - 1);
-    match = 0;
-    while (fgets(line, MAXCFGLINE, fp) != NULL) {
-        n = sscanf(line, pattern, keybuf, valbuf);
+    snprintf(pattern, sizeof(pattern), "%%%ds %%%ds", MAXKWLEN - 1,
+             MAXCFGLINE - 1);
+    bool match = false;
+    while (fgets(line, MAXCFGLINE, fp) != nullptr) {
+        int n = sscanf(line, pattern, keybuf, valbuf);
         if (n == 2 && strcmp(keyword, keybuf) == 0) {
-            match = 1;
+            match = true;
             break;
         }
     }
     fclose(fp);
-    if (match != 0) {
+    if (match) {
         return (valbuf);
     } else {
-        return (NULL);
+        return (nullptr);
     }
 }
 
@@ -84,19 +83,18 @@ char *get_printserver(void) { return (scan_configfile("printserver")); }
  * LOCKING: none.
  */
 struct addrinfo *get_printaddr(void) {
-    int err;
-    char *p;
-    struct addrinfo *ailist;
-
-    if ((p = scan_configfile("printer")) != NULL) {
-        if ((err = getaddrlist(p, "ipp", &ailist)) != 0) {
+    const char *p = scan_configfile("printer");
+    if (p != nullptr) {
+        struct addrinfo *ailist;
+        const int err = getaddrlist(p, "ipp", &ailist);
+        if (err != 0) {
             log_msg("no address information for %s", p);
-            return (NULL);
+            return (nullptr);
         }
         return (ailist);
     }
     log_msg("no printer address specified");
-    return (NULL);
+    return (nullptr);
 }
 
 /*
@@ -107,15 +105,13 @@ struct addrinfo *get_printaddr(void) {
  * LOCKING: none.
  */
 ssize_t tread(int fd, void *buf, size_t nbytes, unsigned int timout) {
-    int nfds;
     fd_set readfds;
     struct timeval tv;
-
     tv.tv_sec = timout;
     tv.tv_usec = 0;
     FD_ZERO(&readfds);
     FD_SET(fd, &readfds);
-    nfds = select(fd + 1, &readfds, NULL, NULL, &tv);
+    const int nfds = select(fd + 1, &readfds, nullptr, nullptr, &tv);
     if (nfds <= 0) {
         if (nfds == 0) {
             errno = ETIME;
@@ -133,12 +129,10 @@ ssize_t tread(int fd, void *buf, size_t nbytes, unsigned int timout) {
  * LOCKING: none.
  */
 ssize_t treadn(int fd, void *buf, size_t nbytes, unsigned int timout) {
-    size_t nleft;
-    ssize_t nread;
-
-    nleft = nbytes;
+    size_t nleft = nbytes;
     while (nleft > 0) {
-        if ((nread = tread(fd, buf, nleft, timout)) < 0) {
+        ssize_t nread = tread(fd, buf, nleft, timout);
+        if (nread < 0) {
             if (nleft == nbytes) {
                 return (-1); /* error, return -1 */
             } else {

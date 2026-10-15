@@ -4,14 +4,13 @@
 
 int system(const char *cmdstring) /* version without signal handling */
 {
-    pid_t pid;
-    int status;
-
-    if (cmdstring == NULL) {
+    if (cmdstring == nullptr) {
         return (1); /* always a command processor with UNIX */
     }
 
-    if ((pid = fork()) < 0) {
+    int status;
+    const pid_t pid = fork();
+    if (pid < 0) {
         status = -1;       /* probably out of processes */
     } else if (pid == 0) { /* child */
         execl("/bin/sh", "sh", "-c", cmdstring, (char *)0);

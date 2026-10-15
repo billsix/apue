@@ -1,5 +1,5 @@
-#include <stdlib.h>    /* for exit */
-#include <sys/stat.h>  /* for struct stat, stat, chmod, S_IXGRP, S_ISGID, S_IRUSR, S_IWUSR, S_IRGRP, S_IROTH */
+#include <stdlib.h>   /* for exit */
+#include <sys/stat.h> /* for struct stat, stat, chmod, S_IXGRP, S_ISGID, S_IRUSR, S_IWUSR, S_IRGRP, S_IROTH */
 
 #include "apue.h"
 

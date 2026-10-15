@@ -3,12 +3,18 @@
 A modernized build of the example code from *Advanced Programming in the UNIX
 Environment, 3rd edition* (W. Richard Stevens & Stephen A. Rago). The ~220
 example programs from apuebook.com live under `apue.3e/`; this fork re-tooled
-them for a clean, debuggable, containerized build. It's a teaching / reference
-environment for UNIX systems programming.
+them for a clean, debuggable, containerized build and **modernized the
+sources to modern C (C23)** (`tasks/archive/2026/10/16/modernize-to-modern-c.md`). It's a teaching /
+reference environment for UNIX systems programming — modern-C reference, no
+longer a byte-faithful transcription of the book.
 
 ## Status
 
-- **Language/standard:** C (`-std=c99`), the textbook's `apue.h` conventions kept.
+- **Language/standard:** C (`-std=c23`). The examples have been **modernized to modern C** per
+  `~/.claude/reference/c-coding-standard.md` (declare-at-use, `const`, `bool`, `nullptr`, `snprintf`,
+  designated initializers, `size_t` indices) — see `tasks/archive/2026/10/16/modernize-to-modern-c.md`. The tree compiles
+  **warning-clean** at `warning_level=2` + the extra flags. The curated `apue.h` surface is kept;
+  textbook *source* fidelity is no longer a goal (the behavior is preserved).
 - **Build:** Meson + Ninja (the original recursive Make was replaced). Out-of-tree,
   in `apue.3e/build/`.
 - **Toolchains:** Linux via **musl-clang** (built from source in the image,
@@ -64,8 +70,16 @@ programs need a TTY/stdin and aren't auto-tested.
 - Clang-format: Google style, 80 cols, pointer-right, **`SortIncludes: Never`**
   (include order is curated — see
   `tasks/archive/2026/05/04/01-header-inlining.md`).
-- Match the textbook's style; this is reference code for learners. Keep each
-  file's includes explicit and commented.
+- **Modernize to modern C (C23)**, not textbook-faithful transcription: apply the shared standard
+  `~/.claude/reference/c-coding-standard.md` (fixed-width types where width matters, `const`,
+  `nullptr`, `bool`, `[[maybe_unused]]`, declare-at-first-use, `snprintf` over `strcpy`/`strcat`,
+  designated initializers). **Preserve each program's runtime behavior** — the wired `meson test`
+  cases and a green compile are the oracle. Keep each file's includes explicit and commented.
+- Lint: `apue.3e/.clang-tidy` (scoped to the tree; `musl/` is never linted) + `apue.3e/tools/lint.sh`
+  (`tools/lint.sh [--fix] [dir...]`). Advisory; the modernization sweep fixes findings at the source.
+- Generated sources: `advio/rot13c2.c` is generated from `rot13c2.c.in` + `scripts/gen_rot13c2.sh`
+  (splices `translate()` from `rot13a.c` via `fixup.awk`) — edit the template/generator, never the
+  generated file; the awk matcher is sensitive to `rot13a.c`'s formatting.
 
 ## Tasks
 

@@ -1,6 +1,6 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <pthread.h>   /* for pthread_create, pthread_join, pthread_exit, pthread_cleanup_push, pthread_cleanup_pop, pthread_t */
+#include <stdio.h>   /* for printf */
+#include <stdlib.h>  /* for exit */
+#include <pthread.h> /* for pthread_create, pthread_join, pthread_exit, pthread_cleanup_push, pthread_cleanup_pop, pthread_t */
 
 #include "apue.h"
 
@@ -33,18 +33,17 @@ void *thr_fn2(void *arg) {
 }
 
 int main(void) {
-    int err;
-    pthread_t tid1, tid2;
-    void *tret;
-
-    err = pthread_create(&tid1, NULL, thr_fn1, (void *)1);
+    pthread_t tid1;
+    int err = pthread_create(&tid1, nullptr, thr_fn1, (void *)1);
     if (err != 0) {
         err_exit(err, "can't create thread 1");
     }
-    err = pthread_create(&tid2, NULL, thr_fn2, (void *)1);
+    pthread_t tid2;
+    err = pthread_create(&tid2, nullptr, thr_fn2, (void *)1);
     if (err != 0) {
         err_exit(err, "can't create thread 2");
     }
+    void *tret;
     err = pthread_join(tid1, &tret);
     if (err != 0) {
         err_exit(err, "can't join with thread 1");

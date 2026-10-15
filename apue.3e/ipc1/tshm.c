@@ -1,7 +1,7 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for malloc, exit */
-#include <sys/ipc.h>   /* for IPC_PRIVATE, IPC_RMID */
-#include <sys/shm.h>   /* for shmget, shmat, shmctl */
+#include <stdio.h>   /* for printf */
+#include <stdlib.h>  /* for malloc, exit */
+#include <sys/ipc.h> /* for IPC_PRIVATE, IPC_RMID */
+#include <sys/shm.h> /* for shmget, shmat, shmctl */
 
 #include "apue.h"
 
@@ -14,13 +14,13 @@ char array[ARRAY_SIZE]; /* uninitialized data = bss */
 
 int main(void) {
     int shmid;
-    char *ptr, *shmptr;
 
     printf("array[] from %p to %p\n", (void *)&array[0],
            (void *)&array[ARRAY_SIZE]);
     printf("stack around %p\n", (void *)&shmid);
 
-    if ((ptr = malloc(MALLOC_SIZE)) == NULL) {
+    char *ptr = malloc(MALLOC_SIZE);
+    if (ptr == nullptr) {
         err_sys("malloc error");
     }
     printf("malloced from %p to %p\n", (void *)ptr, (void *)ptr + MALLOC_SIZE);
@@ -28,13 +28,14 @@ int main(void) {
     if ((shmid = shmget(IPC_PRIVATE, SHM_SIZE, SHM_MODE)) < 0) {
         err_sys("shmget error");
     }
-    if ((shmptr = shmat(shmid, 0, 0)) == (void *)-1) {
+    char *shmptr = shmat(shmid, nullptr, 0);
+    if (shmptr == (void *)-1) {
         err_sys("shmat error");
     }
     printf("shared memory attached from %p to %p\n", (void *)shmptr,
            (void *)shmptr + SHM_SIZE);
 
-    if (shmctl(shmid, IPC_RMID, 0) < 0) {
+    if (shmctl(shmid, IPC_RMID, nullptr) < 0) {
         err_sys("shmctl error");
     }
 

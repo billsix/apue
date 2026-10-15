@@ -1,6 +1,6 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <sys/stat.h>  /* for struct stat, stat, S_ISCHR, S_ISBLK */
+#include <stdio.h>    /* for printf */
+#include <stdlib.h>   /* for exit */
+#include <sys/stat.h> /* for struct stat, stat, S_ISCHR, S_ISBLK */
 #ifdef SOLARIS
 #include <sys/mkdev.h> /* for major, minor */
 #endif
@@ -11,11 +11,9 @@
 #include "apue.h"
 
 int main(int argc, char *argv[]) {
-    int i;
-    struct stat buf;
-
-    for (i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
         printf("%s: ", argv[i]);
+        struct stat buf;
         if (stat(argv[i], &buf) < 0) {
             err_ret("stat error");
             continue;

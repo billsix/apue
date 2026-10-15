@@ -6,10 +6,10 @@
 #include "apue.h"
 
 int main(void) {
-    pid_t pid;
     int status;
 
-    if ((pid = fork()) < 0) {
+    pid_t pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* child */
         exit(7);
@@ -34,7 +34,10 @@ int main(void) {
     if ((pid = fork()) < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* child */
-        status /= 0;       /* divide by 0 generates SIGFPE */
+        /* divide by 0 generates SIGFPE; a volatile divisor keeps the fault at
+         * runtime (the point of the demo) without compile-time UB. */
+        volatile int zero = 0;
+        status /= zero;
     }
 
     if (wait(&status) != pid) { /* wait for child */

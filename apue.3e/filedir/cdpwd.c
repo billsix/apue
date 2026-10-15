@@ -1,19 +1,17 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for chdir, getcwd */
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for chdir, getcwd */
 
 #include "apue.h"
 
 int main(void) {
-    char *ptr;
-    size_t size;
-
     if (chdir("/usr/spool/uucppublic") < 0) {
         err_sys("chdir failed");
     }
 
-    ptr = path_alloc(&size); /* our own function */
-    if (getcwd(ptr, size) == NULL) {
+    size_t size;
+    char *ptr = path_alloc(&size); /* our own function */
+    if (getcwd(ptr, size) == nullptr) {
         err_sys("getcwd failed");
     }
 

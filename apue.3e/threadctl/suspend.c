@@ -1,7 +1,7 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <signal.h>    /* for sigemptyset, sigaddset, sigprocmask, sigwait, sigset_t, SIGINT, SIGQUIT, SIG_BLOCK, SIG_SETMASK */
-#include <pthread.h>   /* for pthread_create, pthread_sigmask, pthread_mutex_lock, pthread_mutex_unlock, pthread_cond_wait, pthread_cond_signal, pthread_mutex_t, pthread_cond_t, pthread_t, PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER */
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
+#include <signal.h> /* for sigemptyset, sigaddset, sigprocmask, sigwait, sigset_t, SIGINT, SIGQUIT, SIG_BLOCK, SIG_SETMASK */
+#include <pthread.h> /* for pthread_create, pthread_sigmask, pthread_mutex_lock, pthread_mutex_unlock, pthread_cond_wait, pthread_cond_signal, pthread_mutex_t, pthread_cond_t, pthread_t, PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER */
 
 #include "apue.h"
 
@@ -11,11 +11,10 @@ sigset_t mask;
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t waitloc = PTHREAD_COND_INITIALIZER;
 
-void *thr_fn(void *arg) {
-    int err, signo;
-
+void *thr_fn([[maybe_unused]] void *arg) {
     for (;;) {
-        err = sigwait(&mask, &signo);
+        int signo;
+        const int err = sigwait(&mask, &signo);
         if (err != 0) {
             err_exit(err, "sigwait failed");
         }
@@ -29,7 +28,7 @@ void *thr_fn(void *arg) {
                 quitflag = 1;
                 pthread_mutex_unlock(&lock);
                 pthread_cond_signal(&waitloc);
-                return (0);
+                return (nullptr);
 
             default:
                 printf("unexpected signal %d\n", signo);
@@ -39,18 +38,17 @@ void *thr_fn(void *arg) {
 }
 
 int main(void) {
-    int err;
-    sigset_t oldmask;
-    pthread_t tid;
-
     sigemptyset(&mask);
     sigaddset(&mask, SIGINT);
     sigaddset(&mask, SIGQUIT);
-    if ((err = pthread_sigmask(SIG_BLOCK, &mask, &oldmask)) != 0) {
+    sigset_t oldmask;
+    int err = pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+    if (err != 0) {
         err_exit(err, "SIG_BLOCK error");
     }
 
-    err = pthread_create(&tid, NULL, thr_fn, 0);
+    pthread_t tid;
+    err = pthread_create(&tid, nullptr, thr_fn, nullptr);
     if (err != 0) {
         err_exit(err, "can't create thread");
     }
@@ -65,7 +63,7 @@ int main(void) {
     quitflag = 0;
 
     /* reset signal mask which unblocks SIGQUIT */
-    if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0) {
+    if (sigprocmask(SIG_SETMASK, &oldmask, nullptr) < 0) {
         err_sys("SIG_SETMASK error");
     }
     exit(0);

@@ -1,11 +1,10 @@
-#include <stddef.h>    /* for NULL */
-#include <string.h>    /* for strncpy */
-#include <errno.h>     /* for errno */
-#include <fcntl.h>     /* for open, posix_openpt, O_RDWR */
-#include <stdlib.h>    /* for grantpt, unlockpt, ptsname */
-#include <unistd.h>    /* for close */
+#include <stdio.h>  /* for snprintf */
+#include <errno.h>  /* for errno */
+#include <fcntl.h>  /* for open, posix_openpt, O_RDWR */
+#include <stdlib.h> /* for grantpt, unlockpt, ptsname */
+#include <unistd.h> /* for close */
 #if defined(SOLARIS)
-#include <stropts.h>   /* for ioctl, I_FIND, I_PUSH (Solaris STREAMS) */
+#include <stropts.h> /* for ioctl, I_FIND, I_PUSH (Solaris STREAMS) */
 #endif
 
 #include "apue.h"
@@ -23,7 +22,7 @@ int ptym_open(char *pts_name, int pts_namesz) {
     if (unlockpt(fdm) < 0) { /* clear slave's lock flag */
         goto errout;
     }
-    if ((ptr = ptsname(fdm)) == NULL) { /* get slave's name */
+    if ((ptr = ptsname(fdm)) == nullptr) { /* get slave's name */
         goto errout;
     }
 
@@ -31,7 +30,7 @@ int ptym_open(char *pts_name, int pts_namesz) {
      * Return name of slave.  Null terminate to handle
      * case where strlen(ptr) > pts_namesz.
      */
-    strncpy(pts_name, ptr, pts_namesz);
+    snprintf(pts_name, pts_namesz, "%s", ptr);
     pts_name[pts_namesz - 1] = '\0';
     return (fdm); /* return fd of master */
 errout:

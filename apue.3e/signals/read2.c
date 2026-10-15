@@ -1,7 +1,7 @@
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for read, write, alarm, STDIN_FILENO, STDOUT_FILENO */
-#include <signal.h>    /* for signal, SIG_ERR, SIGALRM */
-#include <setjmp.h>    /* for jmp_buf, setjmp, longjmp */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for read, write, alarm, STDIN_FILENO, STDOUT_FILENO */
+#include <signal.h> /* for signal, SIG_ERR, SIGALRM */
+#include <setjmp.h> /* for jmp_buf, setjmp, longjmp */
 
 #include "apue.h"
 
@@ -29,4 +29,4 @@ int main(void) {
     exit(0);
 }
 
-static void sig_alrm(int signo) { longjmp(env_alrm, 1); }
+static void sig_alrm([[maybe_unused]] int signo) { longjmp(env_alrm, 1); }

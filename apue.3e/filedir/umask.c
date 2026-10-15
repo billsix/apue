@@ -1,6 +1,6 @@
-#include <stdlib.h>    /* for exit */
-#include <fcntl.h>     /* for creat */
-#include <sys/stat.h>  /* for umask, S_IRUSR, S_IWUSR, S_IRGRP, S_IWGRP, S_IROTH, S_IWOTH */
+#include <stdlib.h> /* for exit */
+#include <fcntl.h>  /* for creat */
+#include <sys/stat.h> /* for umask, S_IRUSR, S_IWUSR, S_IRGRP, S_IWGRP, S_IROTH, S_IWOTH */
 
 #include "apue.h"
 

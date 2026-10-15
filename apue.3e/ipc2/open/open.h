@@ -1,4 +1,4 @@
-#include <errno.h>     /* for errno */
+#include <errno.h> /* for errno */
 
 #include "apue.h"
 

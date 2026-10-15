@@ -8,12 +8,12 @@ static void client_alloc(void) /* alloc more entries in the client[] array */
 {
     int i;
 
-    if (client == NULL) {
+    if (client == nullptr) {
         client = malloc(NALLOC * sizeof(Client));
     } else {
         client = realloc(client, (client_size + NALLOC) * sizeof(Client));
     }
-    if (client == NULL) {
+    if (client == nullptr) {
         err_sys("can't alloc for client array");
     }
 
@@ -31,7 +31,7 @@ static void client_alloc(void) /* alloc more entries in the client[] array */
 int client_add(int fd, uid_t uid) {
     int i;
 
-    if (client == NULL) { /* first time we're called */
+    if (client == nullptr) { /* first time we're called */
         client_alloc();
     }
 again:

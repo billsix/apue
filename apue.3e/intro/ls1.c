@@ -1,21 +1,20 @@
-#include <stdio.h> /* for printf */
+#include <stdio.h>  /* for printf */
 #include <stdlib.h> /* for exit */
 #include <dirent.h> /* for opendir, readdir */
 
 #include "apue.h"
 
 int main(int argc, char *argv[]) {
-    DIR *dp;
-    struct dirent *dirp;
-
     if (argc != 2) {
         err_quit("usage: ls directory_name");
     }
 
-    if ((dp = opendir(argv[1])) == NULL) {
+    DIR *dp = opendir(argv[1]);
+    if (dp == nullptr) {
         err_sys("can't open %s", argv[1]);
     }
-    while ((dirp = readdir(dp)) != NULL) {
+    struct dirent *dirp;
+    while ((dirp = readdir(dp)) != nullptr) {
         printf("%s\n", dirp->d_name);
     }
 

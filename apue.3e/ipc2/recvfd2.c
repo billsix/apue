@@ -24,7 +24,7 @@
 #define CREDSLEN CMSG_LEN(sizeof(struct CREDSTRUCT))
 #define CONTROLLEN (RIGHTSLEN + CREDSLEN)
 
-static struct cmsghdr *cmptr = NULL; /* malloc'ed first time */
+static struct cmsghdr *cmptr = nullptr; /* malloc'ed first time */
 
 /*
  * Receive a file descriptor from a server process.  Also, any data
@@ -33,9 +33,6 @@ static struct cmsghdr *cmptr = NULL; /* malloc'ed first time */
  */
 int recv_ufd(int fd, uid_t *uidptr,
              ssize_t (*userfunc)(int, const void *, size_t)) {
-    struct cmsghdr *cmp;
-    struct CREDSTRUCT *credp;
-    char *ptr;
     char buf[MAXLINE];
     struct iovec iov[1];
     struct msghdr msg;
@@ -55,9 +52,9 @@ int recv_ufd(int fd, uid_t *uidptr,
         iov[0].iov_len = sizeof(buf);
         msg.msg_iov = iov;
         msg.msg_iovlen = 1;
-        msg.msg_name = NULL;
+        msg.msg_name = nullptr;
         msg.msg_namelen = 0;
-        if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL) {
+        if (cmptr == nullptr && (cmptr = malloc(CONTROLLEN)) == nullptr) {
             return (-1);
         }
         msg.msg_control = cmptr;
@@ -75,7 +72,7 @@ int recv_ufd(int fd, uid_t *uidptr,
          * is next to last byte of buffer; status byte is last byte.
          * Zero status means there is a file descriptor to receive.
          */
-        for (ptr = buf; ptr < &buf[nr];) {
+        for (char *ptr = buf; ptr < &buf[nr];) {
             if (*ptr++ == 0) {
                 if (ptr != &buf[nr - 1]) {
                     err_dump("message format error");
@@ -87,8 +84,12 @@ int recv_ufd(int fd, uid_t *uidptr,
                     }
 
                     /* process the control data */
-                    for (cmp = CMSG_FIRSTHDR(&msg); cmp != NULL;
-                         cmp = CMSG_NXTHDR(&msg, cmp)) {
+/* musl's CMSG_NXTHDR expands to a size_t-vs-ptrdiff_t comparison we can't
+ * change; suppress -Wsign-compare narrowly around the macro use only. */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-compare"
+                    for (struct cmsghdr *cmp = CMSG_FIRSTHDR(&msg);
+                         cmp != nullptr; cmp = CMSG_NXTHDR(&msg, cmp)) {
                         if (cmp->cmsg_level != SOL_SOCKET) {
                             continue;
                         }
@@ -96,11 +97,14 @@ int recv_ufd(int fd, uid_t *uidptr,
                             case SCM_RIGHTS:
                                 newfd = *(int *)CMSG_DATA(cmp);
                                 break;
-                            case SCM_CREDTYPE:
-                                credp = (struct CREDSTRUCT *)CMSG_DATA(cmp);
+                            case SCM_CREDTYPE: {
+                                const struct CREDSTRUCT *credp =
+                                    (struct CREDSTRUCT *)CMSG_DATA(cmp);
                                 *uidptr = credp->CR_UID;
+                            }
                         }
                     }
+#pragma clang diagnostic pop
                 } else {
                     newfd = -status;
                 }

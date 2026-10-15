@@ -1,8 +1,8 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for isatty, pause, STDIN_FILENO */
-#include <signal.h>    /* for signal, SIGWINCH, SIG_ERR */
-#include <termios.h>   /* for TIOCGWINSZ on platforms that define it here */
+#include <stdio.h>   /* for printf */
+#include <stdlib.h>  /* for exit */
+#include <unistd.h>  /* for isatty, pause, STDIN_FILENO */
+#include <signal.h>  /* for signal, SIGWINCH, SIG_ERR */
+#include <termios.h> /* for TIOCGWINSZ on platforms that define it here */
 #ifndef TIOCGWINSZ
 #include <sys/ioctl.h> /* for ioctl, TIOCGWINSZ, struct winsize */
 #endif
@@ -18,7 +18,7 @@ static void pr_winsize(int fd) {
     printf("%d rows, %d columns\n", size.ws_row, size.ws_col);
 }
 
-static void sig_winch(int signo) {
+static void sig_winch([[maybe_unused]] int signo) {
     printf("SIGWINCH received\n");
     pr_winsize(STDIN_FILENO);
 }

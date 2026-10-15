@@ -35,9 +35,9 @@ unsigned int sleep(unsigned int seconds) {
     unslept = alarm(0);
 
     /* reset previous action */
-    sigaction(SIGALRM, &oldact, NULL);
+    sigaction(SIGALRM, &oldact, nullptr);
 
     /* reset signal mask, which unblocks SIGALRM */
-    sigprocmask(SIG_SETMASK, &oldmask, NULL);
+    sigprocmask(SIG_SETMASK, &oldmask, nullptr);
     return (unslept);
 }

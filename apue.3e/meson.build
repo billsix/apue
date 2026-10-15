@@ -2,18 +2,41 @@ project('apue', 'c',
   version : '3e',
   meson_version : '>= 0.60.0',
   default_options : [
-    # c99 (vs the make build's -ansi == c89) so that falling off the
-    # end of main() returns 0 — the original textbook hello1.c relies
-    # on this. C99 also matches the POSIX.1-2008 feature test macros
-    # (_POSIX_C_SOURCE 200809L) that apue.h sets.
-    'c_std=c99',
-    'warning_level=1',
+    # c23: the examples are modernized to modern C (see
+    # tasks/archive/2026/10/16/modernize-to-modern-c.md). Falling off the end of main() still
+    # returns 0 (as c99 did, which the textbook hello1.c relies on), and the
+    # POSIX.1-2008 feature-test macros (_POSIX_C_SOURCE 200809L) apue.h sets
+    # are unaffected by the language level. clang 22 in the image accepts it.
+    'c_std=c23',
+    # -Wall -Wextra. Targeted extra warnings are added below.
+    'warning_level=2',
+    # The modernization sweep is complete and the tree is warning-clean, so
+    # warnings are hard errors (tasks/archive/2026/10/16/modernize-to-modern-c.md). Overridable
+    # with -Dwerror=false for a newer compiler that introduces a fresh warning.
+    'werror=true',
     'buildtype=debug',
   ],
 )
 
 cc = meson.get_compiler('c')
 host_os = host_machine.system()
+
+# Targeted warnings from the shared C coding standard that catch real C bugs
+# beyond -Wall -Wextra. Each is probed so an unsupported flag is skipped rather
+# than failing configure. -Wconversion/-Wsign-conversion are still held back
+# until a count-first pass.
+foreach w : [
+    '-Wshadow',
+    '-Wvla',               # flag any accidental stack VLA (standard discourages)
+    '-Wstrict-prototypes', # K&R non-prototype declarations defeat arg checking
+    '-Wold-style-definition',
+    '-Wwrite-strings',     # string literals are const char[]
+    '-Wformat=2',
+  ]
+  if cc.has_argument(w)
+    add_project_arguments(w, language : 'c')
+  endif
+endforeach
 
 if host_os == 'linux'
   linux_args = ['-DLINUX', '-D_GNU_SOURCE']

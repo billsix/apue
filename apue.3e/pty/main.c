@@ -1,7 +1,7 @@
-#include <stdio.h>     /* for printf, fprintf, stderr, EOF */
-#include <stdlib.h>    /* for exit, atexit */
-#include <unistd.h>    /* for isatty, getopt, execvp, optarg, optind, opterr, optopt, STDIN_FILENO */
-#include <termios.h>   /* for struct termios, tcgetattr, tcsetattr, TCSANOW, ECHO, ECHOE, ECHOK, ECHONL, ONLCR */
+#include <stdio.h>  /* for printf, fprintf, stderr, EOF */
+#include <stdlib.h> /* for exit, atexit */
+#include <unistd.h> /* for isatty, getopt, execvp, optarg, optind, opterr, optopt, STDIN_FILENO */
+#include <termios.h> /* for struct termios, tcgetattr, tcsetattr, TCSANOW, ECHO, ECHOE, ECHOK, ECHONL, ONLCR */
 #include <sys/types.h> /* for pid_t */
 #include <sys/ioctl.h> /* for ioctl, TIOCGWINSZ, struct winsize */
 
@@ -13,23 +13,22 @@
 #define OPTSTR "d:einv"
 #endif
 
-static void set_noecho(int); /* at the end of this file */
-void do_driver(char *);      /* in the file driver.c */
-void loop(int, int);         /* in the file loop.c */
+static void set_noecho(int);  /* at the end of this file */
+void do_driver(const char *); /* in the file driver.c */
+void loop(int, bool);         /* in the file loop.c */
 
 int main(int argc, char *argv[]) {
-    int fdm, c, ignoreeof, interactive, noecho, verbose;
+    int fdm;
+    int c;
+    bool interactive = isatty(STDIN_FILENO);
+    bool ignoreeof = false;
+    bool noecho = false;
+    bool verbose = false;
     pid_t pid;
-    char *driver;
+    char *driver = nullptr;
     char slave_name[20];
     struct termios orig_termios;
     struct winsize size;
-
-    interactive = isatty(STDIN_FILENO);
-    ignoreeof = 0;
-    noecho = 0;
-    verbose = 0;
-    driver = NULL;
 
     opterr = 0; /* don't want getopt() writing to stderr */
     while ((c = getopt(argc, argv, OPTSTR)) != EOF) {
@@ -39,19 +38,19 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 'e': /* noecho for slave pty's line discipline */
-                noecho = 1;
+                noecho = true;
                 break;
 
             case 'i': /* ignore EOF on standard input */
-                ignoreeof = 1;
+                ignoreeof = true;
                 break;
 
             case 'n': /* not interactive */
-                interactive = 0;
+                interactive = false;
                 break;
 
             case 'v': /* verbose */
-                verbose = 1;
+                verbose = true;
                 break;
 
             case '?':
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]) {
         pid = pty_fork(&fdm, slave_name, sizeof(slave_name), &orig_termios,
                        &size);
     } else {
-        pid = pty_fork(&fdm, slave_name, sizeof(slave_name), NULL, NULL);
+        pid = pty_fork(&fdm, slave_name, sizeof(slave_name), nullptr, nullptr);
     }
 
     if (pid < 0) {
@@ -89,12 +88,12 @@ int main(int argc, char *argv[]) {
 
     if (verbose) {
         fprintf(stderr, "slave name = %s\n", slave_name);
-        if (driver != NULL) {
+        if (driver != nullptr) {
             fprintf(stderr, "driver = %s\n", driver);
         }
     }
 
-    if (interactive && driver == NULL) {
+    if (interactive && driver == nullptr) {
         if (tty_raw(STDIN_FILENO) < 0) { /* user's tty to raw mode */
             err_sys("tty_raw error");
         }

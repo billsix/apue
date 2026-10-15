@@ -1,7 +1,7 @@
-#include <stdio.h>     /* for FILE, fopen, fgets, ferror */
-#include <stdlib.h>    /* for exit, getenv */
-#include <string.h>    /* for strlen, strrchr */
-#include <unistd.h>    /* for pipe, fork, close, write, dup2, execl, STDIN_FILENO */
+#include <stdio.h>  /* for FILE, fopen, fgets, ferror */
+#include <stdlib.h> /* for exit, getenv */
+#include <string.h> /* for strlen, strrchr */
+#include <unistd.h> /* for pipe, fork, close, write, dup2, execl, STDIN_FILENO */
 #include <sys/wait.h>  /* for waitpid */
 #include <sys/types.h> /* for pid_t */
 
@@ -10,32 +10,30 @@
 #define DEF_PAGER "/bin/more" /* default pager program */
 
 int main(int argc, char *argv[]) {
-    int n;
     int fd[2];
-    pid_t pid;
-    char *pager, *argv0;
-    char line[MAXLINE];
-    FILE *fp;
 
     if (argc != 2) {
         err_quit("usage: a.out <pathname>");
     }
 
-    if ((fp = fopen(argv[1], "r")) == NULL) {
+    FILE *fp = fopen(argv[1], "r");
+    if (fp == nullptr) {
         err_sys("can't open %s", argv[1]);
     }
     if (pipe(fd) < 0) {
         err_sys("pipe error");
     }
 
-    if ((pid = fork()) < 0) {
+    const pid_t pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid > 0) { /* parent */
         close(fd[0]);     /* close read end */
 
         /* parent copies argv[1] to pipe */
-        while (fgets(line, MAXLINE, fp) != NULL) {
-            n = strlen(line);
+        char line[MAXLINE];
+        while (fgets(line, MAXLINE, fp) != nullptr) {
+            int n = strlen(line);
             if (write(fd[1], line, n) != n) {
                 err_sys("write error to pipe");
             }
@@ -46,7 +44,7 @@ int main(int argc, char *argv[]) {
 
         close(fd[1]); /* close write end of pipe for reader */
 
-        if (waitpid(pid, NULL, 0) < 0) {
+        if (waitpid(pid, nullptr, 0) < 0) {
             err_sys("waitpid error");
         }
         exit(0);
@@ -60,10 +58,12 @@ int main(int argc, char *argv[]) {
         }
 
         /* get arguments for execl() */
-        if ((pager = getenv("PAGER")) == NULL) {
+        const char *pager = getenv("PAGER");
+        if (pager == nullptr) {
             pager = DEF_PAGER;
         }
-        if ((argv0 = strrchr(pager, '/')) != NULL) {
+        const char *argv0 = strrchr(pager, '/');
+        if (argv0 != nullptr) {
             argv0++; /* step past rightmost slash */
         } else {
             argv0 = pager; /* no slash in pager */

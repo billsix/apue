@@ -1,17 +1,16 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <shadow.h>    /* for getspnam, struct spwd */
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
+#include <shadow.h> /* for getspnam, struct spwd */
 
 #include "apue.h"
 
 int main(void) /* Linux/Solaris version */
 {
-    struct spwd *ptr;
-
-    if ((ptr = getspnam("sar")) == NULL) {
+    const struct spwd *ptr = getspnam("sar");
+    if (ptr == nullptr) {
         err_sys("getspnam error");
     }
-    printf("sp_pwdp = %s\n", ptr->sp_pwdp == NULL || ptr->sp_pwdp[0] == 0
+    printf("sp_pwdp = %s\n", ptr->sp_pwdp == nullptr || ptr->sp_pwdp[0] == 0
                                  ? "(null)"
                                  : ptr->sp_pwdp);
     exit(0);

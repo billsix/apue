@@ -8,12 +8,12 @@
 
 #define BUFFSIZE 8192
 
-int main(int argc, char *argv[]) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     int n, fd;
     char buf[BUFFSIZE], line[MAXLINE];
 
     /* read filename to cat from stdin */
-    while (fgets(line, MAXLINE, stdin) != NULL) {
+    while (fgets(line, MAXLINE, stdin) != nullptr) {
         if (line[strlen(line) - 1] == '\n') {
             line[strlen(line) - 1] = 0; /* replace newline with null */
         }

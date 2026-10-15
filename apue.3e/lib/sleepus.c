@@ -1,5 +1,4 @@
-#include <stddef.h>    /* for NULL */
-#include <sys/time.h>  /* for select, struct timeval */
+#include <sys/time.h> /* for select, struct timeval */
 
 #include "apue.h"
 
@@ -8,5 +7,5 @@ void sleep_us(unsigned int nusecs) {
 
     tval.tv_sec = nusecs / 1000000;
     tval.tv_usec = nusecs % 1000000;
-    select(0, NULL, NULL, NULL, &tval);
+    select(0, nullptr, nullptr, nullptr, &tval);
 }

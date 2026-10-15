@@ -1,13 +1,14 @@
-#include <stdio.h>     /* for fgets, printf, sscanf, stdin, EOF */
-#include <stdlib.h>    /* for exit */
+#include <stdio.h>  /* for fgets, printf, sscanf, stdin, EOF */
+#include <stdlib.h> /* for exit */
 
 #include "apue.h"
 
 int main(void) {
-    int int1, int2;
     char line[MAXLINE];
 
-    while (fgets(line, MAXLINE, stdin) != NULL) {
+    while (fgets(line, MAXLINE, stdin) != nullptr) {
+        int int1;
+        int int2;
         if (sscanf(line, "%d%d", &int1, &int2) == 2) {
             if (printf("%d\n", int1 + int2) == EOF) {
                 err_sys("printf error");

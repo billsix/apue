@@ -1,4 +1,4 @@
-#include <unistd.h>    /* for _exit, vfork */
+#include <unistd.h> /* for _exit, vfork */
 
 #include "apue.h"
 
@@ -11,9 +11,8 @@ int main(void) {
 }
 
 static void f1(void) {
-    pid_t pid;
-
-    if ((pid = vfork()) < 0) {
+    pid_t pid = vfork();
+    if (pid < 0) {
         err_sys("vfork error");
     }
     /* child and parent both return */
@@ -21,9 +20,8 @@ static void f1(void) {
 
 static void f2(void) {
     char buf[1000]; /* automatic variables */
-    int i;
 
-    for (i = 0; i < sizeof(buf); i++) {
+    for (size_t i = 0; i < sizeof(buf); i++) {
         buf[i] = 0;
     }
 }

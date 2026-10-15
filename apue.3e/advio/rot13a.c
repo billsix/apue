@@ -27,23 +27,25 @@ unsigned char translate(unsigned char c) {
 }
 
 int main(int argc, char *argv[]) {
-    int ifd, ofd, i, n, nw;
-
     if (argc != 3) {
         err_quit("usage: rot13 infile outfile");
     }
-    if ((ifd = open(argv[1], O_RDONLY)) < 0) {
+    const int ifd = open(argv[1], O_RDONLY);
+    if (ifd < 0) {
         err_sys("can't open %s", argv[1]);
     }
-    if ((ofd = open(argv[2], O_RDWR | O_CREAT | O_TRUNC, FILE_MODE)) < 0) {
+    const int ofd = open(argv[2], O_RDWR | O_CREAT | O_TRUNC, FILE_MODE);
+    if (ofd < 0) {
         err_sys("can't create %s", argv[2]);
     }
 
+    int n;
     while ((n = read(ifd, buf, BSZ)) > 0) {
-        for (i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             buf[i] = translate(buf[i]);
         }
-        if ((nw = write(ofd, buf, n)) != n) {
+        int nw = write(ofd, buf, n);
+        if (nw != n) {
             if (nw < 0) {
                 err_sys("write failed");
             } else {

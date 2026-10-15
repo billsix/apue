@@ -1,8 +1,8 @@
-#include <stdio.h>     /* for fprintf, stderr */
-#include <stdlib.h>    /* for exit, strtol */
-#include <string.h>    /* for memset, strncpy, strlen */
-#include <sys/ipc.h>   /* for key_t */
-#include <sys/msg.h>   /* for msgget, msgsnd */
+#include <stdio.h>   /* for fprintf, stderr */
+#include <stdlib.h>  /* for exit, strtol */
+#include <string.h>  /* for strlen */
+#include <sys/ipc.h> /* for key_t */
+#include <sys/msg.h> /* for msgget, msgsnd */
 
 #include "apue.h"
 
@@ -14,22 +14,18 @@ struct mymesg {
 };
 
 int main(int argc, char *argv[]) {
-    key_t key;
-    long qid;
-    size_t nbytes;
-    struct mymesg m;
-
     if (argc != 3) {
         fprintf(stderr, "usage: sendmsg KEY message\n");
         exit(1);
     }
-    key = strtol(argv[1], NULL, 0);
-    if ((qid = msgget(key, 0)) < 0) {
+    const key_t key = strtol(argv[1], nullptr, 0);
+    const long qid = msgget(key, 0);
+    if (qid < 0) {
         err_sys("can't open queue key %s", argv[1]);
     }
-    memset(&m, 0, sizeof(m));
-    strncpy(m.mtext, argv[2], MAXMSZ - 1);
-    nbytes = strlen(m.mtext);
+    struct mymesg m = {0};
+    snprintf(m.mtext, sizeof(m.mtext), "%s", argv[2]);
+    const size_t nbytes = strlen(m.mtext);
     m.mtype = 1;
     if (msgsnd(qid, &m, nbytes, 0) < 0) {
         err_sys("can't send message");

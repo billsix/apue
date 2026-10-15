@@ -1,4 +1,4 @@
-#include <stdio.h> /* for getc, putc, ferror, stdin, stdout, EOF */
+#include <stdio.h>  /* for getc, putc, ferror, stdin, stdout, EOF */
 #include <stdlib.h> /* for exit */
 
 #include "apue.h"

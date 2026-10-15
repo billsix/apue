@@ -1,28 +1,26 @@
-#include <stdio.h>     /* for printf */
-#include <string.h>    /* for strcmp */
-#include <unistd.h>    /* for alarm */
-#include <signal.h>    /* for signal, SIGALRM */
-#include <pwd.h>       /* for getpwnam, struct passwd */
+#include <stdio.h>  /* for printf */
+#include <string.h> /* for strcmp */
+#include <unistd.h> /* for alarm */
+#include <signal.h> /* for signal, SIGALRM */
+#include <pwd.h>    /* for getpwnam, struct passwd */
 
 #include "apue.h"
 
-static void my_alarm(int signo) {
-    struct passwd *rootptr;
-
+static void my_alarm([[maybe_unused]] int signo) {
     printf("in signal handler\n");
-    if ((rootptr = getpwnam("root")) == NULL) {
+    const struct passwd *rootptr = getpwnam("root");
+    if (rootptr == nullptr) {
         err_sys("getpwnam(root) error");
     }
     alarm(1);
 }
 
 int main(void) {
-    struct passwd *ptr;
-
     signal(SIGALRM, my_alarm);
     alarm(1);
     for (;;) {
-        if ((ptr = getpwnam("sar")) == NULL) {
+        const struct passwd *ptr = getpwnam("sar");
+        if (ptr == nullptr) {
             err_sys("getpwnam error");
         }
         if (strcmp(ptr->pw_name, "sar") != 0) {

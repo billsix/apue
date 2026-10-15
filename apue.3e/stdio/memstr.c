@@ -1,18 +1,18 @@
-#include <stdio.h>     /* for FILE, fmemopen, fprintf, fflush, fseek, fclose, printf, SEEK_SET */
-#include <string.h>    /* for memset, strlen */
+#include <stdio.h> /* for FILE, fmemopen, fprintf, fflush, fseek, fclose, printf, SEEK_SET */
+#include <string.h> /* for memset, strlen */
 
 #include "apue.h"
 
 #define BSZ 48
 
-int main() {
-    FILE *fp;
+int main(void) {
     char buf[BSZ];
 
     memset(buf, 'a', BSZ - 2);
     buf[BSZ - 2] = '\0';
     buf[BSZ - 1] = 'X';
-    if ((fp = fmemopen(buf, BSZ, "w+")) == NULL) {
+    FILE *fp = fmemopen(buf, BSZ, "w+");
+    if (fp == nullptr) {
         err_sys("fmemopen failed");
     }
     printf("initial buffer contents: %s\n", buf);

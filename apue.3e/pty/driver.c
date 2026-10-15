@@ -1,10 +1,9 @@
-#include <unistd.h>    /* for fork, close, dup2, execlp, STDIN_FILENO, STDOUT_FILENO */
+#include <unistd.h> /* for fork, close, dup2, execlp, STDIN_FILENO, STDOUT_FILENO */
 #include <sys/types.h> /* for pid_t */
 
 #include "apue.h"
 
-void do_driver(char *driver) {
-    pid_t child;
+void do_driver(const char *driver) {
     int pipe[2];
 
     /*
@@ -14,7 +13,8 @@ void do_driver(char *driver) {
         err_sys("can't create stream pipe");
     }
 
-    if ((child = fork()) < 0) {
+    const pid_t child = fork();
+    if (child < 0) {
         err_sys("fork error");
     } else if (child == 0) { /* child */
         close(pipe[1]);

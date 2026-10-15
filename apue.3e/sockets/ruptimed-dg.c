@@ -1,11 +1,11 @@
-#include <stdio.h>      /* for FILE, sprintf, fgets, popen, pclose */
-#include <stdlib.h>     /* for exit, malloc */
-#include <string.h>     /* for memset, strlen, strerror */
-#include <unistd.h>     /* for sysconf, gethostname, _SC_HOST_NAME_MAX */
-#include <errno.h>      /* for errno */
-#include <syslog.h>     /* for syslog, LOG_ERR */
+#include <stdio.h>  /* for FILE, sprintf, fgets, popen, pclose */
+#include <stdlib.h> /* for exit, malloc */
+#include <string.h> /* for strlen, strerror */
+#include <unistd.h> /* for sysconf, gethostname, _SC_HOST_NAME_MAX */
+#include <errno.h>  /* for errno */
+#include <syslog.h> /* for syslog, LOG_ERR */
 #include <sys/socket.h> /* for recvfrom, sendto, struct sockaddr, socklen_t, SOCK_DGRAM */
-#include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo, AI_CANONNAME */
+#include <netdb.h> /* for getaddrinfo, gai_strerror, struct addrinfo, AI_CANONNAME */
 
 #include "apue.h"
 
@@ -19,25 +19,24 @@
 extern int initserver(int, const struct sockaddr *, socklen_t, int);
 
 void serve(int sockfd) {
-    int n;
-    socklen_t alen;
-    FILE *fp;
     char buf[BUFLEN];
     char abuf[MAXADDRLEN];
     struct sockaddr *addr = (struct sockaddr *)abuf;
 
     set_cloexec(sockfd);
     for (;;) {
-        alen = MAXADDRLEN;
-        if ((n = recvfrom(sockfd, buf, BUFLEN, 0, addr, &alen)) < 0) {
+        socklen_t alen = MAXADDRLEN;
+        int n = recvfrom(sockfd, buf, BUFLEN, 0, addr, &alen);
+        if (n < 0) {
             syslog(LOG_ERR, "ruptimed: recvfrom error: %s", strerror(errno));
             exit(1);
         }
-        if ((fp = popen("/usr/bin/uptime", "r")) == NULL) {
-            sprintf(buf, "error: %s\n", strerror(errno));
+        FILE *fp = popen("/usr/bin/uptime", "r");
+        if (fp == nullptr) {
+            snprintf(buf, sizeof(buf), "error: %s\n", strerror(errno));
             sendto(sockfd, buf, strlen(buf), 0, addr, alen);
         } else {
-            if (fgets(buf, BUFLEN, fp) != NULL) {
+            if (fgets(buf, BUFLEN, fp) != nullptr) {
                 sendto(sockfd, buf, strlen(buf), 0, addr, alen);
             }
             pclose(fp);
@@ -45,38 +44,33 @@ void serve(int sockfd) {
     }
 }
 
-int main(int argc, char *argv[]) {
-    struct addrinfo *ailist, *aip;
-    struct addrinfo hint;
-    int sockfd, err, n;
-    char *host;
-
+int main(int argc, [[maybe_unused]] char *argv[]) {
     if (argc != 1) {
         err_quit("usage: ruptimed");
     }
-    if ((n = sysconf(_SC_HOST_NAME_MAX)) < 0) {
+    int n = sysconf(_SC_HOST_NAME_MAX);
+    if (n < 0) {
         n = HOST_NAME_MAX; /* best guess */
     }
-    if ((host = malloc(n)) == NULL) {
+    char *host = malloc(n);
+    if (host == nullptr) {
         err_sys("malloc error");
     }
     if (gethostname(host, n) < 0) {
         err_sys("gethostname error");
     }
     daemonize("ruptimed");
-    memset(&hint, 0, sizeof(hint));
-    hint.ai_flags = AI_CANONNAME;
-    hint.ai_socktype = SOCK_DGRAM;
-    hint.ai_canonname = NULL;
-    hint.ai_addr = NULL;
-    hint.ai_next = NULL;
-    if ((err = getaddrinfo(host, "ruptime", &hint, &ailist)) != 0) {
+    struct addrinfo hint = {.ai_flags = AI_CANONNAME,
+                            .ai_socktype = SOCK_DGRAM};
+    struct addrinfo *ailist;
+    const int err = getaddrinfo(host, "ruptime", &hint, &ailist);
+    if (err != 0) {
         syslog(LOG_ERR, "ruptimed: getaddrinfo error: %s", gai_strerror(err));
         exit(1);
     }
-    for (aip = ailist; aip != NULL; aip = aip->ai_next) {
-        if ((sockfd = initserver(SOCK_DGRAM, aip->ai_addr, aip->ai_addrlen,
-                                 0)) >= 0) {
+    for (struct addrinfo *aip = ailist; aip != nullptr; aip = aip->ai_next) {
+        int sockfd = initserver(SOCK_DGRAM, aip->ai_addr, aip->ai_addrlen, 0);
+        if (sockfd >= 0) {
             serve(sockfd);
             exit(0);
         }

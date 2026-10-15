@@ -54,7 +54,7 @@ main(int argc, char* argv[])
 		bufs[i].op = UNUSED;
 		bufs[i].aiocb.aio_buf = bufs[i].data;
 		bufs[i].aiocb.aio_sigevent.sigev_notify = SIGEV_NONE;
-		aiolist[i] = NULL;
+		aiolist[i] = nullptr;
 	}
 
 	numop = 0;
@@ -124,9 +124,9 @@ main(int argc, char* argv[])
 				 */
 				if ((n = aio_return(&bufs[i].aiocb)) < 0)
 					err_sys("aio_return failed");
-				if (n != bufs[i].aiocb.aio_nbytes)
+				if (n != (ssize_t)bufs[i].aiocb.aio_nbytes)
 					err_quit("short write (%d/%d)", n, BSZ);
-				aiolist[i] = NULL;
+				aiolist[i] = nullptr;
 				bufs[i].op = UNUSED;
 				numop--;
 				break;
@@ -136,7 +136,7 @@ main(int argc, char* argv[])
 			if (off >= sbuf.st_size)
 				break;
 		} else {
-			if (aio_suspend(aiolist, NBUF, NULL) < 0)
+			if (aio_suspend(aiolist, NBUF, nullptr) < 0)
 				err_sys("aio_suspend failed");
 		}
 	}

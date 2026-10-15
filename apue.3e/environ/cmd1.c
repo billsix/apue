@@ -1,5 +1,5 @@
-#include <stdio.h>     /* for fgets, stdin */
-#include <stdlib.h>    /* for exit */
+#include <stdio.h>  /* for fgets, stdin */
+#include <stdlib.h> /* for exit */
 
 #include "apue.h"
 
@@ -12,7 +12,7 @@ int get_token(void);
 int main(void) {
     char line[MAXLINE];
 
-    while (fgets(line, MAXLINE, stdin) != NULL) {
+    while (fgets(line, MAXLINE, stdin) != nullptr) {
         do_line(line);
     }
     exit(0);

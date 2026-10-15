@@ -1,9 +1,10 @@
-#include <stddef.h>     /* for offsetof */
-#include <string.h>     /* for memset, strcpy, strlen */
-#include <errno.h>      /* for errno, ENAMETOOLONG */
-#include <unistd.h>     /* for unlink, close */
+#include <stddef.h> /* for offsetof */
+#include <stdio.h>  /* for snprintf */
+#include <string.h> /* for strlen */
+#include <errno.h>  /* for errno, ENAMETOOLONG */
+#include <unistd.h> /* for unlink, close */
 #include <sys/socket.h> /* for socket, bind, listen, AF_UNIX, SOCK_STREAM, struct sockaddr */
-#include <sys/un.h>     /* for struct sockaddr_un */
+#include <sys/un.h> /* for struct sockaddr_un */
 
 #include "apue.h"
 
@@ -15,7 +16,7 @@
  */
 int serv_listen(const char *name) {
     int fd, len, err, rval;
-    struct sockaddr_un un;
+    struct sockaddr_un un = {0};
 
     if (strlen(name) >= sizeof(un.sun_path)) {
         errno = ENAMETOOLONG;
@@ -30,9 +31,8 @@ int serv_listen(const char *name) {
     unlink(name); /* in case it already exists */
 
     /* fill in socket address structure */
-    memset(&un, 0, sizeof(un));
     un.sun_family = AF_UNIX;
-    strcpy(un.sun_path, name);
+    snprintf(un.sun_path, sizeof(un.sun_path), "%s", name);
     len = offsetof(struct sockaddr_un, sun_path) + strlen(name);
 
     /* bind the name to the descriptor */

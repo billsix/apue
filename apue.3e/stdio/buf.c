@@ -1,5 +1,5 @@
-#include <stdio.h>     /* for FILE, fputs, getchar, fopen, getc, printf, EOF, stdin, stdout, stderr */
-#include <stdlib.h>    /* for exit */
+#include <stdio.h> /* for FILE, fputs, getchar, fopen, getc, printf, EOF, stdin, stdout, stderr */
+#include <stdlib.h> /* for exit */
 
 #include "apue.h"
 
@@ -9,8 +9,6 @@ int is_linebuffered(FILE *);
 int buffer_size(FILE *);
 
 int main(void) {
-    FILE *fp;
-
     fputs("enter any character\n", stdout);
     if (getchar() == EOF) {
         err_sys("getchar error");
@@ -21,7 +19,8 @@ int main(void) {
     pr_stdio("stdout", stdout);
     pr_stdio("stderr", stderr);
 
-    if ((fp = fopen("/etc/passwd", "r")) == NULL) {
+    FILE *fp = fopen("/etc/passwd", "r");
+    if (fp == nullptr) {
         err_sys("fopen error");
     }
     if (getc(fp) == EOF) {

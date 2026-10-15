@@ -1,5 +1,5 @@
-#include <stdlib.h>    /* for exit, system */
-#include <unistd.h>    /* for fork, sleep */
+#include <stdlib.h> /* for exit, system */
+#include <unistd.h> /* for fork, sleep */
 
 #include "apue.h"
 
@@ -10,9 +10,8 @@
 #endif
 
 int main(void) {
-    pid_t pid;
-
-    if ((pid = fork()) < 0) {
+    const pid_t pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* child */
         exit(0);

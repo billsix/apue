@@ -1,24 +1,20 @@
 #include <sys/stat.h> /* for fstat */
-#include <stdio.h> /* for printf */
-#include <stdlib.h> /* for exit */
-#include <unistd.h> /* for write, fork, lseek, read */
-#include <errno.h> /* for errno */
+#include <stdio.h>    /* for printf */
+#include <stdlib.h>   /* for exit */
+#include <unistd.h>   /* for write, fork, lseek, read */
+#include <errno.h>    /* for errno */
 #include <fcntl.h>
 #include <sys/wait.h> /* for waitpid */
 
 #include "apue.h"
 
 int main(int argc, char *argv[]) {
-    int fd;
-    pid_t pid;
-    char buf[5];
-    struct stat statbuf;
-
     if (argc != 2) {
         fprintf(stderr, "usage: %s filename\n", argv[0]);
         exit(1);
     }
-    if ((fd = open(argv[1], O_RDWR | O_CREAT | O_TRUNC, FILE_MODE)) < 0) {
+    const int fd = open(argv[1], O_RDWR | O_CREAT | O_TRUNC, FILE_MODE);
+    if (fd < 0) {
         err_sys("open error");
     }
     if (write(fd, "abcdef", 6) != 6) {
@@ -26,6 +22,7 @@ int main(int argc, char *argv[]) {
     }
 
     /* turn on set-group-ID and turn off group-execute */
+    struct stat statbuf;
     if (fstat(fd, &statbuf) < 0) {
         err_sys("fstat error");
     }
@@ -35,7 +32,8 @@ int main(int argc, char *argv[]) {
 
     TELL_WAIT();
 
-    if ((pid = fork()) < 0) {
+    const pid_t pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid > 0) { /* parent */
         /* write lock entire file */
@@ -45,7 +43,7 @@ int main(int argc, char *argv[]) {
 
         TELL_CHILD(pid);
 
-        if (waitpid(pid, NULL, 0) < 0) {
+        if (waitpid(pid, nullptr, 0) < 0) {
             err_sys("waitpid error");
         }
     } else {           /* child */
@@ -63,6 +61,7 @@ int main(int argc, char *argv[]) {
         if (lseek(fd, 0, SEEK_SET) == -1) {
             err_sys("lseek error");
         }
+        char buf[5];
         if (read(fd, buf, 2) < 0) {
             err_ret("read failed (mandatory locking works)");
         } else {

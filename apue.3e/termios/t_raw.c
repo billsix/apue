@@ -1,11 +1,11 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for read, STDIN_FILENO */
-#include <signal.h>    /* for signal, SIGINT, SIGQUIT, SIGTERM, SIG_ERR */
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for read, STDIN_FILENO */
+#include <signal.h> /* for signal, SIGINT, SIGQUIT, SIGTERM, SIG_ERR */
 
 #include "apue.h"
 
-static void sig_catch(int signo) {
+static void sig_catch([[maybe_unused]] int signo) {
     printf("signal caught\n");
     tty_reset(STDIN_FILENO);
     exit(0);

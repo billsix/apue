@@ -1,9 +1,9 @@
-#include <stdio.h>    /* for printf, perror */
-#include <stdlib.h>   /* for exit */
-#include <unistd.h>   /* for fork, _exit, sleep, pause */
-#include <signal.h>   /* for signal, SIG_ERR, SIGCHLD */
+#include <stdio.h>     /* for printf, perror */
+#include <stdlib.h>    /* for exit */
+#include <unistd.h>    /* for fork, _exit, sleep, pause */
+#include <signal.h>    /* for signal, SIG_ERR, SIGCHLD */
 #include <sys/types.h> /* for pid_t */
-#include <sys/wait.h> /* for wait */
+#include <sys/wait.h>  /* for wait */
 
 #ifndef SIGCLD
 #define SIGCLD SIGCHLD
@@ -11,13 +11,12 @@
 
 static void sig_cld(int);
 
-int main() {
-    pid_t pid;
-
+int main(void) {
     if (signal(SIGCLD, sig_cld) == SIG_ERR) {
         perror("signal error");
     }
-    if ((pid = fork()) < 0) {
+    const pid_t pid = fork();
+    if (pid < 0) {
         perror("fork error");
     } else if (pid == 0) { /* child */
         sleep(2);
@@ -28,18 +27,17 @@ int main() {
     exit(0);
 }
 
-static void sig_cld(int signo) /* interrupts pause() */
+static void sig_cld([[maybe_unused]] int signo) /* interrupts pause() */
 {
-    pid_t pid;
-    int status;
-
     printf("SIGCLD received\n");
 
     if (signal(SIGCLD, sig_cld) == SIG_ERR) { /* reestablish handler */
         perror("signal error");
     }
 
-    if ((pid = wait(&status)) < 0) { /* fetch child status */
+    int status;
+    const pid_t pid = wait(&status); /* fetch child status */
+    if (pid < 0) {
         perror("wait error");
     }
 

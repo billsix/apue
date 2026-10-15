@@ -1,21 +1,20 @@
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for isatty, fpathconf, _PC_VDISABLE, STDIN_FILENO */
-#include <termios.h>   /* for struct termios, tcgetattr, tcsetattr, TCSAFLUSH, VINTR, VEOF */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for isatty, fpathconf, _PC_VDISABLE, STDIN_FILENO */
+#include <termios.h> /* for struct termios, tcgetattr, tcsetattr, TCSAFLUSH, VINTR, VEOF */
 
 #include "apue.h"
 
 int main(void) {
-    struct termios term;
-    long vdisable;
-
     if (isatty(STDIN_FILENO) == 0) {
         err_quit("standard input is not a terminal device");
     }
 
-    if ((vdisable = fpathconf(STDIN_FILENO, _PC_VDISABLE)) < 0) {
+    const long vdisable = fpathconf(STDIN_FILENO, _PC_VDISABLE);
+    if (vdisable < 0) {
         err_quit("fpathconf error or _POSIX_VDISABLE not in effect");
     }
 
+    struct termios term;
     if (tcgetattr(STDIN_FILENO, &term) < 0) { /* fetch tty state */
         err_sys("tcgetattr error");
     }

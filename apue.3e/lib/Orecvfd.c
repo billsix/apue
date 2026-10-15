@@ -7,7 +7,7 @@
 /* size of control buffer to send/recv one file descriptor */
 #define CONTROLLEN CMSG_LEN(sizeof(int))
 
-static struct cmsghdr *cmptr = NULL; /* malloc'ed first time */
+static struct cmsghdr *cmptr = nullptr; /* malloc'ed first time */
 
 /*
  * Receive a file descriptor from a server process.  Also, any data
@@ -27,9 +27,9 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
         iov[0].iov_len = sizeof(buf);
         msg.msg_iov = iov;
         msg.msg_iovlen = 1;
-        msg.msg_name = NULL;
+        msg.msg_name = nullptr;
         msg.msg_namelen = 0;
-        if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL) {
+        if (cmptr == nullptr && (cmptr = malloc(CONTROLLEN)) == nullptr) {
             return (-1);
         }
         msg.msg_control = cmptr;

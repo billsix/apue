@@ -1,4 +1,4 @@
-#include <fcntl.h>     /* for fcntl, struct flock */
+#include <fcntl.h> /* for fcntl, struct flock */
 
 #include "apue.h"
 
