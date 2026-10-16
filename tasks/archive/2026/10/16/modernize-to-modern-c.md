@@ -131,7 +131,7 @@ KEEP POSIX types (`pid_t`/`off_t`/`ssize_t`/`mode_t`) — correct, not a plain-`
 
 ## Related tasks & artifacts
 
-- **`tasks/review-example-code-idiosyncrasies.md`** — SUPERSEDED by this task (2026-10-15); its content
+- **`tasks/archive/2026/10/16/review-example-code-idiosyncrasies.md`** — SUPERSEDED by this task (2026-10-15); its content
   (inconsistent `main` signatures, unused `argc`) was folded in and is done.
 - **`tasks/add-sanitizer-gate.md` (proposed)** — the complementary *dynamic* correctness gate
   (ASan/UBSan on executed paths); this task was the *static* side.

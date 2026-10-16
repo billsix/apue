@@ -12,8 +12,9 @@ longer a byte-faithful transcription of the book.
 
 - **Language/standard:** C (`-std=c23`). The examples have been **modernized to modern C** per
   `~/.claude/reference/c-coding-standard.md` (declare-at-use, `const`, `bool`, `nullptr`, `snprintf`,
-  designated initializers, `size_t` indices) — see `tasks/archive/2026/10/16/modernize-to-modern-c.md`. The tree compiles
-  **warning-clean** at `warning_level=2` + the extra flags. The curated `apue.h` surface is kept;
+  designated initializers, `size_t` indices) — see `tasks/archive/2026/10/16/modernize-to-modern-c.md`.
+  The tree compiles **warning-clean under `-Werror`** (`warning_level=2` + the extra flags;
+  `werror=true`, overridable with `-Dwerror=false`). The curated `apue.h` surface is kept;
   textbook *source* fidelity is no longer a goal (the behavior is preserved).
 - **Build:** Meson + Ninja (the original recursive Make was replaced). Out-of-tree,
   in `apue.3e/build/`.
