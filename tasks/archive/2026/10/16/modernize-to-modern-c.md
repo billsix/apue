@@ -2,7 +2,7 @@
 
 **Status:** **COMPLETE** (2026-10-16). The ~220 APUE-3e example programs and `lib/libapue.a` under
 `apue.3e/` were rewritten from `-std=c99` to **`-std=c23`** modern-C style per
-`~/.claude/reference/c-coding-standard.md`, with each program's runtime behavior preserved. The tree
+`github.com/billsix/runClaudeInContainer:tasks/reference/c-coding-standard.md`, with each program's runtime behavior preserved. The tree
 compiles **warning-clean** at `warning_level=2` + targeted flags + **`-Werror`**, and the 8 wired
 `meson test` cases pass. `musl/` was out of scope throughout.
 **Priority:** 7 **Difficulty:** 8
@@ -31,7 +31,7 @@ pre-existing history: **phase 1** (build/lint backbone + mechanical changes) and
    upstream libc, never rewritten/reformatted/linted (clang-tidy paths stay scoped to `apue.3e`).
 
 The correctness bar remained **output-equivalence to the original programs' behavior**
-(`~/.claude/reference/porting-with-an-output-oracle.md`), even though source fidelity was dropped.
+(`github.com/billsix/runClaudeInContainer:tasks/reference/porting-with-an-output-oracle.md`), even though source fidelity was dropped.
 
 ## Correctness oracle (used on every commit)
 
@@ -86,7 +86,7 @@ loop-carried accumulators, address-taken/filled locals, deliberate teaching bugs
 `vfork3` lesson, intentional data-race demos), and generated-file sources (`rot13a.c`/`rot13c2.c.in`).
 KEEP POSIX types (`pid_t`/`off_t`/`ssize_t`/`mode_t`) — correct, not a plain-`int` smell.
 
-## Standard-coverage audit (`~/.claude/reference/c-coding-standard.md`)
+## Standard-coverage audit (`github.com/billsix/runClaudeInContainer:tasks/reference/c-coding-standard.md`)
 
 | Standard item | Status | Note |
 | --- | --- | --- |

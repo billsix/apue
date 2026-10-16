@@ -11,7 +11,7 @@ longer a byte-faithful transcription of the book.
 ## Status
 
 - **Language/standard:** C (`-std=c23`). The examples have been **modernized to modern C** per
-  `~/.claude/reference/c-coding-standard.md` (declare-at-use, `const`, `bool`, `nullptr`, `snprintf`,
+  `github.com/billsix/runClaudeInContainer:tasks/reference/c-coding-standard.md` (declare-at-use, `const`, `bool`, `nullptr`, `snprintf`,
   designated initializers, `size_t` indices) — see `tasks/archive/2026/10/16/modernize-to-modern-c.md`.
   The tree compiles **warning-clean under `-Werror`** (`warning_level=2` + the extra flags;
   `werror=true`, overridable with `-Dwerror=false`). The curated `apue.h` surface is kept;
@@ -72,7 +72,7 @@ programs need a TTY/stdin and aren't auto-tested.
   (include order is curated — see
   `tasks/archive/2026/05/04/01-header-inlining.md`).
 - **Modernize to modern C (C23)**, not textbook-faithful transcription: apply the shared standard
-  `~/.claude/reference/c-coding-standard.md` (fixed-width types where width matters, `const`,
+  `github.com/billsix/runClaudeInContainer:tasks/reference/c-coding-standard.md` (fixed-width types where width matters, `const`,
   `nullptr`, `bool`, `[[maybe_unused]]`, declare-at-first-use, `snprintf` over `strcpy`/`strcat`,
   designated initializers). **Preserve each program's runtime behavior** — the wired `meson test`
   cases and a green compile are the oracle. Keep each file's includes explicit and commented.
