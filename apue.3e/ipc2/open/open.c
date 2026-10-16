@@ -10,7 +10,6 @@
  * connection server and reading a file descriptor back.
  */
 int csopen(char *name, int oflag) {
-    int len;
     char buf[12];
     struct iovec iov[3];
     static int csfd = -1;
@@ -30,7 +29,7 @@ int csopen(char *name, int oflag) {
     iov[1].iov_len = strlen(name);
     iov[2].iov_base = buf;
     iov[2].iov_len = strlen(buf) + 1; /* null always sent */
-    len = iov[0].iov_len + iov[1].iov_len + iov[2].iov_len;
+    int len = iov[0].iov_len + iov[1].iov_len + iov[2].iov_len;
     if (writev(csfd, &iov[0], 3) != len) {
         err_ret("writev error");
         return (-1);

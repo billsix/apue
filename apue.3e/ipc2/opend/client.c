@@ -6,8 +6,6 @@
 
 static void client_alloc(void) /* alloc more entries in the client[] array */
 {
-    int i;
-
     if (client == nullptr) {
         client = malloc(NALLOC * sizeof(Client));
     } else {
@@ -18,7 +16,7 @@ static void client_alloc(void) /* alloc more entries in the client[] array */
     }
 
     /* initialize the new entries */
-    for (i = client_size; i < client_size + NALLOC; i++) {
+    for (int i = client_size; i < client_size + NALLOC; i++) {
         client[i].fd = -1; /* fd of -1 means entry available */
     }
 
@@ -29,13 +27,11 @@ static void client_alloc(void) /* alloc more entries in the client[] array */
  * Called by loop() when connection request from a new client arrives.
  */
 int client_add(int fd, uid_t uid) {
-    int i;
-
     if (client == nullptr) { /* first time we're called */
         client_alloc();
     }
 again:
-    for (i = 0; i < client_size; i++) {
+    for (int i = 0; i < client_size; i++) {
         if (client[i].fd == -1) { /* find an available entry */
             client[i].fd = fd;
             client[i].uid = uid;
@@ -52,9 +48,7 @@ again:
  * Called by loop() when we're done with a client.
  */
 void client_del(int fd) {
-    int i;
-
-    for (i = 0; i < client_size; i++) {
+    for (int i = 0; i < client_size; i++) {
         if (client[i].fd == fd) {
             client[i].fd = -1;
             return;

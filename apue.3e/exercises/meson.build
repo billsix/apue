@@ -15,6 +15,10 @@ foreach p : progs
   executable(p, p + '.c', dependencies : libapue_dep)
 endforeach
 
+# pollmsg2 — exercise variant of ipc2/pollmsg; uses System V message queues and
+# pthreads, so it links threads_dep as well (like ipc2/pollmsg).
+executable('pollmsg2', 'pollmsg2.c', dependencies : [libapue_dep, threads_dep])
+
 # Compile-only sources from the make build's `all:` target.
 static_library('exercises_examples',
   files(

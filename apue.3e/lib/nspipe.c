@@ -10,7 +10,6 @@
 
 int /* returns 0 if all OK, -1 if error (with errno set) */
 ns_pipe(const char *name, int fd[2]) {
-    int len;
     struct sockaddr_un unix_addr = {0};
 
     if (fd_pipe(fd) < 0) { /* create unnamed stream pipe */
@@ -21,7 +20,7 @@ ns_pipe(const char *name, int fd[2]) {
 
     unix_addr.sun_family = AF_UNIX;
     snprintf(unix_addr.sun_path, sizeof(unix_addr.sun_path), "%s", name);
-    len = strlen(unix_addr.sun_path) + sizeof(unix_addr.sun_family);
+    int len = strlen(unix_addr.sun_path) + sizeof(unix_addr.sun_family);
 
     return (bind(fd[0], (struct sockaddr *)&unix_addr, len));
     /* fd[0] has the name bound to it */

@@ -32,7 +32,7 @@ void *helper(void *arg) {
     struct threadinfo *tip = arg;
 
     for (;;) {
-        memset(&tip->m, 0, sizeof(struct mymsg));
+        memset(&tip->m, 0, sizeof(struct mymesg));
         const int n = msgrcv(tip->qid, &tip->m, MAXMSZ, 0, MSG_NOERROR);
         if (n < 0) {
             err_sys("msgrcv error");

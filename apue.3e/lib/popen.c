@@ -17,7 +17,6 @@ static pid_t *childpid = nullptr;
 static int maxfd;
 
 FILE *popen(const char *cmdstring, const char *type) {
-    int i;
     int pfd[2];
     FILE *fp;
 
@@ -65,7 +64,7 @@ FILE *popen(const char *cmdstring, const char *type) {
         }
 
         /* close all descriptors in childpid[] */
-        for (i = 0; i < maxfd; i++) {
+        for (int i = 0; i < maxfd; i++) {
             if (childpid[i] > 0) {
                 close(i);
             }

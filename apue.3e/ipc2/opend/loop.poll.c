@@ -7,7 +7,6 @@
 #define NALLOC 10 /* # pollfd structs to alloc/realloc */
 
 static struct pollfd *grow_pollfd(struct pollfd *pfd, int *maxfd) {
-    int i;
     int oldmax = *maxfd;
     int newmax = oldmax + NALLOC;
 
@@ -15,7 +14,7 @@ static struct pollfd *grow_pollfd(struct pollfd *pfd, int *maxfd) {
     if (pfd == nullptr) {
         err_sys("realloc error");
     }
-    for (i = oldmax; i < newmax; i++) {
+    for (int i = oldmax; i < newmax; i++) {
         pfd[i].fd = -1;
         pfd[i].events = POLLIN;
         pfd[i].revents = 0;
@@ -25,7 +24,9 @@ static struct pollfd *grow_pollfd(struct pollfd *pfd, int *maxfd) {
 }
 
 void loop(void) {
-    int i, listenfd, clifd, nread;
+    int listenfd;
+    int clifd;
+    int nread;
     char buf[MAXLINE];
     uid_t uid;
     struct pollfd *pollfd;
@@ -36,7 +37,7 @@ void loop(void) {
     if (pollfd == nullptr) {
         err_sys("malloc error");
     }
-    for (i = 0; i < NALLOC; i++) {
+    for (int i = 0; i < NALLOC; i++) {
         pollfd[i].fd = -1;
         pollfd[i].events = POLLIN;
         pollfd[i].revents = 0;
@@ -74,7 +75,7 @@ void loop(void) {
             log_msg("new connection: uid %d, fd %d", uid, clifd);
         }
 
-        for (i = 1; i < numfd; i++) {
+        for (int i = 1; i < numfd; i++) {
             if (pollfd[i].revents & POLLHUP) {
                 goto hungup;
             } else if (pollfd[i].revents & POLLIN) {

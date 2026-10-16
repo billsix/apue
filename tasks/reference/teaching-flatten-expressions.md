@@ -62,13 +62,15 @@ still applies.
 
 ## Status
 
-The tree currently still uses the nested idiom (it was modernized for types/const/etc., not de-nested).
-Applying this convention across the examples is tracked in `tasks/flatten-nested-expressions.md`
-(proposed) — until then, follow it in any **new** or **touched** example code.
+**Applied tree-wide (2026-10-16.)** Every assignment folded into a condition across `apue.3e/` was
+de-nested, with declarations pulled to first use where that newly helped — see
+`tasks/archive/2026/10/16/flatten-nested-expressions.md`. The one deliberate exception is
+`stdio/getcharbug.c`, where the folded `char`-typed `while ((c = getchar()) != EOF)` IS the bug the
+program teaches (kept, with an in-code note). Follow this convention in any new or touched example code.
 
 ## Cross-links
 
-- `tasks/flatten-nested-expressions.md` — the tree-wide application task (proposed).
+- `tasks/archive/2026/10/16/flatten-nested-expressions.md` — the tree-wide application (done).
 - `tasks/archive/2026/10/16/modernize-to-modern-c.md` — the modern-C pass (behavior-preservation oracle).
 - github.com/billsix/runClaudeInContainer:tasks/reference/c-coding-standard.md — the shared standard this
   overrides for the example tree.

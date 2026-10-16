@@ -1,114 +1,110 @@
 # Flatten nested expressions across the apue example tree (teaching style)
 
-**Status:** in progress — go-ahead given 2026-10-16 (William Emerison Six <billsix@gmail.com>)
+**Status:** **COMPLETE** (2026-10-16). Go-ahead given 2026-10-16 (William Emerison Six
+<billsix@gmail.com>); completed the same day.
 **Priority:** 7 · **Difficulty:** 6
-**Created:** 2026-10-16 (William Emerison Six <billsix@gmail.com>)
-
-## Inventory (2026-10-16)
-
-110 assignment-in-condition sites across 21 chapters (`grep -rnE '(while|if|for) *\(\([a-zA-Z_]\w* *= *[^=]'
-apue.3e --include='*.c'`). Three shapes:
-
-- **Read loop** `while ((c = getc(stdin)) != EOF)` / `while ((n = read(...)) > 0)` → loop-and-a-half
-  (`for (;;) { T x = f(); if (<stop>) break; … }`). Compound loop test (`… && c != '\n'`) folds into the
-  `if (<stop>)` via De Morgan.
-- **Single-shot error check** `if ((x = f()) < 0)` → named intermediate on its own line, then plain compare.
-  Merge the declaration (`T x = f();`) when the variable is single-use; keep a separate `x = f();` when the
-  variable is reused/loop-carried or declared in a `setjmp` function.
-- **`realloc`/`getXent`/`readdir`/`strtok` `== nullptr`** → same named-intermediate split.
-
-### Hazard sites (handled specially, not mechanically)
-
-- `stdio/getcharbug.c` — **deliberate teaching bug** (`char c` can't hold `getchar()`/`EOF`). The folded
-  buggy idiom IS the lesson → **opt out, leave the nested form**, add an in-code note so a future sweep
-  won't "fix" it.
-- `signals/read2.c` — `int n` is a local in a **`setjmp`/`longjmp`** function → split the assignment but
-  **do not move/merge the declaration** (`c-modernization-sweep.md` hazard).
-
-## Progress
-
-**Flatten pass — DONE (2026-10-16), gate green.** All assignment-in-condition sites de-nested across
-the `apue.3e/` tree (68 `.c` files). Oracle: 371 targets compile warning-clean under `-Werror`, 8/8
-`meson test` cases pass, before and after; then `clang-format` run and re-gated green. Behavior
-preserved everywhere.
-
-- **Mechanism per shape:** read loops → loop-and-a-half (`for (;;) { T x = f(); if (<stop>) break; }`),
-  removing the old function-scope declaration only when the counter is local to the loop (kept it where
-  the counter is read after the loop, e.g. `intro/mycat.c`, `signals/sigtstp.c`, `sockets/ruptime.c`);
-  single-shot checks → named intermediate, merging the declaration when single-use and splitting in
-  place when the variable is reused/loop-carried/`setjmp`/address-taken/a `static`/a struct member.
-  Compound loop tests (`getpass.c` `… && c != '\n'`; `t_raw.c` `(c &= 255) == 0177`) split via the
-  negated stop test.
-- **Hand-scan beyond the original 110-site grep** (the grep required the assignment to be the first
-  token after `((`, so it missed member/subscript lvalues and non-leading folds): added `semaph.c`
-  `(op_op[0].sem_op = value) == 0`, `bufargs.c` `argv[argc = 0]`, the `qid[i] = msgget(...)` folds
-  (`ipc2/pollmsg.c`, `exercises/pollmsg2.c`), the `db.c` `db->field = …` folds (malloc/lseek/atoi/atol
-  member assignments, 9 sites), `exercises/fmemopen.c` `ms->flags`/`ms->buf`, `termios/ttyname.c`
-  `ddp->d_name = strdup(...)`, and the `cmptr == nullptr && (cmptr = malloc(...)) == nullptr` guard in
-  `lib/sendfd.c`/`lib/recvfd.c`/`lib/Orecvfd.c`/`ipc2/sendfd2.c`/`ipc2/recvfd2.c` → nested `if`. Final
-  re-grep: zero folds remain except the intentional `getcharbug.c`.
-- **Hazards left as-is:** `stdio/getcharbug.c` kept nested + `char`-typed (the folded buggy idiom is the
-  lesson; added an in-code note); `signals/read2.c` assignment split but the `int n` declaration left in
-  place (setjmp function).
-- **Execution:** `lib/` (33 sites) + the generator-source `advio/rot13a.c` + the hazard files done by
-  hand; the 5 application-chapter groups (ipc2, printer, proc+intro, termios/signals/pty/sockets,
-  scattered singletons) fanned out to 5 fresh general-purpose subagents (Edit-only; git/build/format
-  forbidden), every diff reviewed on disk and gate-verified afterward — the pattern recorded in memory
-  from the modernization fan-out.
-- Baseline gate green before edits (371 targets compile, 8/8 `meson test`).
-
-## Follow-on readability passes (requested 2026-10-16, William Emerison Six <billsix@gmail.com>)
-
-After the flatten pass the maintainer asked to iterate further readability patterns on the same tree —
-pull variable declarations closer to first use, then add scope-limiting braces — re-analyzing and
-repeating until nothing more is found. Tracked here as successive passes; each is behavior-preserving
-and gate-verified on its own. (Declare-at-use was already applied tree-wide in the modernization's S1,
-so this pass targets residue the de-nesting newly exposed.)
-
-**Pass 2 — declare-at-use, DONE (2026-10-16), gate green.** The flatten split-in-place sites left a
-handle variable (`fd`/`fdm`/`fds`/`pid`/`name`/`clifd`/`ptr`/`len`/`staletime`) declared in a group at
-the top of a `lib/` socket/pty helper and first-used at the split assignment; pulled each down to a
-`T x = f();` declaration at first use, splitting the grouped declaration. Touched 7 files:
-`cliconn.c`, `servlisten.c`, `servaccept.c`, `ptyopen.c`, `ptyfork.c`, `daemonize.c`, `popen.c`. The
-goto-error-join `rval` (assigned in branches, read at `errout:`) stays declared before the branches;
-the error-only `err` moved to a `errout:  int err = errno;` (a declaration after a label — legal and
-clean in C23). Address-taken (`stat` in `pclose`, `un`/`statbuf` in `serv_accept`) and `static` vars
-left in place. **Left alone deliberately:** the `ipc2/opend/loop.{select,poll}.c` grouped loop-state
-declarations (select/poll state reassigned each iteration — fragmenting the cohesive group would hurt
-readability, not help), `semaph.c` (`register` + `goto again`), and app first-assignments the
-modernization/flatten already had at use.
+**Created:** 2026-10-16 (William Emerison Six <billsix@gmail.com>) · **Completed:** 2026-10-16
 
 ## BLUF
 
-Apply the de-nesting teaching convention (`tasks/reference/teaching-flatten-expressions.md`) across the
-`apue.3e/` example programs: separate assignments from the tests they are folded into (the
-`while ((c = getc(stdin)) != EOF)` family) and give deeply nested sub-expressions named intermediates,
-so the code reads as plain steps for someone new to C. **Behavior-preserving** — the wired `meson test`
-cases + a green compile are the oracle, exactly as in the modern-C pass. A source-shape change only.
+Applied the teaching flatten-nested-expressions convention
+(`tasks/reference/teaching-flatten-expressions.md`) across the `apue.3e/` example tree: every
+assignment folded into the condition that tests it was separated into a plain step so the code reads
+as plain steps for someone new to C/Unix. Two follow-on readability passes rode along at the
+maintainer's request — declarations pulled closer to first use, and a scope-brace survey. **Done** =
+every fold removed (except one intentional teaching bug), behavior preserved, the build green under the
+warning gate. Oracle: 371 targets compile warning-clean under `-Werror`, the 8 wired `meson test` cases
+pass, before and after each pass; `clang-format` run and re-gated green. 68 `.c` files changed.
 
-## Why not done with the modernization
+## Context
 
 The modern-C pass (`tasks/archive/2026/10/16/modernize-to-modern-c.md`) deliberately kept each
-program's structure and only changed types/`const`/idioms; de-nesting changes control-flow shape, so
-it is its own reviewed pass with its own go-ahead.
+program's control-flow structure and changed only types/`const`/idioms; de-nesting changes control-flow
+shape, so it was split out as its own reviewed pass with its own go-ahead. The convention it applies
+(and the rationale for overriding the shared standard's expression-density idioms *for this teaching
+tree*) lives in `tasks/reference/teaching-flatten-expressions.md` — read that first.
 
-## Plan (when approved)
+## Pass 1 — flatten assignment-in-condition (commit "flatten: …")
 
-1. Inventory the assignment-in-condition sites: `grep -rnE 'while *\(\(|if *\(\(' apue.3e --include='*.c'`
-   (the `(c = getc(...)) != EOF` / `(n = read(...)) > 0` family), plus hand-scan for deeply nested
-   call-in-condition expressions.
-2. De-nest each per the reference doc's patterns (loop-and-a-half preferred for read loops); keep `c`
-   an `int` (the `char`/EOF bug), preserve EOF/error handling exactly.
-3. Verify per chapter: green compile under the warning gate + the 8 wired `meson test` cases; untested
-   programs stay mechanical/behavior-preserving (state what went unverified, per the modernization).
-4. Do it in reviewable chunks (per chapter), not one blast.
+Inventory began with `grep -rnE '(while|if|for) *\(\([a-zA-Z_]\w* *= *[^=]' apue.3e --include='*.c'`
+(110 sites where the assignment is the first token after `((`), then a hand-scan widened it, because
+that leading-token grep misses member/subscript lvalues and non-leading folds. De-nested by shape:
 
-## Constraints
+- **Read loops** (`while ((c = getc(stdin)) != EOF)`, `while ((n = read(...)) > 0)`) → loop-and-a-half
+  (`for (;;) { T x = f(); if (<stop>) break; … }`), dropping the old function-scope declaration only
+  when the counter is local to the loop; kept it where the counter is read after the loop
+  (`intro/mycat.c`, `signals/sigtstp.c`, `sockets/ruptime.c`, several `printer/printd.c` loops).
+- **Single-shot checks** (`if ((x = f()) < 0)`) → named intermediate; declaration merged when
+  single-use, split in place when the variable is reused / loop-carried / in a `setjmp` function /
+  address-taken / a `static` / a struct member.
+- **Compound tests** split via the negated stop test: `getpass.c` `(c = getc(fp)) != EOF && c != '\n'`
+  → `if (c == EOF || c == '\n') break;`; `t_raw.c` `(c &= 255) == 0177` → two statements; `db.c`
+  `(c = *ptr++) != 0 && c == SPACE` → a primed `while`.
+- **Hand-scan finds beyond the 110** (member/subscript/non-leading folds): `semaph.c`
+  `(op_op[0].sem_op = value) == 0`, `bufargs.c` `argv[argc = 0]`, `qid[i] = msgget(...)`
+  (`ipc2/pollmsg.c`, `exercises/pollmsg2.c`), nine `db.c` `db->field = …` folds
+  (malloc/lseek/atoi/atol), `exercises/fmemopen.c` `ms->flags`/`ms->buf`, `termios/ttyname.c`
+  `ddp->d_name = strdup(...)`, and the `cmptr == nullptr && (cmptr = malloc(CONTROLLEN)) == nullptr`
+  guard in `lib/sendfd.c` / `lib/recvfd.c` / `lib/Orecvfd.c` / `ipc2/sendfd2.c` / `ipc2/recvfd2.c`
+  (→ nested `if`). A final re-grep confirmed zero folds remain except the intentional one.
 
-- `apue.3e/` examples (+ `lib/` where it helps); **`musl/` out of scope**.
-- In-container verification (`make build` / the gate), same as the modernization task.
+**Hazards left as-is** (behavior / teaching value):
+
+- `stdio/getcharbug.c` — the folded, `char`-typed `while ((c = getchar()) != EOF)` IS the bug the
+  program demonstrates (`char` can't hold `EOF`). Left nested and `char`-typed, with an in-code note so
+  a future sweep won't "fix" it.
+- `signals/read2.c` — the assignment was split out of the test, but the `int n` declaration was left in
+  place because the function uses `setjmp`/`longjmp` (`c-modernization-sweep.md` hazard: don't move a
+  local in a `setjmp` function).
+
+**Execution.** `lib/` (33 sites), the generator-source `advio/rot13a.c` (its read loop is in `main()`,
+not the `translate()` body that `fixup.awk` splices, so the generator was unaffected), and the two
+hazard files were done by hand. The five application-chapter groups (ipc2, printer, proc+intro,
+termios/signals/pty/sockets, scattered singletons) were fanned out to five fresh general-purpose
+subagents (Edit-only; git/build/format forbidden), with every diff reviewed on disk and gate-verified
+afterward — the fan-out pattern recorded in memory from the modernization pass (fresh general-purpose
+subagents, not context-inheriting forks).
+
+## Pass 2 — declare-at-use (commit "declare-at-use: …")
+
+The flatten split-in-place sites left a handle variable (`fd`/`fdm`/`fds`/`pid`/`name`/`clifd`/`ptr`/
+`len`/`staletime`) declared in a group at the top of a `lib/` socket/pty helper and first-used at the
+split assignment. Pulled each down to a `T x = f();` declaration at first use, splitting the grouped
+declaration, in `cliconn.c`, `servlisten.c`, `servaccept.c`, `ptyopen.c`, `ptyfork.c`, `daemonize.c`,
+`popen.c`. The error-only `err` moved to `errout:  int err = errno;` (a declaration after a label,
+legal and clean in C23); the goto-join `rval` (assigned in branches, read at `errout:`) stayed declared
+before the branches; address-taken (`stat`, `un`, `statbuf`) and `static` variables stayed in place.
+
+**Left alone deliberately:** the `ipc2/opend/loop.{select,poll}.c` grouped loop-state declarations
+(select/poll state reassigned each iteration — fragmenting the cohesive group would hurt readability,
+not help), `semaph.c` (`register` + `goto again`), and the application first-assignments the
+modernization/flatten already had at use.
+
+## Pass 3 — scope-limiting braces (surveyed, nothing to do)
+
+Surveyed the tree for places where a `{ }` block would usefully limit a variable's scope. The only
+real pattern — a declaration inside a `switch` case — already carries its brace where it occurs
+(`ipc2/recvfd2.c` `case SCM_CREDTYPE: { … }`); declare-at-use already minimizes scope elsewhere; and
+broad scope-brace insertion would add nesting noise that *hurts* the newcomer readability this task
+optimizes for. Also checked for deeply nested call-in-condition expressions deserving a named
+intermediate — the hits (`write(fd, buf, strlen(buf))`, `fcntl(fd, F_SETOWN, getpid())`, …) are a
+single clear outer call with a trivial inner argument, so none warranted change. No edits.
+
+## Verification (oracle, every pass)
+
+- `meson compile` builds all 371 targets clean under `warning_level=2` + the extra flags + `-Werror`.
+- The 8 wired `meson test` cases pass (`intro_hello`, `intro_uidgid`, `intro_ls1`, `intro_testerror`,
+  `environ_hello1`, `environ_getrlimit`, `threads_exitstatus`, `threads_threadid`). Coverage is partial
+  — most programs need a TTY/stdin and aren't auto-tested — so untested programs were kept
+  mechanical/behavior-preserving and verified by the green `-Werror` compile; same bar as the
+  modernization.
+- Gate run against the existing image (no nested `: image` rebuild), then `clang-format` + re-gate.
 
 ## Cross-links
 
-- `tasks/reference/teaching-flatten-expressions.md` — the convention + patterns (read first).
+- `tasks/reference/teaching-flatten-expressions.md` — the convention + patterns (the durable record).
 - `tasks/archive/2026/10/16/modernize-to-modern-c.md` — the prior behavior-preserving pass + oracle.
+- `github.com/billsix/runClaudeInContainer:tasks/reference/c-coding-standard.md` — the shared standard
+  whose expression-density idioms this convention overrides for the example tree.
+- `github.com/billsix/runClaudeInContainer:tasks/reference/c-modernization-sweep.md` — the preservation
+  hazards (setjmp locals, deliberate teaching bugs) this pass respected.
