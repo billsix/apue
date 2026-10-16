@@ -29,8 +29,13 @@ int main(void) {
         err_sys("tty_raw error");
     }
     printf("Enter raw mode characters, terminate with DELETE\n");
-    while ((i = read(STDIN_FILENO, &c, 1)) == 1) {
-        if ((c &= 255) == 0177) { /* 0177 = ASCII DELETE */
+    for (;;) {
+        i = read(STDIN_FILENO, &c, 1);
+        if (i != 1) {
+            break;
+        }
+        c &= 255;
+        if (c == 0177) { /* 0177 = ASCII DELETE */
             break;
         }
         printf("%o\n", c);
@@ -45,7 +50,11 @@ int main(void) {
         err_sys("tty_cbreak error");
     }
     printf("\nEnter cbreak mode characters, terminate with SIGINT\n");
-    while ((i = read(STDIN_FILENO, &c, 1)) == 1) {
+    for (;;) {
+        i = read(STDIN_FILENO, &c, 1);
+        if (i != 1) {
+            break;
+        }
         c &= 255;
         printf("%o\n", c);
     }

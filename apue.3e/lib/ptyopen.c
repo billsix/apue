@@ -13,7 +13,8 @@ int ptym_open(char *pts_name, int pts_namesz) {
     char *ptr;
     int fdm, err;
 
-    if ((fdm = posix_openpt(O_RDWR)) < 0) {
+    fdm = posix_openpt(O_RDWR);
+    if (fdm < 0) {
         return (-1);
     }
     if (grantpt(fdm) < 0) { /* grant access to slave */
@@ -22,7 +23,8 @@ int ptym_open(char *pts_name, int pts_namesz) {
     if (unlockpt(fdm) < 0) { /* clear slave's lock flag */
         goto errout;
     }
-    if ((ptr = ptsname(fdm)) == nullptr) { /* get slave's name */
+    ptr = ptsname(fdm); /* get slave's name */
+    if (ptr == nullptr) {
         goto errout;
     }
 
@@ -46,7 +48,8 @@ int ptys_open(char *pts_name) {
     int err, setup;
 #endif
 
-    if ((fds = open(pts_name, O_RDWR)) < 0) {
+    fds = open(pts_name, O_RDWR);
+    if (fds < 0) {
         return (-1);
     }
 
@@ -54,7 +57,8 @@ int ptys_open(char *pts_name) {
     /*
      * Check if stream is already set up by autopush facility.
      */
-    if ((setup = ioctl(fds, I_FIND, "ldterm")) < 0) {
+    setup = ioctl(fds, I_FIND, "ldterm");
+    if (setup < 0) {
         goto errout;
     }
 

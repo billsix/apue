@@ -5,9 +5,11 @@
 #include "apue.h"
 
 int main(void) {
-    int c;
-
-    while ((c = getchar()) != EOF) {
+    for (;;) {
+        int c = getchar();
+        if (c == EOF) {
+            break;
+        }
         if (isupper(c)) {
             c = tolower(c);
         }

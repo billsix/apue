@@ -29,7 +29,8 @@ void daemonize(const char *cmd) {
     /*
      * Become a session leader to lose controlling TTY.
      */
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         err_quit("%s: can't fork", cmd);
     } else if (pid != 0) { /* parent */
         exit(0);
@@ -45,7 +46,8 @@ void daemonize(const char *cmd) {
     if (sigaction(SIGHUP, &sa, nullptr) < 0) {
         err_quit("%s: can't ignore SIGHUP", cmd);
     }
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         err_quit("%s: can't fork", cmd);
     } else if (pid != 0) { /* parent */
         exit(0);

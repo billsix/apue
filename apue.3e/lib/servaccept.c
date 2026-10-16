@@ -27,11 +27,13 @@ int serv_accept(int listenfd, uid_t *uidptr) {
     char *name;
 
     /* allocate enough space for longest name plus terminating null */
-    if ((name = malloc(sizeof(un.sun_path) + 1)) == nullptr) {
+    name = malloc(sizeof(un.sun_path) + 1);
+    if (name == nullptr) {
         return (-1);
     }
     len = sizeof(un);
-    if ((clifd = accept(listenfd, (struct sockaddr *)&un, &len)) < 0) {
+    clifd = accept(listenfd, (struct sockaddr *)&un, &len);
+    if (clifd < 0) {
         free(name);
         return (-2); /* often errno=EINTR, if signal caught */
     }

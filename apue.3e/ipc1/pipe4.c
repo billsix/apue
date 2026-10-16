@@ -34,7 +34,8 @@ int main(void) {
             if (write(fd1[1], line, n) != n) {
                 err_sys("write error to pipe");
             }
-            if ((n = read(fd2[0], line, MAXLINE)) < 0) {
+            n = read(fd2[0], line, MAXLINE);
+            if (n < 0) {
                 err_sys("read error from pipe");
             }
             if (n == 0) {

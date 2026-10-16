@@ -363,8 +363,11 @@ void build_qonstart(void) {
     if (dirp == nullptr) {
         return;
     }
-    struct dirent *entp;
-    while ((entp = readdir(dirp)) != nullptr) {
+    for (;;) {
+        struct dirent *entp = readdir(dirp);
+        if (entp == nullptr) {
+            break;
+        }
         /*
          * Skip "." and ".."
          */
@@ -462,8 +465,11 @@ void *client_thread(void *arg) {
      */
     bool first = true;
     char buf[IOBUFSZ];
-    int nr;
-    while ((nr = tread(sockfd, buf, IOBUFSZ, 20)) > 0) {
+    for (;;) {
+        int nr = tread(sockfd, buf, IOBUFSZ, 20);
+        if (nr <= 0) {
+            break;
+        }
         if (first) {
             first = false;
             if (strncmp(buf, "%!PS", 4) != 0) {
@@ -730,7 +736,8 @@ void *printer_thread([[maybe_unused]] void *arg) {
          * Send job to printer.
          */
         snprintf(name, sizeof(name), "%s/%s/%d", SPOOLDIR, DATADIR, jp->jobid);
-        if ((fd = open(name, O_RDONLY)) < 0) {
+        fd = open(name, O_RDONLY);
+        if (fd < 0) {
             log_msg("job %d canceled - can't open %s: %s", jp->jobid, name,
                     strerror(errno));
             free(jp);
@@ -743,8 +750,9 @@ void *printer_thread([[maybe_unused]] void *arg) {
             close(fd);
             continue;
         }
-        if ((sockfd = connect_retry(AF_INET, SOCK_STREAM, 0, printer->ai_addr,
-                                    printer->ai_addrlen)) < 0) {
+        sockfd = connect_retry(AF_INET, SOCK_STREAM, 0, printer->ai_addr,
+                               printer->ai_addrlen);
+        if (sockfd < 0) {
             log_msg("job %d deferred - can't contact printer: %s", jp->jobid,
                     strerror(errno));
             goto defer;
@@ -819,8 +827,13 @@ void *printer_thread([[maybe_unused]] void *arg) {
             }
         }
 
-        while ((nr = read(fd, buf, IOBUFSZ)) > 0) {
-            if ((nw = writen(sockfd, buf, nr)) != nr) {
+        for (;;) {
+            nr = read(fd, buf, IOBUFSZ);
+            if (nr <= 0) {
+                break;
+            }
+            nw = writen(sockfd, buf, nr);
+            if (nw != nr) {
                 if (nw < 0) {
                     log_ret("can't write to printer");
                 } else {
@@ -915,7 +928,11 @@ int printer_status(int sfd, const struct job *jp) {
         log_sys("printer_status: can't allocate read buffer");
     }
 
-    while ((nr = tread(sfd, bp, bufsz, 5)) > 0) {
+    for (;;) {
+        nr = tread(sfd, bp, bufsz, 5);
+        if (nr <= 0) {
+            break;
+        }
         /*
          * Find the status.  Response starts with "HTTP/x.y"
          * so we can skip the first 8 characters.
@@ -959,7 +976,8 @@ int printer_status(int sfd, const struct job *jp) {
                     i++;
                 }
                 if (i >= datsz) { /* get more header */
-                    if ((nr = readmore(sfd, &bp, i, &bufsz)) < 0) {
+                    nr = readmore(sfd, &bp, i, &bufsz);
+                    if (nr < 0) {
                         goto out;
                     } else {
                         cp = &bp[i];
@@ -986,7 +1004,8 @@ int printer_status(int sfd, const struct job *jp) {
                 }
             }
             if (i >= datsz) { /* get more header */
-                if ((nr = readmore(sfd, &bp, i, &bufsz)) < 0) {
+                nr = readmore(sfd, &bp, i, &bufsz);
+                if (nr < 0) {
                     goto out;
                 } else {
                     cp = &bp[i];
@@ -1007,7 +1026,8 @@ int printer_status(int sfd, const struct job *jp) {
                     i++;
                 }
                 if (i >= datsz) { /* get more header */
-                    if ((nr = readmore(sfd, &bp, i, &bufsz)) < 0) {
+                    nr = readmore(sfd, &bp, i, &bufsz);
+                    if (nr < 0) {
                         goto out;
                     } else {
                         cp = &bp[i];
@@ -1017,7 +1037,8 @@ int printer_status(int sfd, const struct job *jp) {
             }
 
             if (datsz - i < len) { /* get more header */
-                if ((nr = readmore(sfd, &bp, i, &bufsz)) < 0) {
+                nr = readmore(sfd, &bp, i, &bufsz);
+                if (nr < 0) {
                     goto out;
                 } else {
                     cp = &bp[i];

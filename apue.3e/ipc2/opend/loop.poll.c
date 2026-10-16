@@ -11,7 +11,8 @@ static struct pollfd *grow_pollfd(struct pollfd *pfd, int *maxfd) {
     int oldmax = *maxfd;
     int newmax = oldmax + NALLOC;
 
-    if ((pfd = realloc(pfd, newmax * sizeof(struct pollfd))) == nullptr) {
+    pfd = realloc(pfd, newmax * sizeof(struct pollfd));
+    if (pfd == nullptr) {
         err_sys("realloc error");
     }
     for (i = oldmax; i < newmax; i++) {
@@ -31,7 +32,8 @@ void loop(void) {
     int numfd = 1;
     int maxfd = NALLOC;
 
-    if ((pollfd = malloc(NALLOC * sizeof(struct pollfd))) == nullptr) {
+    pollfd = malloc(NALLOC * sizeof(struct pollfd));
+    if (pollfd == nullptr) {
         err_sys("malloc error");
     }
     for (i = 0; i < NALLOC; i++) {
@@ -41,7 +43,8 @@ void loop(void) {
     }
 
     /* obtain fd to listen for client requests on */
-    if ((listenfd = serv_listen(CS_OPEN)) < 0) {
+    listenfd = serv_listen(CS_OPEN);
+    if (listenfd < 0) {
         log_sys("serv_listen error");
     }
     client_add(listenfd, 0); /* we use [0] for listenfd */
@@ -54,7 +57,8 @@ void loop(void) {
 
         if (pollfd[0].revents & POLLIN) {
             /* accept new client request */
-            if ((clifd = serv_accept(listenfd, &uid)) < 0) {
+            clifd = serv_accept(listenfd, &uid);
+            if (clifd < 0) {
                 log_sys("serv_accept error: %d", clifd);
             }
             client_add(clifd, uid);
@@ -75,7 +79,8 @@ void loop(void) {
                 goto hungup;
             } else if (pollfd[i].revents & POLLIN) {
                 /* read argument buffer from client */
-                if ((nread = read(pollfd[i].fd, buf, MAXLINE)) < 0) {
+                nread = read(pollfd[i].fd, buf, MAXLINE);
+                if (nread < 0) {
                     log_sys("read error on fd %d", pollfd[i].fd);
                 } else if (nread == 0) {
                 hungup:

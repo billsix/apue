@@ -45,7 +45,8 @@ int main(void) {
             if (size > MAXSZ) {
                 err_quit("giving up");
             }
-            if ((path = realloc(path, size)) == nullptr) {
+            path = realloc(path, size);
+            if (path == nullptr) {
                 err_sys("realloc error");
             }
         }

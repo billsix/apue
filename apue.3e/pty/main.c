@@ -19,7 +19,6 @@ void loop(int, bool);         /* in the file loop.c */
 
 int main(int argc, char *argv[]) {
     int fdm;
-    int c;
     bool interactive = isatty(STDIN_FILENO);
     bool ignoreeof = false;
     bool noecho = false;
@@ -31,7 +30,11 @@ int main(int argc, char *argv[]) {
     struct winsize size;
 
     opterr = 0; /* don't want getopt() writing to stderr */
-    while ((c = getopt(argc, argv, OPTSTR)) != EOF) {
+    for (;;) {
+        int c = getopt(argc, argv, OPTSTR);
+        if (c == EOF) {
+            break;
+        }
         switch (c) {
             case 'd': /* driver for stdin/stdout */
                 driver = optarg;

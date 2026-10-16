@@ -3,9 +3,8 @@
 #include "apue.h"
 
 int set_cloexec(int fd) {
-    int val;
-
-    if ((val = fcntl(fd, F_GETFD, 0)) < 0) {
+    int val = fcntl(fd, F_GETFD, 0);
+    if (val < 0) {
         return (-1);
     }
 

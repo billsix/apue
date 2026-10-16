@@ -31,7 +31,8 @@ FILE *popen(const char *cmdstring, const char *type) {
     if (childpid == nullptr) { /* first time through */
         /* allocate zeroed out array for child pids */
         maxfd = open_max();
-        if ((childpid = calloc(maxfd, sizeof(pid_t))) == nullptr) {
+        childpid = calloc(maxfd, sizeof(pid_t));
+        if (childpid == nullptr) {
             return (nullptr);
         }
     }
@@ -46,7 +47,8 @@ FILE *popen(const char *cmdstring, const char *type) {
         return (nullptr);
     }
 
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         return (nullptr);  /* errno set by fork() */
     } else if (pid == 0) { /* child */
         if (*type == 'r') {
@@ -77,12 +79,14 @@ FILE *popen(const char *cmdstring, const char *type) {
     /* parent continues... */
     if (*type == 'r') {
         close(pfd[1]);
-        if ((fp = fdopen(pfd[0], type)) == nullptr) {
+        fp = fdopen(pfd[0], type);
+        if (fp == nullptr) {
             return (nullptr);
         }
     } else {
         close(pfd[0]);
-        if ((fp = fdopen(pfd[1], type)) == nullptr) {
+        fp = fdopen(pfd[1], type);
+        if (fp == nullptr) {
             return (nullptr);
         }
     }
@@ -105,7 +109,8 @@ int pclose(FILE *fp) {
         errno = EINVAL;
         return (-1); /* invalid file descriptor */
     }
-    if ((pid = childpid[fd]) == 0) {
+    pid = childpid[fd];
+    if (pid == 0) {
         errno = EINVAL;
         return (-1); /* fp wasn't opened by popen() */
     }

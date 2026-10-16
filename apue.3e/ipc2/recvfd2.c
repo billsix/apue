@@ -54,12 +54,16 @@ int recv_ufd(int fd, uid_t *uidptr,
         msg.msg_iovlen = 1;
         msg.msg_name = nullptr;
         msg.msg_namelen = 0;
-        if (cmptr == nullptr && (cmptr = malloc(CONTROLLEN)) == nullptr) {
-            return (-1);
+        if (cmptr == nullptr) {
+            cmptr = malloc(CONTROLLEN);
+            if (cmptr == nullptr) {
+                return (-1);
+            }
         }
         msg.msg_control = cmptr;
         msg.msg_controllen = CONTROLLEN;
-        if ((nr = recvmsg(fd, &msg, 0)) < 0) {
+        nr = recvmsg(fd, &msg, 0);
+        if (nr < 0) {
             err_ret("recvmsg error");
             return (-1);
         } else if (nr == 0) {

@@ -27,7 +27,8 @@ int main(void) {
 
         /* parent */
         int status;
-        if ((pid = waitpid(pid, &status, 0)) < 0) {
+        pid = waitpid(pid, &status, 0);
+        if (pid < 0) {
             err_sys("waitpid error");
         }
         printf("%% ");

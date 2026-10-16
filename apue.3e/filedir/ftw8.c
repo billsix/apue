@@ -55,7 +55,8 @@ myftw(char *pathname, Myfunc *func) {
                                      /* ({Prog pathalloc}) */
     if (pathlen <= strlen(pathname)) {
         pathlen = strlen(pathname) * 2;
-        if ((fullpath = realloc(fullpath, pathlen)) == nullptr) {
+        fullpath = realloc(fullpath, pathlen);
+        if (fullpath == nullptr) {
             err_sys("realloc failed");
         }
     }
@@ -91,7 +92,8 @@ dopath(Myfunc *func) {
     size_t n = strlen(fullpath);
     if (n + NAME_MAX + 2 > pathlen) { /* expand path buffer */
         pathlen *= 2;
-        if ((fullpath = realloc(fullpath, pathlen)) == nullptr) {
+        fullpath = realloc(fullpath, pathlen);
+        if (fullpath == nullptr) {
             err_sys("realloc failed");
         }
     }
@@ -103,15 +105,19 @@ dopath(Myfunc *func) {
         return (func(fullpath, &statbuf, FTW_DNR));
     }
 
-    struct dirent *dirp;
-    while ((dirp = readdir(dp)) != nullptr) {
+    for (;;) {
+        struct dirent *dirp = readdir(dp);
+        if (dirp == nullptr) {
+            break;
+        }
         if (strcmp(dirp->d_name, ".") == 0 || strcmp(dirp->d_name, "..") == 0) {
             continue; /* ignore dot and dot-dot */
         }
         snprintf(&fullpath[n], pathlen - n, "%s",
-                 dirp->d_name);          /* append name after "/" */
-        if ((ret = dopath(func)) != 0) { /* recursive */
-            break;                       /* time to leave */
+                 dirp->d_name); /* append name after "/" */
+        ret = dopath(func);     /* recursive */
+        if (ret != 0) {
+            break; /* time to leave */
         }
     }
     fullpath[n - 1] = 0; /* erase everything from slash onward */

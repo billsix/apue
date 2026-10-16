@@ -104,7 +104,8 @@ int sem_create(key_t key, int initval) {
     }
 
 again:
-    if ((id = semget(key, 3, 0666 | IPC_CREAT)) < 0) {
+    id = semget(key, 3, 0666 | IPC_CREAT);
+    if (id < 0) {
         return (-1); /* permission problem or tables full */
     }
 
@@ -135,7 +136,8 @@ again:
      * then no one has initialized the semaphore yet.
      */
 
-    if ((semval = semctl(id, 1, GETVAL, 0)) < 0) {
+    semval = semctl(id, 1, GETVAL, 0);
+    if (semval < 0) {
         err_sys("can't GETVAL");
     }
 
@@ -189,7 +191,8 @@ int sem_open(key_t key) {
         return (-1); /* probably an ftok() error by caller */
     }
 
-    if ((id = semget(key, 3, 0)) < 0) {
+    id = semget(key, 3, 0);
+    if (id < 0) {
         return (-1); /* doesn't exist, or tables full */
     }
 
@@ -247,7 +250,8 @@ void sem_close(int id) {
      * sem_create().
      */
 
-    if ((semval = semctl(id, 1, GETVAL, 0)) < 0) {
+    semval = semctl(id, 1, GETVAL, 0);
+    if (semval < 0) {
         err_sys("can't GETVAL");
     }
 
@@ -281,7 +285,8 @@ void sem_signal(int id) { sem_op(id, 1); }
  */
 
 void sem_op(int id, int value) {
-    if ((op_op[0].sem_op = value) == 0) {
+    op_op[0].sem_op = value;
+    if (value == 0) {
         err_sys("can't have value == 0");
     }
 

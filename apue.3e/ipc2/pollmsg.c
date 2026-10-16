@@ -49,7 +49,8 @@ int main(void) {
     char buf[MAXMSZ];
 
     for (int i = 0; i < NQ; i++) {
-        if ((qid[i] = msgget((KEY + i), IPC_CREAT | 0666)) < 0) {
+        qid[i] = msgget((KEY + i), IPC_CREAT | 0666);
+        if (qid[i] < 0) {
             err_sys("msgget error");
         }
 

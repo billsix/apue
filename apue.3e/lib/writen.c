@@ -9,7 +9,8 @@ writen(int fd, const void *ptr, size_t n) {
 
     nleft = n;
     while (nleft > 0) {
-        if ((nwritten = write(fd, ptr, nleft)) < 0) {
+        nwritten = write(fd, ptr, nleft);
+        if (nwritten < 0) {
             if (nleft == n) {
                 return (-1); /* error, return -1 */
             } else {

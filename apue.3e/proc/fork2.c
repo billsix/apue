@@ -12,7 +12,8 @@ int main(void) {
     if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* first child */
-        if ((pid = fork()) < 0) {
+        pid = fork();
+        if (pid < 0) {
             err_sys("fork error");
         } else if (pid > 0) {
             exit(0); /* parent from second fork == first child */

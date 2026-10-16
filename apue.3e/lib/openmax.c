@@ -18,7 +18,8 @@ static long openmax = 0;
 long open_max(void) {
     if (openmax == 0) { /* first time through */
         errno = 0;
-        if ((openmax = sysconf(_SC_OPEN_MAX)) < 0) {
+        openmax = sysconf(_SC_OPEN_MAX);
+        if (openmax < 0) {
             if (errno == 0) {
                 openmax = OPEN_MAX_GUESS; /* it's indeterminate */
             } else {

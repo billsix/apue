@@ -10,12 +10,14 @@ char *pathname;
 Client *client = nullptr;
 
 int main(int argc, char *argv[]) {
-    int c;
-
     log_open("open.serv", LOG_PID, LOG_USER);
 
     opterr = 0; /* don't want getopt() writing to stderr */
-    while ((c = getopt(argc, argv, "d")) != EOF) {
+    for (;;) {
+        int c = getopt(argc, argv, "d");
+        if (c == EOF) {
+            break;
+        }
         switch (c) {
             case 'd': /* debug */
                 debug = log_to_stderr = 1;

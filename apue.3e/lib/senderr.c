@@ -8,9 +8,9 @@
  * using the send_fd()/recv_fd() protocol.
  */
 int send_err(int fd, int errcode, const char *msg) {
-    int n;
+    int n = strlen(msg);
 
-    if ((n = strlen(msg)) > 0) {
+    if (n > 0) {
         if (writen(fd, msg, n) != n) { /* send the error message */
             return (-1);
         }

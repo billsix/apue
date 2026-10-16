@@ -20,7 +20,11 @@ int main(void) {
     }
 
     alarm(10);
-    if ((n = read(STDIN_FILENO, line, MAXLINE)) < 0) {
+    /* n stays declared above: this function uses setjmp/longjmp, so its locals
+     * are left in place (c-modernization-sweep.md hazard). Split the assignment
+     * out of the test without moving the declaration. */
+    n = read(STDIN_FILENO, line, MAXLINE);
+    if (n < 0) {
         err_sys("read error");
     }
     alarm(0);

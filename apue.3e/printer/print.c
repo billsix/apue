@@ -28,8 +28,11 @@ void submit_file(int, int, const char *, size_t, bool);
 int main(int argc, char *argv[]) {
     int err = 0;
     bool text = false;
-    int c;
-    while ((c = getopt(argc, argv, "t")) != -1) {
+    for (;;) {
+        int c = getopt(argc, argv, "t");
+        if (c == -1) {
+            break;
+        }
         switch (c) {
             case 't':
                 text = true;
@@ -136,7 +139,11 @@ void submit_file(int fd, int sockfd, const char *fname, size_t nbytes,
      */
     char buf[IOBUFSZ];
     int nr;
-    while ((nr = read(fd, buf, IOBUFSZ)) != 0) {
+    for (;;) {
+        nr = read(fd, buf, IOBUFSZ);
+        if (nr == 0) {
+            break;
+        }
         nw = writen(sockfd, buf, nr);
         if (nw != nr) {
             if (nw < 0) {
@@ -151,8 +158,8 @@ void submit_file(int fd, int sockfd, const char *fname, size_t nbytes,
      * Read the response.
      */
     struct printresp res;
-    if ((nr = readn(sockfd, &res, sizeof(struct printresp))) !=
-        sizeof(struct printresp)) {
+    nr = readn(sockfd, &res, sizeof(struct printresp));
+    if (nr != sizeof(struct printresp)) {
         err_sys("can't read response from server");
     }
     if (res.retcode != 0) {

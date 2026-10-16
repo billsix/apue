@@ -42,7 +42,8 @@ FILE *fmemopen(void *__restrict buf, size_t size, const char *__restrict type) {
         errno = ENOMEM;
         return (nullptr);
     }
-    if ((ms->flags = type_to_flags(type)) == 0) {
+    ms->flags = type_to_flags(type);
+    if (ms->flags == 0) {
         errno = EINVAL;
         free(ms);
         return (nullptr);
@@ -53,7 +54,8 @@ FILE *fmemopen(void *__restrict buf, size_t size, const char *__restrict type) {
             free(ms);
             return (nullptr);
         }
-        if ((ms->buf = malloc(size)) == nullptr) {
+        ms->buf = malloc(size);
+        if (ms->buf == nullptr) {
             errno = ENOMEM;
             free(ms);
             return (nullptr);

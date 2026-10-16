@@ -4,9 +4,11 @@
 #include "apue.h"
 
 int main(void) {
-    int c;
-
-    while ((c = getc(stdin)) != EOF) {
+    for (;;) {
+        int c = getc(stdin);
+        if (c == EOF) {
+            break;
+        }
         if (putc(c, stdout) == EOF) {
             err_sys("output error");
         }

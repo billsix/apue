@@ -24,7 +24,8 @@ int serv_listen(const char *name) {
     }
 
     /* create a UNIX domain stream socket */
-    if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
+    fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (fd < 0) {
         return (-2);
     }
 
