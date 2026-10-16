@@ -1,5 +1,5 @@
-#include <stdio.h>     /* for printf */
-#include <sys/wait.h>  /* for WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG */
+#include <stdio.h>    /* for printf */
+#include <sys/wait.h> /* for WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG */
 
 #include "apue.h"
 

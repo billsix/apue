@@ -1,5 +1,6 @@
+#include <stdio.h>    /* for snprintf */
 #include <stdlib.h>   /* for malloc, free */
-#include <string.h>   /* for strlen, strcmp, strdup, strcpy, strcat, strncpy */
+#include <string.h>   /* for strlen, strcmp, strdup */
 #include <unistd.h>   /* for isatty */
 #include <limits.h>   /* for _POSIX_PATH_MAX */
 #include <dirent.h>   /* for DIR, struct dirent, opendir, readdir, closedir */
@@ -14,11 +15,8 @@ static struct devdir *head;
 static struct devdir *tail;
 static char pathname[_POSIX_PATH_MAX + 1];
 
-static void add(char *dirname) {
-    struct devdir *ddp;
-    int len;
-
-    len = strlen(dirname);
+static void add(const char *dirname) {
+    const int len = strlen(dirname);
 
     /*
      * Skip ., .., and /dev/fd.
@@ -31,17 +29,18 @@ static void add(char *dirname) {
     if (strcmp(dirname, "/dev/fd") == 0) {
         return;
     }
-    if ((ddp = malloc(sizeof(struct devdir))) == NULL) {
+    struct devdir *ddp = malloc(sizeof(struct devdir));
+    if (ddp == nullptr) {
         return;
     }
 
-    if ((ddp->d_name = strdup(dirname)) == NULL) {
+    if ((ddp->d_name = strdup(dirname)) == nullptr) {
         free(ddp);
         return;
     }
 
-    ddp->d_next = NULL;
-    if (tail == NULL) {
+    ddp->d_next = nullptr;
+    if (tail == nullptr) {
         head = ddp;
         tail = ddp;
     } else {
@@ -51,33 +50,28 @@ static void add(char *dirname) {
 }
 
 static void cleanup(void) {
-    struct devdir *ddp, *nddp;
-
-    ddp = head;
-    while (ddp != NULL) {
-        nddp = ddp->d_next;
+    struct devdir *ddp = head;
+    while (ddp != nullptr) {
+        struct devdir *nddp = ddp->d_next;
         free(ddp->d_name);
         free(ddp);
         ddp = nddp;
     }
-    head = NULL;
-    tail = NULL;
+    head = nullptr;
+    tail = nullptr;
 }
 
-static char *searchdir(char *dirname, struct stat *fdstatp) {
-    struct stat devstat;
-    DIR *dp;
-    int devlen;
-    struct dirent *dirp;
-
-    strcpy(pathname, dirname);
-    if ((dp = opendir(dirname)) == NULL) {
-        return (NULL);
+static char *searchdir(const char *dirname, const struct stat *fdstatp) {
+    snprintf(pathname, sizeof(pathname), "%s/", dirname);
+    DIR *dp = opendir(dirname);
+    if (dp == nullptr) {
+        return (nullptr);
     }
-    strcat(pathname, "/");
-    devlen = strlen(pathname);
-    while ((dirp = readdir(dp)) != NULL) {
-        strncpy(pathname + devlen, dirp->d_name, _POSIX_PATH_MAX - devlen);
+    const int devlen = strlen(pathname);
+    struct dirent *dirp;
+    while ((dirp = readdir(dp)) != nullptr) {
+        snprintf(pathname + devlen, sizeof(pathname) - devlen, "%s",
+                 dirp->d_name);
 
         /*
          * Skip aliases.
@@ -87,6 +81,7 @@ static char *searchdir(char *dirname, struct stat *fdstatp) {
             strcmp(pathname, "/dev/stderr") == 0) {
             continue;
         }
+        struct stat devstat;
         if (stat(pathname, &devstat) < 0) {
             continue;
         }
@@ -102,28 +97,25 @@ static char *searchdir(char *dirname, struct stat *fdstatp) {
     }
 
     closedir(dp);
-    return (NULL);
+    return (nullptr);
 }
 
 char *ttyname(int fd) {
-    struct stat fdstat;
-    struct devdir *ddp;
-    char *rval;
-
     if (isatty(fd) == 0) {
-        return (NULL);
+        return (nullptr);
     }
+    struct stat fdstat;
     if (fstat(fd, &fdstat) < 0) {
-        return (NULL);
+        return (nullptr);
     }
     if (S_ISCHR(fdstat.st_mode) == 0) {
-        return (NULL);
+        return (nullptr);
     }
 
-    rval = searchdir("/dev", &fdstat);
-    if (rval == NULL) {
-        for (ddp = head; ddp != NULL; ddp = ddp->d_next) {
-            if ((rval = searchdir(ddp->d_name, &fdstat)) != NULL) {
+    char *rval = searchdir("/dev", &fdstat);
+    if (rval == nullptr) {
+        for (struct devdir *ddp = head; ddp != nullptr; ddp = ddp->d_next) {
+            if ((rval = searchdir(ddp->d_name, &fdstat)) != nullptr) {
                 break;
             }
         }

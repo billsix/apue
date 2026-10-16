@@ -1,7 +1,7 @@
-#include <stdlib.h>    /* for malloc, free, exit */
-#include <time.h>      /* for clock_gettime, clock_nanosleep, struct timespec, CLOCK_REALTIME */
-#include <sys/time.h>  /* for gettimeofday, struct timeval */
-#include <pthread.h>   /* for pthread_mutex_init, pthread_mutex_lock, pthread_mutex_unlock, pthread_mutexattr_init, pthread_mutexattr_settype, pthread_mutex_t, pthread_mutexattr_t, PTHREAD_MUTEX_RECURSIVE */
+#include <stdlib.h> /* for malloc, free, exit */
+#include <time.h> /* for clock_gettime, clock_nanosleep, struct timespec, CLOCK_REALTIME */
+#include <sys/time.h> /* for gettimeofday, struct timeval */
+#include <pthread.h> /* for pthread_mutex_init, pthread_mutex_lock, pthread_mutex_unlock, pthread_mutexattr_init, pthread_mutexattr_settype, pthread_mutex_t, pthread_mutexattr_t, PTHREAD_MUTEX_RECURSIVE */
 
 #include "apue.h"
 
@@ -26,32 +26,28 @@ struct to_info {
 void clock_gettime(int id, struct timespec *tsp) {
     struct timeval tv;
 
-    gettimeofday(&tv, NULL);
+    gettimeofday(&tv, nullptr);
     tsp->tv_sec = tv.tv_sec;
     tsp->tv_nsec = tv.tv_usec * USECTONSEC;
 }
 #endif
 
 void *timeout_helper(void *arg) {
-    struct to_info *tip;
+    const struct to_info *tip = arg;
 
-    tip = (struct to_info *)arg;
-    clock_nanosleep(CLOCK_REALTIME, 0, &tip->to_wait, NULL);
+    clock_nanosleep(CLOCK_REALTIME, 0, &tip->to_wait, nullptr);
     (*tip->to_fn)(tip->to_arg);
     free(arg);
-    return (0);
+    return (nullptr);
 }
 
 void timeout(const struct timespec *when, void (*func)(void *), void *arg) {
     struct timespec now;
-    struct to_info *tip;
-    int err;
-
     clock_gettime(CLOCK_REALTIME, &now);
     if ((when->tv_sec > now.tv_sec) ||
         (when->tv_sec == now.tv_sec && when->tv_nsec > now.tv_nsec)) {
-        tip = malloc(sizeof(struct to_info));
-        if (tip != NULL) {
+        struct to_info *tip = malloc(sizeof(struct to_info));
+        if (tip != nullptr) {
             tip->to_fn = func;
             tip->to_arg = arg;
             tip->to_wait.tv_sec = when->tv_sec - now.tv_sec;
@@ -61,7 +57,7 @@ void timeout(const struct timespec *when, void (*func)(void *), void *arg) {
                 tip->to_wait.tv_sec--;
                 tip->to_wait.tv_nsec = SECTONSEC - now.tv_nsec + when->tv_nsec;
             }
-            err = makethread(timeout_helper, (void *)tip);
+            const int err = makethread(timeout_helper, (void *)tip);
             if (err == 0) {
                 return;
             } else {
@@ -80,7 +76,7 @@ void timeout(const struct timespec *when, void (*func)(void *), void *arg) {
 pthread_mutexattr_t attr;
 pthread_mutex_t mutex;
 
-void retry(void *arg) {
+void retry([[maybe_unused]] void *arg) {
     pthread_mutex_lock(&mutex);
 
     /* perform retry steps ... */
@@ -89,17 +85,22 @@ void retry(void *arg) {
 }
 
 int main(void) {
-    int err, condition, arg;
-    struct timespec when;
+    /* condition and arg are placeholders for program-specific state the book
+     * leaves abstract; initialized so the skeleton is well-defined (reading an
+     * uninitialized value is undefined behavior). */
+    int condition = 0;
+    int arg = 0;
 
-    if ((err = pthread_mutexattr_init(&attr)) != 0) {
+    int err = pthread_mutexattr_init(&attr);
+    if (err != 0) {
         err_exit(err, "pthread_mutexattr_init failed");
     }
-    if ((err = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE)) !=
-        0) {
+    err = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    if (err != 0) {
         err_exit(err, "can't set recursive type");
     }
-    if ((err = pthread_mutex_init(&mutex, &attr)) != 0) {
+    err = pthread_mutex_init(&mutex, &attr);
+    if (err != 0) {
         err_exit(err, "can't create recursive mutex");
     }
 
@@ -115,6 +116,7 @@ int main(void) {
         /*
          * Calculate the absolute time when we want to retry.
          */
+        struct timespec when;
         clock_gettime(CLOCK_REALTIME, &when);
         when.tv_sec += 10; /* 10 seconds from now */
         timeout(&when, retry, (void *)((unsigned long)arg));

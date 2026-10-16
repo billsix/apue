@@ -1,18 +1,20 @@
-#include <stdio.h>     /* for sscanf, sprintf */
-#include <stdlib.h>    /* for exit */
-#include <string.h>    /* for strlen */
-#include <unistd.h>    /* for read, write, STDIN_FILENO, STDOUT_FILENO */
+#include <stdio.h>  /* for sscanf, sprintf */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for strlen */
+#include <unistd.h> /* for read, write, STDIN_FILENO, STDOUT_FILENO */
 
 #include "apue.h"
 
 int main(void) {
-    int n, int1, int2;
     char line[MAXLINE];
+    int n;
 
     while ((n = read(STDIN_FILENO, line, MAXLINE)) > 0) {
         line[n] = 0; /* null terminate */
+        int int1;
+        int int2;
         if (sscanf(line, "%d%d", &int1, &int2) == 2) {
-            sprintf(line, "%d\n", int1 + int2);
+            snprintf(line, sizeof(line), "%d\n", int1 + int2);
             n = strlen(line);
             if (write(STDOUT_FILENO, line, n) != n) {
                 err_sys("write error");

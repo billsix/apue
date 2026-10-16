@@ -30,35 +30,33 @@ static int mstream_write(void *, const char *, int);
 static fpos_t mstream_seek(void *, fpos_t, int);
 static int mstream_close(void *);
 static int type_to_flags(const char *__restrict type);
-static off_t find_end(char *buf, size_t len);
+static off_t find_end(const char *buf, size_t len);
 
 FILE *fmemopen(void *__restrict buf, size_t size, const char *__restrict type) {
-    struct memstream *ms;
-    FILE *fp;
-
     if (size == 0) {
         errno = EINVAL;
-        return (NULL);
+        return (nullptr);
     }
-    if ((ms = malloc(sizeof(struct memstream))) == NULL) {
+    struct memstream *ms = malloc(sizeof(struct memstream));
+    if (ms == nullptr) {
         errno = ENOMEM;
-        return (NULL);
+        return (nullptr);
     }
     if ((ms->flags = type_to_flags(type)) == 0) {
         errno = EINVAL;
         free(ms);
-        return (NULL);
+        return (nullptr);
     }
-    if (buf == NULL) {
+    if (buf == nullptr) {
         if ((ms->flags & (MS_READ | MS_WRITE)) != (MS_READ | MS_WRITE)) {
             errno = EINVAL;
             free(ms);
-            return (NULL);
+            return (nullptr);
         }
-        if ((ms->buf = malloc(size)) == NULL) {
+        if ((ms->buf = malloc(size)) == nullptr) {
             errno = ENOMEM;
             free(ms);
-            return (NULL);
+            return (nullptr);
         }
         ms->rsize = size;
         ms->flags |= MS_MYBUF;
@@ -79,8 +77,9 @@ FILE *fmemopen(void *__restrict buf, size_t size, const char *__restrict type) {
     } else { /* "r" mode */
         ms->vsize = size;
     }
-    fp = funopen(ms, mstream_read, mstream_write, mstream_seek, mstream_close);
-    if (fp == NULL) {
+    FILE *fp =
+        funopen(ms, mstream_read, mstream_write, mstream_seek, mstream_close);
+    if (fp == nullptr) {
         if (ms->flags & MS_MYBUF) {
             free(ms->buf);
         }
@@ -90,10 +89,9 @@ FILE *fmemopen(void *__restrict buf, size_t size, const char *__restrict type) {
 }
 
 static int type_to_flags(const char *__restrict type) {
-    const char *cp;
     int flags = 0;
 
-    for (cp = type; *cp != 0; cp++) {
+    for (const char *cp = type; *cp != 0; cp++) {
         switch (*cp) {
             case 'r':
                 if (flags != 0) {
@@ -136,7 +134,7 @@ static int type_to_flags(const char *__restrict type) {
     return (flags);
 }
 
-static off_t find_end(char *buf, size_t len) {
+static off_t find_end(const char *buf, size_t len) {
     off_t off = 0;
 
     while (off < len) {
@@ -149,7 +147,6 @@ static off_t find_end(char *buf, size_t len) {
 }
 
 static int mstream_read(void *cookie, char *buf, int len) {
-    int nr;
     struct memstream *ms = cookie;
 
     if (!(ms->flags & MS_READ)) {
@@ -161,26 +158,21 @@ static int mstream_read(void *cookie, char *buf, int len) {
     }
 
     /* can only read from curpos to vsize */
-    nr = MIN(len, ms->vsize - ms->curpos);
+    const int nr = MIN(len, ms->vsize - ms->curpos);
     memcpy(buf, ms->buf + ms->curpos, nr);
     ms->curpos += nr;
     return (nr);
 }
 
 static int mstream_write(void *cookie, const char *buf, int len) {
-    int nw, off;
     struct memstream *ms = cookie;
 
     if (!(ms->flags & (MS_APPEND | MS_WRITE))) {
         errno = EBADF;
         return (-1);
     }
-    if (ms->flags & MS_APPEND) {
-        off = ms->vsize;
-    } else {
-        off = ms->curpos;
-    }
-    nw = MIN(len, ms->rsize - off);
+    const int off = (ms->flags & MS_APPEND) ? ms->vsize : ms->curpos;
+    const int nw = MIN(len, ms->rsize - off);
     memcpy(ms->buf + off, buf, nw);
     ms->curpos = off + nw;
     if (ms->curpos > ms->vsize) {

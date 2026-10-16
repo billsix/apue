@@ -1,4 +1,4 @@
-#include <unistd.h>    /* for read */
+#include <unistd.h> /* for read */
 
 #include "apue.h"
 

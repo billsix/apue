@@ -9,16 +9,14 @@ int globvar = 6; /* external variable in initialized data */
 char buf[] = "a write to stdout\n";
 
 int main(void) {
-    int var; /* automatic variable on the stack */
-    pid_t pid;
-
-    var = 88;
+    int var = 88; /* automatic variable on the stack */
     if (write(STDOUT_FILENO, buf, sizeof(buf) - 1) != sizeof(buf) - 1) {
         err_sys("write error");
     }
     printf("before fork\n"); /* we don't flush stdout */
 
-    if ((pid = fork()) < 0) {
+    const pid_t pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* child */
         globvar++;         /* modify variables */

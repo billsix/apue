@@ -1,6 +1,6 @@
-#include <string.h>    /* for strncpy */
-#include <unistd.h>    /* for fork, setsid, close, dup2, STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO */
-#include <termios.h>   /* for struct termios, struct winsize, tcsetattr, TCSANOW */
+#include <stdio.h> /* for snprintf */
+#include <unistd.h> /* for fork, setsid, close, dup2, STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO */
+#include <termios.h> /* for struct termios, struct winsize, tcsetattr, TCSANOW */
 #if defined(MACOS) || !defined(TIOCGWINSZ)
 #include <sys/ioctl.h> /* for ioctl, TIOCSWINSZ, TIOCSCTTY */
 #endif
@@ -18,12 +18,12 @@ pid_t pty_fork(int *ptrfdm, char *slave_name, int slave_namesz,
         err_sys("can't open master pty: %s, error %d", pts_name, fdm);
     }
 
-    if (slave_name != NULL) {
+    if (slave_name != nullptr) {
         /*
          * Return name of slave.  Null terminate to handle case
          * where strlen(pts_name) > slave_namesz.
          */
-        strncpy(slave_name, pts_name, slave_namesz);
+        snprintf(slave_name, slave_namesz, "%s", pts_name);
         slave_name[slave_namesz - 1] = '\0';
     }
 
@@ -53,12 +53,12 @@ pid_t pty_fork(int *ptrfdm, char *slave_name, int slave_namesz,
         /*
          * Set slave's termios and window size.
          */
-        if (slave_termios != NULL) {
+        if (slave_termios != nullptr) {
             if (tcsetattr(fds, TCSANOW, slave_termios) < 0) {
                 err_sys("tcsetattr error on slave pty");
             }
         }
-        if (slave_winsize != NULL) {
+        if (slave_winsize != nullptr) {
             if (ioctl(fds, TIOCSWINSZ, slave_winsize) < 0) {
                 err_sys("TIOCSWINSZ error on slave pty");
             }

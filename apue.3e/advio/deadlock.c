@@ -1,7 +1,7 @@
-#include <stdio.h> /* for printf */
+#include <stdio.h>  /* for printf */
 #include <stdlib.h> /* for exit */
 #include <unistd.h> /* for ftruncate */
-#include <fcntl.h> /* for creat */
+#include <fcntl.h>  /* for creat */
 
 #include "apue.h"
 
@@ -13,13 +13,11 @@ static void lockabyte(const char *name, int fd, off_t offset) {
 }
 
 int main(void) {
-    int fd;
-    pid_t pid;
-
     /*
      * Create a file and write two bytes to it.
      */
-    if ((fd = creat("templock", FILE_MODE)) < 0) {
+    const int fd = creat("templock", FILE_MODE);
+    if (fd < 0) {
         err_sys("creat error");
     }
     if (write(fd, "ab", 2) != 2) {
@@ -27,7 +25,8 @@ int main(void) {
     }
 
     TELL_WAIT();
-    if ((pid = fork()) < 0) {
+    const pid_t pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* child */
         lockabyte("child", fd, 0);

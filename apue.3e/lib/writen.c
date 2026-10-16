@@ -1,4 +1,4 @@
-#include <unistd.h>    /* for write */
+#include <unistd.h> /* for write */
 
 #include "apue.h"
 

@@ -1,7 +1,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-static void sig_alrm(int signo) {
+static void sig_alrm([[maybe_unused]] int signo) {
     /* nothing to do, just return to wake up the pause */
 }
 

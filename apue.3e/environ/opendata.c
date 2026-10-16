@@ -1,14 +1,14 @@
 #include <stdio.h> /* for FILE, fopen, setvbuf, BUFSIZ, _IOLBF */
 
 FILE *open_data(void) {
-    FILE *fp;
     char databuf[BUFSIZ]; /* setvbuf makes this the stdio buffer */
 
-    if ((fp = fopen("datafile", "r")) == NULL) {
-        return (NULL);
+    FILE *fp = fopen("datafile", "r");
+    if (fp == nullptr) {
+        return (nullptr);
     }
     if (setvbuf(fp, databuf, _IOLBF, BUFSIZ) != 0) {
-        return (NULL);
+        return (nullptr);
     }
     return (fp); /* error */
 }

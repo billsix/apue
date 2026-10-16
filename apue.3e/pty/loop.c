@@ -1,6 +1,6 @@
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for fork, read, getppid, STDIN_FILENO, STDOUT_FILENO */
-#include <signal.h>    /* for kill, sig_atomic_t, SIGTERM, SIG_ERR */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for fork, read, getppid, STDIN_FILENO, STDOUT_FILENO */
+#include <signal.h> /* for kill, sig_atomic_t, SIGTERM, SIG_ERR */
 #include <sys/types.h> /* for pid_t */
 
 #include "apue.h"
@@ -10,16 +10,16 @@
 static void sig_term(int);
 static volatile sig_atomic_t sigcaught; /* set by signal handler */
 
-void loop(int ptym, int ignoreeof) {
-    pid_t child;
-    int nread;
+void loop(int ptym, bool ignoreeof) {
     char buf[BUFFSIZE];
 
-    if ((child = fork()) < 0) {
+    const pid_t child = fork();
+    if (child < 0) {
         err_sys("fork error");
     } else if (child == 0) { /* child copies stdin to ptym */
         for (;;) {
-            if ((nread = read(STDIN_FILENO, buf, BUFFSIZE)) < 0) {
+            int nread = read(STDIN_FILENO, buf, BUFFSIZE);
+            if (nread < 0) {
                 err_sys("read error from stdin");
             } else if (nread == 0) {
                 break; /* EOF on stdin means we're done */
@@ -33,7 +33,7 @@ void loop(int ptym, int ignoreeof) {
          * We always terminate when we encounter an EOF on stdin,
          * but we notify the parent only if ignoreeof is 0.
          */
-        if (ignoreeof == 0) {
+        if (!ignoreeof) {
             kill(getppid(), SIGTERM); /* notify parent */
         }
         exit(0); /* and terminate; child can't return */
@@ -47,7 +47,8 @@ void loop(int ptym, int ignoreeof) {
     }
 
     for (;;) {
-        if ((nread = read(ptym, buf, BUFFSIZE)) <= 0) {
+        int nread = read(ptym, buf, BUFFSIZE);
+        if (nread <= 0) {
             break; /* signal caught, error, or EOF */
         }
         if (writen(STDOUT_FILENO, buf, nread) != nread) {
@@ -73,6 +74,6 @@ void loop(int ptym, int ignoreeof) {
  * The child sends us SIGTERM when it gets EOF on the pty slave or
  * when read() fails.  We probably interrupted the read() of ptym.
  */
-static void sig_term(int signo) {
+static void sig_term([[maybe_unused]] int signo) {
     sigcaught = 1; /* just set flag and return */
 }

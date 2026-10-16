@@ -1,20 +1,18 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <sys/stat.h>  /* for struct stat, lstat, S_ISREG, S_ISDIR, S_ISCHR, S_ISBLK, S_ISFIFO, S_ISLNK, S_ISSOCK */
+#include <stdio.h>    /* for printf */
+#include <stdlib.h>   /* for exit */
+#include <sys/stat.h> /* for struct stat, lstat, S_ISREG, S_ISDIR, S_ISCHR, S_ISBLK, S_ISFIFO, S_ISLNK, S_ISSOCK */
 
 #include "apue.h"
 
 int main(int argc, char *argv[]) {
-    int i;
-    struct stat buf;
-    char *ptr;
-
-    for (i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
         printf("%s: ", argv[i]);
+        struct stat buf;
         if (lstat(argv[i], &buf) < 0) {
             err_ret("lstat error");
             continue;
         }
+        const char *ptr;
         if (S_ISREG(buf.st_mode)) {
             ptr = "regular";
         } else if (S_ISDIR(buf.st_mode)) {

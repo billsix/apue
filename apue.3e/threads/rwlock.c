@@ -1,4 +1,3 @@
-#include <stddef.h>  /* for NULL */
 #include <pthread.h> /* for pthread_rwlock_init, pthread_rwlock_wrlock, pthread_rwlock_rdlock, pthread_rwlock_unlock, pthread_equal, pthread_t, pthread_rwlock_t */
 
 struct job {
@@ -18,11 +17,9 @@ struct queue {
  * Initialize a queue.
  */
 int queue_init(struct queue *qp) {
-    int err;
-
-    qp->q_head = NULL;
-    qp->q_tail = NULL;
-    err = pthread_rwlock_init(&qp->q_lock, NULL);
+    qp->q_head = nullptr;
+    qp->q_tail = nullptr;
+    int err = pthread_rwlock_init(&qp->q_lock, nullptr);
     if (err != 0) {
         return (err);
     }
@@ -36,8 +33,8 @@ int queue_init(struct queue *qp) {
 void job_insert(struct queue *qp, struct job *jp) {
     pthread_rwlock_wrlock(&qp->q_lock);
     jp->j_next = qp->q_head;
-    jp->j_prev = NULL;
-    if (qp->q_head != NULL) {
+    jp->j_prev = nullptr;
+    if (qp->q_head != nullptr) {
         qp->q_head->j_prev = jp;
     } else {
         qp->q_tail = jp; /* list was empty */
@@ -51,9 +48,9 @@ void job_insert(struct queue *qp, struct job *jp) {
  */
 void job_append(struct queue *qp, struct job *jp) {
     pthread_rwlock_wrlock(&qp->q_lock);
-    jp->j_next = NULL;
+    jp->j_next = nullptr;
     jp->j_prev = qp->q_tail;
-    if (qp->q_tail != NULL) {
+    if (qp->q_tail != nullptr) {
         qp->q_tail->j_next = jp;
     } else {
         qp->q_head = jp; /* list was empty */
@@ -70,7 +67,7 @@ void job_remove(struct queue *qp, struct job *jp) {
     if (jp == qp->q_head) {
         qp->q_head = jp->j_next;
         if (qp->q_tail == jp) {
-            qp->q_tail = NULL;
+            qp->q_tail = nullptr;
         } else {
             jp->j_next->j_prev = jp->j_prev;
         }
@@ -91,10 +88,10 @@ struct job *job_find(struct queue *qp, pthread_t id) {
     struct job *jp;
 
     if (pthread_rwlock_rdlock(&qp->q_lock) != 0) {
-        return (NULL);
+        return (nullptr);
     }
 
-    for (jp = qp->q_head; jp != NULL; jp = jp->j_next) {
+    for (jp = qp->q_head; jp != nullptr; jp = jp->j_next) {
         if (pthread_equal(jp->j_id, id)) {
             break;
         }

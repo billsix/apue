@@ -1,4 +1,4 @@
-#include <fcntl.h>     /* for fcntl, F_GETFD, F_SETFD, FD_CLOEXEC */
+#include <fcntl.h> /* for fcntl, F_GETFD, F_SETFD, FD_CLOEXEC */
 
 #include "apue.h"
 

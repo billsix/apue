@@ -1,4 +1,4 @@
-#include <stdio.h> /* for printf */
+#include <stdio.h>  /* for printf */
 #include <unistd.h> /* for getpid */
 #include <stdlib.h> /* for exit */
 

@@ -1,6 +1,6 @@
-#include <stdio.h>     /* for fputs, printf, stdout */
-#include <stdlib.h>    /* for malloc, exit */
-#include <pthread.h>   /* for pthread_create, pthread_join, pthread_t */
+#include <stdio.h>   /* for fputs, printf, stdout */
+#include <stdlib.h>  /* for malloc, exit */
+#include <pthread.h> /* for pthread_create, pthread_join, pthread_t */
 
 #include "apue.h"
 
@@ -17,10 +17,9 @@ void printfoo(const char *s, const struct foo *fp) {
     printf("  foo.d = %d\n", fp->d);
 }
 
-void *thr_fn1(void *arg) {
-    struct foo *fp;
-
-    if ((fp = malloc(sizeof(struct foo))) == NULL) {
+void *thr_fn1([[maybe_unused]] void *arg) {
+    struct foo *fp = malloc(sizeof(struct foo));
+    if (fp == nullptr) {
         err_sys("can't allocate memory");
     }
     fp->a = 1;
@@ -32,14 +31,12 @@ void *thr_fn1(void *arg) {
 }
 
 int main(void) {
-    int err;
     pthread_t tid1;
-    struct foo *fp;
-
-    err = pthread_create(&tid1, NULL, thr_fn1, NULL);
+    int err = pthread_create(&tid1, nullptr, thr_fn1, nullptr);
     if (err != 0) {
         err_exit(err, "can't create thread 1");
     }
+    struct foo *fp;
     err = pthread_join(tid1, (void *)&fp);
     if (err != 0) {
         err_exit(err, "can't join with thread 1");

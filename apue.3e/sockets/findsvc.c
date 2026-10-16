@@ -2,12 +2,12 @@
 #include <stdlib.h>     /* for exit */
 #include <sys/socket.h> /* for AF_INET, AF_INET6, AF_UNIX, AF_UNSPEC, SOCK_STREAM, SOCK_DGRAM, SOCK_SEQPACKET, SOCK_RAW */
 #include <netinet/in.h> /* for struct sockaddr_in, IPPROTO_TCP, IPPROTO_UDP, IPPROTO_RAW */
-#include <arpa/inet.h>  /* for inet_ntop, ntohs, INET_ADDRSTRLEN */
-#include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo, AI_CANONNAME, AI_PASSIVE, AI_NUMERICHOST, AI_NUMERICSERV, AI_V4MAPPED, AI_ALL */
+#include <arpa/inet.h> /* for inet_ntop, ntohs, INET_ADDRSTRLEN */
+#include <netdb.h> /* for getaddrinfo, gai_strerror, struct addrinfo, AI_CANONNAME, AI_PASSIVE, AI_NUMERICHOST, AI_NUMERICSERV, AI_V4MAPPED, AI_ALL */
 
 #include "apue.h"
 
-void print_family(struct addrinfo *aip) {
+void print_family(const struct addrinfo *aip) {
     printf(" family ");
     switch (aip->ai_family) {
         case AF_INET:
@@ -27,7 +27,7 @@ void print_family(struct addrinfo *aip) {
     }
 }
 
-void print_type(struct addrinfo *aip) {
+void print_type(const struct addrinfo *aip) {
     printf(" type ");
     switch (aip->ai_socktype) {
         case SOCK_STREAM:
@@ -47,7 +47,7 @@ void print_type(struct addrinfo *aip) {
     }
 }
 
-void print_protocol(struct addrinfo *aip) {
+void print_protocol(const struct addrinfo *aip) {
     printf(" protocol ");
     switch (aip->ai_protocol) {
         case 0:
@@ -67,7 +67,7 @@ void print_protocol(struct addrinfo *aip) {
     }
 }
 
-void print_flags(struct addrinfo *aip) {
+void print_flags(const struct addrinfo *aip) {
     printf("flags");
     if (aip->ai_flags == 0) {
         printf(" 0");
@@ -94,36 +94,34 @@ void print_flags(struct addrinfo *aip) {
 }
 
 int main(int argc, char *argv[]) {
-    struct addrinfo *ailist, *aip;
-    struct addrinfo hint;
-    struct sockaddr_in *sinp;
-    const char *addr;
-    int err;
-    char abuf[INET_ADDRSTRLEN];
-
     if (argc != 3) {
         err_quit("usage: %s nodename service", argv[0]);
     }
+    struct addrinfo hint;
     hint.ai_flags = AI_CANONNAME;
     hint.ai_family = 0;
     hint.ai_socktype = 0;
     hint.ai_protocol = 0;
     hint.ai_addrlen = 0;
-    hint.ai_canonname = NULL;
-    hint.ai_addr = NULL;
-    hint.ai_next = NULL;
-    if ((err = getaddrinfo(argv[1], argv[2], &hint, &ailist)) != 0) {
+    hint.ai_canonname = nullptr;
+    hint.ai_addr = nullptr;
+    hint.ai_next = nullptr;
+    struct addrinfo *ailist;
+    const int err = getaddrinfo(argv[1], argv[2], &hint, &ailist);
+    if (err != 0) {
         err_quit("getaddrinfo error: %s", gai_strerror(err));
     }
-    for (aip = ailist; aip != NULL; aip = aip->ai_next) {
+    char abuf[INET_ADDRSTRLEN];
+    for (struct addrinfo *aip = ailist; aip != nullptr; aip = aip->ai_next) {
         print_flags(aip);
         print_family(aip);
         print_type(aip);
         print_protocol(aip);
         printf("\n\thost %s", aip->ai_canonname ? aip->ai_canonname : "-");
         if (aip->ai_family == AF_INET) {
-            sinp = (struct sockaddr_in *)aip->ai_addr;
-            addr = inet_ntop(AF_INET, &sinp->sin_addr, abuf, INET_ADDRSTRLEN);
+            const struct sockaddr_in *sinp = (struct sockaddr_in *)aip->ai_addr;
+            const char *addr =
+                inet_ntop(AF_INET, &sinp->sin_addr, abuf, INET_ADDRSTRLEN);
             printf(" address %s", addr ? addr : "unknown");
             printf(" port %d", ntohs(sinp->sin_port));
         }

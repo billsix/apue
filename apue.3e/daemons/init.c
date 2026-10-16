@@ -1,17 +1,15 @@
-#include <stdlib.h>       /* for exit */
-#include <unistd.h>       /* for fork, setsid, chdir, close, dup */
-#include <fcntl.h>        /* for open, O_RDWR */
-#include <signal.h>       /* for sigaction, sigemptyset, SIG_IGN, SIGHUP */
-#include <syslog.h>       /* for openlog, syslog, LOG_CONS, LOG_DAEMON, LOG_ERR */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for fork, setsid, chdir, close, dup */
+#include <fcntl.h>  /* for open, O_RDWR */
+#include <signal.h> /* for sigaction, sigemptyset, SIG_IGN, SIGHUP */
+#include <syslog.h> /* for openlog, syslog, LOG_CONS, LOG_DAEMON, LOG_ERR */
 #include <sys/resource.h> /* for getrlimit, struct rlimit, RLIMIT_NOFILE, RLIM_INFINITY */
-#include <sys/stat.h>     /* for umask */
-#include <sys/types.h>    /* for pid_t */
+#include <sys/stat.h>  /* for umask */
+#include <sys/types.h> /* for pid_t */
 
 #include "apue.h"
 
 void daemonize(const char *cmd) {
-    int i, fd0, fd1, fd2;
-    pid_t pid;
     struct rlimit rl;
     struct sigaction sa;
 
@@ -30,7 +28,8 @@ void daemonize(const char *cmd) {
     /*
      * Become a session leader to lose controlling TTY.
      */
-    if ((pid = fork()) < 0) {
+    pid_t pid = fork();
+    if (pid < 0) {
         err_quit("%s: can't fork", cmd);
     } else if (pid != 0) { /* parent */
         exit(0);
@@ -43,10 +42,11 @@ void daemonize(const char *cmd) {
     sa.sa_handler = SIG_IGN;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
-    if (sigaction(SIGHUP, &sa, NULL) < 0) {
+    if (sigaction(SIGHUP, &sa, nullptr) < 0) {
         err_quit("%s: can't ignore SIGHUP", cmd);
     }
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         err_quit("%s: can't fork", cmd);
     } else if (pid != 0) { /* parent */
         exit(0);
@@ -66,16 +66,16 @@ void daemonize(const char *cmd) {
     if (rl.rlim_max == RLIM_INFINITY) {
         rl.rlim_max = 1024;
     }
-    for (i = 0; i < rl.rlim_max; i++) {
-        close(i);
+    for (rlim_t i = 0; i < rl.rlim_max; i++) {
+        close((int)i);
     }
 
     /*
      * Attach file descriptors 0, 1, and 2 to /dev/null.
      */
-    fd0 = open("/dev/null", O_RDWR);
-    fd1 = dup(0);
-    fd2 = dup(0);
+    const int fd0 = open("/dev/null", O_RDWR);
+    const int fd1 = dup(0);
+    const int fd2 = dup(0);
 
     /*
      * Initialize the log file.

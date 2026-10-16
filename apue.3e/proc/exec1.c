@@ -5,12 +5,12 @@
 
 #include "apue.h"
 
-char *env_init[] = {"USER=unknown", "PATH=/tmp", NULL};
+char *env_init[] = {"USER=unknown", "PATH=/tmp", nullptr};
 
 int main(void) {
-    pid_t pid;
+    pid_t pid = fork();
 
-    if ((pid = fork()) < 0) {
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* specify pathname, specify environment */
         if (execle("/home/sar/bin/echoall", "echoall", "myarg1", "MY ARG2",
@@ -19,7 +19,7 @@ int main(void) {
         }
     }
 
-    if (waitpid(pid, NULL, 0) < 0) {
+    if (waitpid(pid, nullptr, 0) < 0) {
         err_sys("wait error");
     }
 

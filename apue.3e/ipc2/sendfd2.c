@@ -1,7 +1,7 @@
-#include <stdlib.h>     /* for malloc */
-#include <unistd.h>     /* for geteuid, getegid, getpid */
+#include <stdlib.h> /* for malloc */
+#include <unistd.h> /* for geteuid, getegid, getpid */
 #include <sys/socket.h> /* for sendmsg, struct msghdr, struct cmsghdr, CMSG_*, SOL_SOCKET, SCM_RIGHTS */
-#include <sys/uio.h>    /* for struct iovec */
+#include <sys/uio.h> /* for struct iovec */
 
 #if defined(SCM_CREDS) /* BSD interface */
 #define CREDSTRUCT cmsgcred
@@ -18,15 +18,13 @@
 #define CREDSLEN CMSG_LEN(sizeof(struct CREDSTRUCT))
 #define CONTROLLEN (RIGHTSLEN + CREDSLEN)
 
-static struct cmsghdr *cmptr = NULL; /* malloc'ed first time */
+static struct cmsghdr *cmptr = nullptr; /* malloc'ed first time */
 
 /*
  * Pass a file descriptor to another process.
  * If fd<0, then -fd is sent back instead as the error status.
  */
 int send_fd(int fd, int fd_to_send) {
-    struct CREDSTRUCT *credp;
-    struct cmsghdr *cmp;
     struct iovec iov[1];
     struct msghdr msg;
     char buf[2]; /* send_fd/recv_ufd 2-byte protocol */
@@ -35,32 +33,37 @@ int send_fd(int fd, int fd_to_send) {
     iov[0].iov_len = 2;
     msg.msg_iov = iov;
     msg.msg_iovlen = 1;
-    msg.msg_name = NULL;
+    msg.msg_name = nullptr;
     msg.msg_namelen = 0;
     msg.msg_flags = 0;
     if (fd_to_send < 0) {
-        msg.msg_control = NULL;
+        msg.msg_control = nullptr;
         msg.msg_controllen = 0;
         buf[1] = -fd_to_send; /* nonzero status means error */
         if (buf[1] == 0) {
             buf[1] = 1; /* -256, etc. would screw up protocol */
         }
     } else {
-        if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL) {
+        if (cmptr == nullptr && (cmptr = malloc(CONTROLLEN)) == nullptr) {
             return (-1);
         }
         msg.msg_control = cmptr;
         msg.msg_controllen = CONTROLLEN;
-        cmp = cmptr;
+        struct cmsghdr *cmp = cmptr;
         cmp->cmsg_level = SOL_SOCKET;
         cmp->cmsg_type = SCM_RIGHTS;
         cmp->cmsg_len = RIGHTSLEN;
         *(int *)CMSG_DATA(cmp) = fd_to_send; /* the fd to pass */
+/* musl's CMSG_NXTHDR expands to a size_t-vs-ptrdiff_t comparison we can't
+ * change; suppress -Wsign-compare narrowly around the macro use only. */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-compare"
         cmp = CMSG_NXTHDR(&msg, cmp);
+#pragma clang diagnostic pop
         cmp->cmsg_level = SOL_SOCKET;
         cmp->cmsg_type = SCM_CREDTYPE;
         cmp->cmsg_len = CREDSLEN;
-        credp = (struct CREDSTRUCT *)CMSG_DATA(cmp);
+        struct CREDSTRUCT *credp = (struct CREDSTRUCT *)CMSG_DATA(cmp);
 #if defined(SCM_CREDENTIALS)
         credp->uid = geteuid();
         credp->gid = getegid();

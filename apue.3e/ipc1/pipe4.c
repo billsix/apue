@@ -1,8 +1,8 @@
-#include <stdio.h>     /* for printf, fgets, fputs, ferror, stdin, stdout, EOF */
-#include <stdlib.h>    /* for exit */
-#include <string.h>    /* for strlen */
-#include <unistd.h>    /* for pipe, fork, close, read, write, dup2, execl, STDIN_FILENO, STDOUT_FILENO */
-#include <signal.h>    /* for signal, SIGPIPE, SIG_ERR */
+#include <stdio.h>  /* for printf, fgets, fputs, ferror, stdin, stdout, EOF */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for strlen */
+#include <unistd.h> /* for pipe, fork, close, read, write, dup2, execl, STDIN_FILENO, STDOUT_FILENO */
+#include <signal.h> /* for signal, SIGPIPE, SIG_ERR */
 #include <sys/types.h> /* for pid_t */
 
 #include "apue.h"
@@ -10,9 +10,8 @@
 static void sig_pipe(int); /* our signal handler */
 
 int main(void) {
-    int n, fd1[2], fd2[2];
-    pid_t pid;
-    char line[MAXLINE];
+    int fd1[2];
+    int fd2[2];
 
     if (signal(SIGPIPE, sig_pipe) == SIG_ERR) {
         err_sys("signal error");
@@ -22,14 +21,16 @@ int main(void) {
         err_sys("pipe error");
     }
 
-    if ((pid = fork()) < 0) {
+    const pid_t pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid > 0) { /* parent */
         close(fd1[0]);
         close(fd2[1]);
 
-        while (fgets(line, MAXLINE, stdin) != NULL) {
-            n = strlen(line);
+        char line[MAXLINE];
+        while (fgets(line, MAXLINE, stdin) != nullptr) {
+            int n = strlen(line);
             if (write(fd1[1], line, n) != n) {
                 err_sys("write error to pipe");
             }
@@ -73,7 +74,7 @@ int main(void) {
     exit(0);
 }
 
-static void sig_pipe(int signo) {
+static void sig_pipe([[maybe_unused]] int signo) {
     printf("SIGPIPE caught\n");
     exit(1);
 }

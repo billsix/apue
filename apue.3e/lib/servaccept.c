@@ -1,10 +1,10 @@
-#include <stddef.h>     /* for offsetof, NULL */
-#include <stdlib.h>     /* for malloc, free */
-#include <string.h>     /* for memcpy */
-#include <time.h>       /* for time, time_t */
-#include <errno.h>      /* for errno */
-#include <unistd.h>     /* for unlink, close */
-#include <sys/stat.h>   /* for stat, struct stat, S_ISSOCK, S_IRWXG, S_IRWXO, S_IRWXU */
+#include <stddef.h> /* for offsetof */
+#include <stdlib.h> /* for malloc, free */
+#include <string.h> /* for memcpy */
+#include <time.h>   /* for time, time_t */
+#include <errno.h>  /* for errno */
+#include <unistd.h> /* for unlink, close */
+#include <sys/stat.h> /* for stat, struct stat, S_ISSOCK, S_IRWXG, S_IRWXO, S_IRWXU */
 #include <sys/socket.h> /* for accept, socklen_t, struct sockaddr */
 #include <sys/un.h>     /* for struct sockaddr_un */
 
@@ -27,7 +27,7 @@ int serv_accept(int listenfd, uid_t *uidptr) {
     char *name;
 
     /* allocate enough space for longest name plus terminating null */
-    if ((name = malloc(sizeof(un.sun_path + 1))) == NULL) {
+    if ((name = malloc(sizeof(un.sun_path) + 1)) == nullptr) {
         return (-1);
     }
     len = sizeof(un);
@@ -58,14 +58,14 @@ int serv_accept(int listenfd, uid_t *uidptr) {
         goto errout;
     }
 
-    staletime = time(NULL) - STALE;
+    staletime = time(nullptr) - STALE;
     if (statbuf.st_atime < staletime || statbuf.st_ctime < staletime ||
         statbuf.st_mtime < staletime) {
         rval = -6; /* i-node is too old */
         goto errout;
     }
 
-    if (uidptr != NULL) {
+    if (uidptr != nullptr) {
         *uidptr = statbuf.st_uid; /* return uid of caller */
     }
     unlink(name); /* we're done with pathname now */

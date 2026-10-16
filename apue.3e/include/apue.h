@@ -108,19 +108,19 @@ pid_t lock_test(int, int, off_t, int, off_t); /* {Prog locktest} */
     (lock_test((fd), F_WRLCK, (offset), (whence), (len)) == 0)
 
 void err_msg(const char *, ...); /* {App misc_source} */
-void err_dump(const char *, ...) __attribute__((noreturn));
-void err_quit(const char *, ...) __attribute__((noreturn));
+[[noreturn]] void err_dump(const char *, ...);
+[[noreturn]] void err_quit(const char *, ...);
 void err_cont(int, const char *, ...);
-void err_exit(int, const char *, ...) __attribute__((noreturn));
+[[noreturn]] void err_exit(int, const char *, ...);
 void err_ret(const char *, ...);
-void err_sys(const char *, ...) __attribute__((noreturn));
+[[noreturn]] void err_sys(const char *, ...);
 
 void log_msg(const char *, ...); /* {App misc_source} */
 void log_open(const char *, int, int);
-void log_quit(const char *, ...) __attribute__((noreturn));
+[[noreturn]] void log_quit(const char *, ...);
 void log_ret(const char *, ...);
-void log_sys(const char *, ...) __attribute__((noreturn));
-void log_exit(int, const char *, ...) __attribute__((noreturn));
+[[noreturn]] void log_sys(const char *, ...);
+[[noreturn]] void log_exit(int, const char *, ...);
 
 void TELL_WAIT(void); /* parent/child from {Sec race_conditions} */
 void TELL_PARENT(pid_t);

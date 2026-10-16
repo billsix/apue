@@ -1,33 +1,32 @@
-#include <stdio.h>     /* for setbuf, printf, stdout */
-#include <stdlib.h>    /* for exit */
-#include <string.h>    /* for strerror */
-#include <unistd.h>    /* for fork, pause, sleep */
-#include <fcntl.h>     /* for open, O_RDWR, O_CREAT, F_SETLK, F_SETLKW, F_RDLCK, F_WRLCK */
-#include <errno.h>     /* for errno */
-#include <signal.h>    /* for kill, SIGINT */
+#include <stdio.h>  /* for setbuf, printf, stdout */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for strerror */
+#include <unistd.h> /* for fork, pause, sleep */
+#include <fcntl.h> /* for open, O_RDWR, O_CREAT, F_SETLK, F_SETLKW, F_RDLCK, F_WRLCK */
+#include <errno.h>  /* for errno */
+#include <signal.h> /* for kill, SIGINT */
 
 #include "apue.h"
 
-void sigint(int signo) {}
+void sigint([[maybe_unused]] int signo) {}
 
 int main(void) {
-    pid_t pid1, pid2, pid3;
-    int fd;
-
-    setbuf(stdout, NULL);
+    setbuf(stdout, nullptr);
     signal_intr(SIGINT, sigint);
 
     /*
      * Create a file.
      */
-    if ((fd = open("lockfile", O_RDWR | O_CREAT, 0666)) < 0) {
+    const int fd = open("lockfile", O_RDWR | O_CREAT, 0666);
+    if (fd < 0) {
         err_sys("can't open/create lockfile");
     }
 
     /*
      * Read-lock the file.
      */
-    if ((pid1 = fork()) < 0) {
+    const pid_t pid1 = fork();
+    if (pid1 < 0) {
         err_sys("fork failed");
     } else if (pid1 == 0) { /* child */
         if (lock_reg(fd, F_SETLK, F_RDLCK, 0, SEEK_SET, 0) < 0) {
@@ -44,7 +43,8 @@ int main(void) {
     /*
      * Parent continues ... read-lock the file again.
      */
-    if ((pid2 = fork()) < 0) {
+    const pid_t pid2 = fork();
+    if (pid2 < 0) {
         err_sys("fork failed");
     } else if (pid2 == 0) { /* child */
         if (lock_reg(fd, F_SETLK, F_RDLCK, 0, SEEK_SET, 0) < 0) {
@@ -62,7 +62,8 @@ int main(void) {
      * Parent continues ... block while trying to write-lock
      * the file.
      */
-    if ((pid3 = fork()) < 0) {
+    const pid_t pid3 = fork();
+    if (pid3 < 0) {
         err_sys("fork failed");
     } else if (pid3 == 0) { /* child */
         if (lock_reg(fd, F_SETLK, F_WRLCK, 0, SEEK_SET, 0) < 0) {

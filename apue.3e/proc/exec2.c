@@ -6,9 +6,9 @@
 #include "apue.h"
 
 int main(void) {
-    pid_t pid;
+    const pid_t pid = fork();
 
-    if ((pid = fork()) < 0) {
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* child */
         if (execl("/home/sar/bin/testinterp", "testinterp", "myarg1", "MY ARG2",
@@ -16,7 +16,7 @@ int main(void) {
             err_sys("execl error");
         }
     }
-    if (waitpid(pid, NULL, 0) < 0) { /* parent */
+    if (waitpid(pid, nullptr, 0) < 0) { /* parent */
         err_sys("waitpid error");
     }
     exit(0);

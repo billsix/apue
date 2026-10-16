@@ -1,8 +1,8 @@
-#include <stdio.h>     /* for vsnprintf, snprintf, fflush, fputs, stdout, stderr */
-#include <stdlib.h>    /* for exit, abort */
-#include <string.h>    /* for strerror, strlen, strcat */
-#include <errno.h>     /* for errno */
-#include <stdarg.h>    /* for va_list, va_start, va_end */
+#include <stdio.h>  /* for vsnprintf, snprintf, fflush, fputs, stdout, stderr */
+#include <stdlib.h> /* for exit, abort */
+#include <string.h> /* for strerror, strlen */
+#include <errno.h>  /* for errno */
+#include <stdarg.h> /* for va_list, va_start, va_end */
 
 #include "apue.h"
 
@@ -111,8 +111,8 @@ static void err_doit(int errnoflag, int error, const char *fmt, va_list ap) {
         snprintf(buf + strlen(buf), MAXLINE - strlen(buf) - 1, ": %s",
                  strerror(error));
     }
-    strcat(buf, "\n");
+    snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");
     fflush(stdout); /* in case stdout and stderr are the same */
     fputs(buf, stderr);
-    fflush(NULL); /* flushes all stdio output streams */
+    fflush(nullptr); /* flushes all stdio output streams */
 }

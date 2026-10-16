@@ -1,23 +1,24 @@
-#include <stdlib.h>    /* for exit, system */
+#include <stdlib.h> /* for exit, system */
 
 #include "apue.h"
 
 int main(void) {
-    int status;
-
-    if ((status = system("date")) < 0) {
+    int status = system("date");
+    if (status < 0) {
         err_sys("system() error");
     }
 
     pr_exit(status);
 
-    if ((status = system("nosuchcommand")) < 0) {
+    status = system("nosuchcommand");
+    if (status < 0) {
         err_sys("system() error");
     }
 
     pr_exit(status);
 
-    if ((status = system("who; exit 44")) < 0) {
+    status = system("who; exit 44");
+    if (status < 0) {
         err_sys("system() error");
     }
 

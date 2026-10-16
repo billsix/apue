@@ -1,4 +1,4 @@
-#include <string.h>    /* for strlen */
+#include <string.h> /* for strlen */
 
 #include "apue.h"
 

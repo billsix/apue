@@ -11,7 +11,7 @@ void TELL_WAIT(void) {
     }
 }
 
-void TELL_PARENT(pid_t pid) {
+void TELL_PARENT([[maybe_unused]] pid_t pid) {
     if (write(pfd2[1], "c", 1) != 1) {
         err_sys("write error");
     }
@@ -29,7 +29,7 @@ void WAIT_PARENT(void) {
     }
 }
 
-void TELL_CHILD(pid_t pid) {
+void TELL_CHILD([[maybe_unused]] pid_t pid) {
     if (write(pfd1[1], "p", 1) != 1) {
         err_sys("write error");
     }

@@ -1,7 +1,7 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for access, R_OK */
-#include <fcntl.h>     /* for open, O_RDONLY */
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for access, R_OK */
+#include <fcntl.h>  /* for open, O_RDONLY */
 
 #include "apue.h"
 

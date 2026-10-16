@@ -1,12 +1,12 @@
-#include <stdio.h>     /* for fgets, fputs, ferror, EOF, stdin, stdout */
-#include <stdlib.h>    /* for exit */
+#include <stdio.h>  /* for fgets, fputs, ferror, EOF, stdin, stdout */
+#include <stdlib.h> /* for exit */
 
 #include "apue.h"
 
 int main(void) {
     char buf[MAXLINE];
 
-    while (fgets(buf, MAXLINE, stdin) != NULL) {
+    while (fgets(buf, MAXLINE, stdin) != nullptr) {
         if (fputs(buf, stdout) == EOF) {
             err_sys("output error");
         }

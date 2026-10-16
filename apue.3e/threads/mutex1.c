@@ -1,4 +1,4 @@
-#include <stdlib.h>  /* for malloc, free, NULL */
+#include <stdlib.h>  /* for malloc, free */
 #include <pthread.h> /* for pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock, pthread_mutex_unlock, pthread_mutex_t */
 
 struct foo {
@@ -10,14 +10,13 @@ struct foo {
 
 struct foo *foo_alloc(int id) /* allocate the object */
 {
-    struct foo *fp;
-
-    if ((fp = malloc(sizeof(struct foo))) != NULL) {
+    struct foo *fp = malloc(sizeof(struct foo));
+    if (fp != nullptr) {
         fp->f_count = 1;
         fp->f_id = id;
-        if (pthread_mutex_init(&fp->f_lock, NULL) != 0) {
+        if (pthread_mutex_init(&fp->f_lock, nullptr) != 0) {
             free(fp);
-            return (NULL);
+            return (nullptr);
         }
         /* ... continue initialization ... */
     }

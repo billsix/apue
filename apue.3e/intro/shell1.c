@@ -9,16 +9,15 @@
 
 int main(void) {
     char buf[MAXLINE]; /* from apue.h */
-    pid_t pid;
-    int status;
 
     printf("%% "); /* print prompt (printf requires %% to print %) */
-    while (fgets(buf, MAXLINE, stdin) != NULL) {
+    while (fgets(buf, MAXLINE, stdin) != nullptr) {
         if (buf[strlen(buf) - 1] == '\n') {
             buf[strlen(buf) - 1] = 0; /* replace newline with null */
         }
 
-        if ((pid = fork()) < 0) {
+        pid_t pid = fork();
+        if (pid < 0) {
             err_sys("fork error");
         } else if (pid == 0) { /* child */
             execlp(buf, buf, (char *)0);
@@ -27,6 +26,7 @@ int main(void) {
         }
 
         /* parent */
+        int status;
         if ((pid = waitpid(pid, &status, 0)) < 0) {
             err_sys("waitpid error");
         }

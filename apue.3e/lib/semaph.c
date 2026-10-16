@@ -27,9 +27,9 @@
  * functions.
  */
 
-#include <errno.h>     /* for errno, EINVAL */
-#include <sys/ipc.h>   /* for IPC_PRIVATE, IPC_CREAT, IPC_RMID */
-#include <sys/sem.h>   /* for semget, semop, semctl, struct sembuf, struct semid_ds, SEM_UNDO, SETVAL, GETVAL */
+#include <errno.h>   /* for errno, EINVAL */
+#include <sys/ipc.h> /* for IPC_PRIVATE, IPC_CREAT, IPC_RMID */
+#include <sys/sem.h> /* for semget, semop, semctl, struct sembuf, struct semid_ds, SEM_UNDO, SETVAL, GETVAL */
 
 #include "apue.h"
 

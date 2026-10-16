@@ -7,9 +7,9 @@
 #include "apue.h"
 
 int main(void) {
-    pid_t pid;
+    pid_t pid = fork();
 
-    if ((pid = fork()) < 0) {
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* first child */
         if ((pid = fork()) < 0) {
@@ -29,7 +29,7 @@ int main(void) {
         exit(0);
     }
 
-    if (waitpid(pid, NULL, 0) != pid) { /* wait for first child */
+    if (waitpid(pid, nullptr, 0) != pid) { /* wait for first child */
         err_sys("waitpid error");
     }
 

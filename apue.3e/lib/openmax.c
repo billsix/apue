@@ -1,6 +1,6 @@
-#include <errno.h>     /* for errno */
-#include <limits.h>    /* for OPEN_MAX */
-#include <unistd.h>    /* for sysconf, _SC_OPEN_MAX */
+#include <errno.h>  /* for errno */
+#include <limits.h> /* for OPEN_MAX */
+#include <unistd.h> /* for sysconf, _SC_OPEN_MAX */
 
 #include "apue.h"
 

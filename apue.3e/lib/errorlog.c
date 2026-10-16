@@ -2,12 +2,12 @@
  * Error routines for programs that can run as a daemon.
  */
 
-#include <stdio.h>     /* for vsnprintf, snprintf, fflush, fputs, stdout, stderr */
-#include <stdlib.h>    /* for exit */
-#include <string.h>    /* for strerror, strlen, strcat */
-#include <errno.h>     /* for errno */
-#include <stdarg.h>    /* for va_list, va_start, va_end */
-#include <syslog.h>    /* for openlog, syslog, LOG_ERR */
+#include <stdio.h>  /* for vsnprintf, snprintf, fflush, fputs, stdout, stderr */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for strerror, strlen */
+#include <errno.h>  /* for errno */
+#include <stdarg.h> /* for va_list, va_start, va_end */
+#include <syslog.h> /* for openlog, syslog, LOG_ERR */
 
 #include "apue.h"
 
@@ -105,7 +105,7 @@ static void log_doit(int errnoflag, int error, int priority, const char *fmt,
         snprintf(buf + strlen(buf), MAXLINE - strlen(buf) - 1, ": %s",
                  strerror(error));
     }
-    strcat(buf, "\n");
+    snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");
     if (log_to_stderr) {
         fflush(stdout);
         fputs(buf, stderr);

@@ -1,8 +1,8 @@
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for alarm, pause */
-#include <signal.h>    /* for signal, SIG_ERR, sig_atomic_t, SIGUSR1, SIGALRM */
-#include <setjmp.h>    /* for sigjmp_buf, sigsetjmp, siglongjmp */
-#include <time.h>      /* for time, time_t */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for alarm, pause */
+#include <signal.h> /* for signal, SIG_ERR, sig_atomic_t, SIGUSR1, SIGALRM */
+#include <setjmp.h> /* for sigjmp_buf, sigsetjmp, siglongjmp */
+#include <time.h>   /* for time, time_t */
 
 #include "apue.h"
 
@@ -33,7 +33,7 @@ int main(void) {
     }
 }
 
-static void sig_usr1(int signo) {
+static void sig_usr1([[maybe_unused]] int signo) {
     time_t starttime;
 
     if (canjump == 0) {
@@ -43,9 +43,9 @@ static void sig_usr1(int signo) {
     pr_mask("starting sig_usr1: ");
 
     alarm(3); /* SIGALRM in 3 seconds */
-    starttime = time(NULL);
+    starttime = time(nullptr);
     for (;;) { /* busy wait for 5 seconds */
-        if (time(NULL) > starttime + 5) {
+        if (time(nullptr) > starttime + 5) {
             break;
         }
     }
@@ -56,4 +56,4 @@ static void sig_usr1(int signo) {
     siglongjmp(jmpbuf, 1); /* jump back to main, don't return */
 }
 
-static void sig_alrm(int signo) { pr_mask("in sig_alrm: "); }
+static void sig_alrm([[maybe_unused]] int signo) { pr_mask("in sig_alrm: "); }

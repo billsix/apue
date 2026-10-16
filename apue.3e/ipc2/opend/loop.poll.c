@@ -11,7 +11,7 @@ static struct pollfd *grow_pollfd(struct pollfd *pfd, int *maxfd) {
     int oldmax = *maxfd;
     int newmax = oldmax + NALLOC;
 
-    if ((pfd = realloc(pfd, newmax * sizeof(struct pollfd))) == NULL) {
+    if ((pfd = realloc(pfd, newmax * sizeof(struct pollfd))) == nullptr) {
         err_sys("realloc error");
     }
     for (i = oldmax; i < newmax; i++) {
@@ -31,7 +31,7 @@ void loop(void) {
     int numfd = 1;
     int maxfd = NALLOC;
 
-    if ((pollfd = malloc(NALLOC * sizeof(struct pollfd))) == NULL) {
+    if ((pollfd = malloc(NALLOC * sizeof(struct pollfd))) == nullptr) {
         err_sys("malloc error");
     }
     for (i = 0; i < NALLOC; i++) {

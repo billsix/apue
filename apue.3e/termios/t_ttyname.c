@@ -3,10 +3,10 @@
 #include <unistd.h> /* for isatty, ttyname */
 
 int main(void) {
-    char *name;
+    const char *name;
     if (isatty(0)) {
         name = ttyname(0);
-        if (name == NULL) {
+        if (name == nullptr) {
             name = "undefined";
         }
     } else {
@@ -16,7 +16,7 @@ int main(void) {
 
     if (isatty(1)) {
         name = ttyname(1);
-        if (name == NULL) {
+        if (name == nullptr) {
             name = "undefined";
         }
     } else {
@@ -26,7 +26,7 @@ int main(void) {
 
     if (isatty(2)) {
         name = ttyname(2);
-        if (name == NULL) {
+        if (name == nullptr) {
             name = "undefined";
         }
     } else {

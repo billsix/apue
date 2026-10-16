@@ -23,20 +23,16 @@
  */
 int log_to_stderr = 1;
 
-void submit_file(int, int, const char *, size_t, int);
+void submit_file(int, int, const char *, size_t, bool);
 
 int main(int argc, char *argv[]) {
-    int fd, sfd, err, text, c;
-    struct stat sbuf;
-    char *host;
-    struct addrinfo *ailist, *aip;
-
-    err = 0;
-    text = 0;
+    int err = 0;
+    bool text = false;
+    int c;
     while ((c = getopt(argc, argv, "t")) != -1) {
         switch (c) {
             case 't':
-                text = 1;
+                text = true;
                 break;
 
             case '?':
@@ -47,9 +43,11 @@ int main(int argc, char *argv[]) {
     if (err || (optind != argc - 1)) {
         err_quit("usage: print [-t] filename");
     }
-    if ((fd = open(argv[optind], O_RDONLY)) < 0) {
+    const int fd = open(argv[optind], O_RDONLY);
+    if (fd < 0) {
         err_sys("print: can't open %s", argv[optind]);
     }
+    struct stat sbuf;
     if (fstat(fd, &sbuf) < 0) {
         err_sys("print: can't stat %s", argv[optind]);
     }
@@ -60,16 +58,20 @@ int main(int argc, char *argv[]) {
     /*
      * Get the hostname of the host acting as the print server.
      */
-    if ((host = get_printserver()) == NULL) {
+    const char *host = get_printserver();
+    if (host == nullptr) {
         err_quit("print: no print server defined");
     }
-    if ((err = getaddrlist(host, "print", &ailist)) != 0) {
+    struct addrinfo *ailist;
+    err = getaddrlist(host, "print", &ailist);
+    if (err != 0) {
         err_quit("print: getaddrinfo error: %s", gai_strerror(err));
     }
 
-    for (aip = ailist; aip != NULL; aip = aip->ai_next) {
-        if ((sfd = connect_retry(AF_INET, SOCK_STREAM, 0, aip->ai_addr,
-                                 aip->ai_addrlen)) < 0) {
+    for (struct addrinfo *aip = ailist; aip != nullptr; aip = aip->ai_next) {
+        int sfd = connect_retry(AF_INET, SOCK_STREAM, 0, aip->ai_addr,
+                                aip->ai_addrlen);
+        if (sfd < 0) {
             err = errno;
         } else {
             submit_file(fd, sfd, argv[optind], sbuf.st_size, text);
@@ -83,17 +85,14 @@ int main(int argc, char *argv[]) {
  * Send a file to the printer daemon.
  */
 void submit_file(int fd, int sockfd, const char *fname, size_t nbytes,
-                 int text) {
-    int nr, nw, len;
-    struct passwd *pwd;
+                 bool text) {
     struct printreq req;
-    struct printresp res;
-    char buf[IOBUFSZ];
 
     /*
      * First build the header.
      */
-    if ((pwd = getpwuid(geteuid())) == NULL) {
+    const struct passwd *pwd = getpwuid(geteuid());
+    if (pwd == nullptr) {
         strcpy(req.usernm, "unknown");
     } else {
         strncpy(req.usernm, pwd->pw_name, USERNM_MAX - 1);
@@ -107,21 +106,22 @@ void submit_file(int fd, int sockfd, const char *fname, size_t nbytes,
         req.flags = 0;
     }
 
-    if ((len = strlen(fname)) >= JOBNM_MAX) {
+    const int len = strlen(fname);
+    if (len >= JOBNM_MAX) {
         /*
          * Truncate the filename (+-5 accounts for the leading
          * four characters and the terminating null).
          */
-        strcpy(req.jobnm, "... ");
-        strncat(req.jobnm, &fname[len - JOBNM_MAX + 5], JOBNM_MAX - 5);
+        snprintf(req.jobnm, sizeof(req.jobnm), "... %s",
+                 &fname[len - JOBNM_MAX + 5]);
     } else {
-        strcpy(req.jobnm, fname);
+        snprintf(req.jobnm, sizeof(req.jobnm), "%s", fname);
     }
 
     /*
      * Send the header to the server.
      */
-    nw = writen(sockfd, &req, sizeof(struct printreq));
+    int nw = writen(sockfd, &req, sizeof(struct printreq));
     if (nw != sizeof(struct printreq)) {
         if (nw < 0) {
             err_sys("can't write to print server");
@@ -134,6 +134,8 @@ void submit_file(int fd, int sockfd, const char *fname, size_t nbytes,
     /*
      * Now send the file.
      */
+    char buf[IOBUFSZ];
+    int nr;
     while ((nr = read(fd, buf, IOBUFSZ)) != 0) {
         nw = writen(sockfd, buf, nr);
         if (nw != nr) {
@@ -148,6 +150,7 @@ void submit_file(int fd, int sockfd, const char *fname, size_t nbytes,
     /*
      * Read the response.
      */
+    struct printresp res;
     if ((nr = readn(sockfd, &res, sizeof(struct printresp))) !=
         sizeof(struct printresp)) {
         err_sys("can't read response from server");

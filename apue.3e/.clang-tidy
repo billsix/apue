@@ -1,0 +1,33 @@
+# clang-tidy config for the APUE example tree (modernized to C23).
+# See tasks/modernize-to-modern-c.md and ~/.claude/reference/c-coding-standard.md.
+# Scoped to apue.3e: the vendored musl/ (a sibling dir) is never linted.
+#
+# Advisory in the gate (WarningsAsErrors empty) — the modernization sweep fixes
+# findings at the source chapter by chapter. Layout is clang-format's job, so
+# the brace/formatting readability checks are disabled here to avoid conflict.
+Checks: >
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  misc-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -readability-function-cognitive-complexity,
+  -readability-braces-around-statements,
+  -readability-isolate-declaration,
+  -misc-include-cleaner,
+  -cert-err33-c,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  -bugprone-assignment-in-if-condition,
+  -misc-use-internal-linkage,
+  -readability-named-parameter
+
+# Only diagnose/modify headers inside this tree (our include/apue.h and lib),
+# never system or musl headers.
+HeaderFilterRegex: 'apue\.3e/(include|lib)/'
+WarningsAsErrors: ''
+FormatStyle: file

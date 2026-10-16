@@ -1,4 +1,4 @@
-#include <stdlib.h> /* for malloc, free, NULL */
+#include <stdlib.h> /* for malloc, free */
 #include <stdio.h>  /* for snprintf */
 #include <unistd.h> /* for getpid */
 #include <errno.h>  /* for errno, EEXIST */
@@ -6,11 +6,11 @@
 #include "slock.h"
 
 struct slock *s_alloc() {
-    struct slock *sp;
     static int cnt;
 
-    if ((sp = malloc(sizeof(struct slock))) == NULL) {
-        return (NULL);
+    struct slock *sp = malloc(sizeof(struct slock));
+    if (sp == nullptr) {
+        return (nullptr);
     }
     do {
         snprintf(sp->name, sizeof(sp->name), "/%ld.%d", (long)getpid(), cnt++);
@@ -18,7 +18,7 @@ struct slock *s_alloc() {
     } while ((sp->semp == SEM_FAILED) && (errno == EEXIST));
     if (sp->semp == SEM_FAILED) {
         free(sp);
-        return (NULL);
+        return (nullptr);
     }
     sem_unlink(sp->name);
     return (sp);

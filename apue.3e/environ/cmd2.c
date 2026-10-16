@@ -1,6 +1,6 @@
-#include <stdio.h>     /* for printf, fgets, stdin */
-#include <stdlib.h>    /* for exit */
-#include <setjmp.h>    /* for jmp_buf, setjmp, longjmp */
+#include <stdio.h>  /* for printf, fgets, stdin */
+#include <stdlib.h> /* for exit */
+#include <setjmp.h> /* for jmp_buf, setjmp, longjmp */
 
 #include "apue.h"
 
@@ -14,7 +14,7 @@ int main(void) {
     if (setjmp(jmpbuffer) != 0) {
         printf("error");
     }
-    while (fgets(line, MAXLINE, stdin) != NULL) {
+    while (fgets(line, MAXLINE, stdin) != nullptr) {
         do_line(line);
     }
     exit(0);

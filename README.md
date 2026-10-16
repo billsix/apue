@@ -7,8 +7,11 @@ containerized build. The ~220 example programs live under `apue.3e/`.
 This fork:
 
 - replaces the original recursive Make with **Meson + Ninja**,
-- builds against a **debug musl-clang** libc (compiled from source) on Linux, and
-- ships a Fedora podman dev container with gdb/lldb ready to go.
+- builds against a **debug musl-clang** libc (compiled from source) on Linux,
+- ships a Fedora podman dev container with gdb/lldb ready to go, and
+- **modernizes the examples to modern C (C23)** rather than keeping them
+  byte-faithful to the book — runtime behavior is preserved, and the tree
+  compiles warning-clean. See `tasks/archive/2026/10/16/modernize-to-modern-c.md`.
 
 ## Quick start
 

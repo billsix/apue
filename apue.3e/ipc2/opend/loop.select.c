@@ -21,7 +21,7 @@ void loop(void) {
 
     for (;;) {
         rset = allset; /* rset gets modified each time around */
-        if ((n = select(maxfd + 1, &rset, NULL, NULL, NULL)) < 0) {
+        if ((n = select(maxfd + 1, &rset, nullptr, nullptr, nullptr)) < 0) {
             log_sys("select error");
         }
 

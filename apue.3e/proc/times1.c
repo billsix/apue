@@ -5,36 +5,35 @@
 
 #include "apue.h"
 
-static void pr_times(clock_t, struct tms *, struct tms *);
-static void do_cmd(char *);
+static void pr_times(clock_t, const struct tms *, const struct tms *);
+static void do_cmd(const char *);
 
 int main(int argc, char *argv[]) {
-    int i;
-
-    setbuf(stdout, NULL);
-    for (i = 1; i < argc; i++) {
+    setbuf(stdout, nullptr);
+    for (int i = 1; i < argc; i++) {
         do_cmd(argv[i]); /* once for each command-line arg */
     }
     exit(0);
 }
 
-static void do_cmd(char *cmd) /* execute and time the "cmd" */
+static void do_cmd(const char *cmd) /* execute and time the "cmd" */
 {
-    struct tms tmsstart, tmsend;
-    clock_t start, end;
-    int status;
-
     printf("\ncommand: %s\n", cmd);
 
-    if ((start = times(&tmsstart)) == -1) { /* starting values */
+    struct tms tmsstart;
+    const clock_t start = times(&tmsstart); /* starting values */
+    if (start == -1) {
         err_sys("times error");
     }
 
-    if ((status = system(cmd)) < 0) { /* execute command */
+    const int status = system(cmd); /* execute command */
+    if (status < 0) {
         err_sys("system() error");
     }
 
-    if ((end = times(&tmsend)) == -1) { /* ending values */
+    struct tms tmsend;
+    const clock_t end = times(&tmsend); /* ending values */
+    if (end == -1) {
         err_sys("times error");
     }
 
@@ -42,7 +41,8 @@ static void do_cmd(char *cmd) /* execute and time the "cmd" */
     pr_exit(status);
 }
 
-static void pr_times(clock_t real, struct tms *tmsstart, struct tms *tmsend) {
+static void pr_times(clock_t real, const struct tms *tmsstart,
+                     const struct tms *tmsend) {
     static long clktck = 0;
 
     if (clktck == 0) { /* fetch clock ticks per second first time */

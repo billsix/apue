@@ -1,8 +1,8 @@
-#include <stddef.h>    /* for NULL, size_t */
-#include <stdlib.h>    /* for malloc */
-#include <errno.h>     /* for errno */
-#include <limits.h>    /* for PATH_MAX */
-#include <unistd.h>    /* for sysconf, pathconf, _SC_VERSION, _SC_XOPEN_VERSION, _PC_PATH_MAX */
+#include <stddef.h> /* for size_t */
+#include <stdlib.h> /* for malloc */
+#include <errno.h>  /* for errno */
+#include <limits.h> /* for PATH_MAX */
+#include <unistd.h> /* for sysconf, pathconf, _SC_VERSION, _SC_XOPEN_VERSION, _PC_PATH_MAX */
 
 #include "apue.h"
 
@@ -20,9 +20,6 @@ static long xsi_version = 0;
 
 char *path_alloc(size_t *sizep) /* also return allocated size, if nonnull */
 {
-    char *ptr;
-    size_t size;
-
     if (posix_version == 0) {
         posix_version = sysconf(_SC_VERSION);
     }
@@ -48,17 +45,16 @@ char *path_alloc(size_t *sizep) /* also return allocated size, if nonnull */
      * Before POSIX.1-2001, we aren't guaranteed that PATH_MAX includes
      * the terminating null byte.  Same goes for XPG3.
      */
-    if ((posix_version < 200112L) && (xsi_version < 4)) {
-        size = pathmax + 1;
-    } else {
-        size = pathmax;
-    }
+    const size_t size = ((posix_version < 200112L) && (xsi_version < 4))
+                            ? (size_t)(pathmax + 1)
+                            : (size_t)pathmax;
 
-    if ((ptr = malloc(size)) == NULL) {
+    char *const ptr = malloc(size);
+    if (ptr == nullptr) {
         err_sys("malloc error for pathname");
     }
 
-    if (sizep != NULL) {
+    if (sizep != nullptr) {
         *sizep = size;
     }
     return (ptr);

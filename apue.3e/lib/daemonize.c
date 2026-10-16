@@ -1,15 +1,15 @@
-#include <stdlib.h>        /* for exit */
-#include <unistd.h>        /* for fork, setsid, chdir, close, dup */
-#include <fcntl.h>         /* for open, O_RDWR */
-#include <signal.h>        /* for sigaction, sigemptyset, SIG_IGN, SIGHUP */
-#include <syslog.h>        /* for openlog, syslog, LOG_CONS, LOG_DAEMON, LOG_ERR */
-#include <sys/stat.h>      /* for umask */
-#include <sys/resource.h>  /* for getrlimit, struct rlimit, RLIMIT_NOFILE, RLIM_INFINITY */
+#include <stdlib.h>   /* for exit */
+#include <unistd.h>   /* for fork, setsid, chdir, close, dup */
+#include <fcntl.h>    /* for open, O_RDWR */
+#include <signal.h>   /* for sigaction, sigemptyset, SIG_IGN, SIGHUP */
+#include <syslog.h>   /* for openlog, syslog, LOG_CONS, LOG_DAEMON, LOG_ERR */
+#include <sys/stat.h> /* for umask */
+#include <sys/resource.h> /* for getrlimit, struct rlimit, RLIMIT_NOFILE, RLIM_INFINITY */
 
 #include "apue.h"
 
 void daemonize(const char *cmd) {
-    int i, fd0, fd1, fd2;
+    int fd0, fd1, fd2;
     pid_t pid;
     struct rlimit rl;
     struct sigaction sa;
@@ -42,7 +42,7 @@ void daemonize(const char *cmd) {
     sa.sa_handler = SIG_IGN;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
-    if (sigaction(SIGHUP, &sa, NULL) < 0) {
+    if (sigaction(SIGHUP, &sa, nullptr) < 0) {
         err_quit("%s: can't ignore SIGHUP", cmd);
     }
     if ((pid = fork()) < 0) {
@@ -65,8 +65,8 @@ void daemonize(const char *cmd) {
     if (rl.rlim_max == RLIM_INFINITY) {
         rl.rlim_max = 1024;
     }
-    for (i = 0; i < rl.rlim_max; i++) {
-        close(i);
+    for (rlim_t i = 0; i < rl.rlim_max; i++) {
+        close((int)i);
     }
 
     /*

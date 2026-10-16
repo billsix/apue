@@ -1,4 +1,4 @@
-#include <stdio.h> /* for sprintf */
+#include <stdio.h> /* for snprintf */
 
 #ifndef LINUX
 extern char *sys_errlist[];
@@ -12,6 +12,6 @@ char *strerror(int error) {
         return ((char *)sys_errlist[error]);
     }
 
-    sprintf(mesg, "Unknown error (%d)", error);
+    snprintf(mesg, sizeof(mesg), "Unknown error (%d)", error);
     return (mesg);
 }

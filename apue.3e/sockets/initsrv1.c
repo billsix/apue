@@ -4,10 +4,8 @@
 
 int initserver(int type, const struct sockaddr *addr, socklen_t alen,
                int qlen) {
-    int fd;
-    int err = 0;
-
-    if ((fd = socket(addr->sa_family, type, 0)) < 0) {
+    const int fd = socket(addr->sa_family, type, 0);
+    if (fd < 0) {
         return (-1);
     }
     if (bind(fd, addr, alen) < 0) {
@@ -20,8 +18,8 @@ int initserver(int type, const struct sockaddr *addr, socklen_t alen,
     }
     return (fd);
 
-errout:
-    err = errno;
+errout:;
+    const int err = errno;
     close(fd);
     errno = err;
     return (-1);

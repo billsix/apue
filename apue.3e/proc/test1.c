@@ -6,9 +6,9 @@
 #include "apue.h"
 
 int main(void) {
-    pid_t pid;
+    pid_t pid = fork();
 
-    if ((pid = fork()) < 0) {
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid != 0) { /* parent */
         sleep(2);
@@ -25,7 +25,7 @@ int main(void) {
     if ((pid = fork()) < 0) {
         err_sys("fork error");
     } else if (pid != 0) { /* second child */
-        execl("/bin/dd", "dd", "if=/etc/passwd", "of=/dev/null", NULL);
+        execl("/bin/dd", "dd", "if=/etc/passwd", "of=/dev/null", (char *)0);
         exit(7); /* shouldn't get here */
     }
 

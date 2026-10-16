@@ -1,6 +1,6 @@
-#include <stdio.h>     /* for printf, fopen, fread, ferror, FILE */
-#include <stdlib.h>    /* for exit */
-#include <sys/acct.h>  /* for struct acct, comp_t, AFORK, ASU */
+#include <stdio.h>    /* for printf, fopen, fread, ferror, FILE */
+#include <stdlib.h>   /* for exit */
+#include <sys/acct.h> /* for struct acct, comp_t, AFORK, ASU */
 
 #include "apue.h"
 
@@ -28,11 +28,8 @@
 static unsigned long compt2ulong(
     comp_t comptime) /* convert comp_t to unsigned long */
 {
-    unsigned long val;
-    int exp;
-
-    val = comptime & 0x1fff;    /* 13-bit fraction */
-    exp = (comptime >> 13) & 7; /* 3-bit exponent (0-7) */
+    unsigned long val = comptime & 0x1fff; /* 13-bit fraction */
+    int exp = (comptime >> 13) & 7;        /* 3-bit exponent (0-7) */
     while (exp-- > 0) {
         val *= 8;
     }
@@ -41,15 +38,14 @@ static unsigned long compt2ulong(
 #endif
 
 int main(int argc, char *argv[]) {
-    struct acct acdata;
-    FILE *fp;
-
     if (argc != 2) {
         err_quit("usage: pracct filename");
     }
-    if ((fp = fopen(argv[1], "r")) == NULL) {
+    FILE *fp = fopen(argv[1], "r");
+    if (fp == nullptr) {
         err_sys("can't open %s", argv[1]);
     }
+    struct acct acdata;
     while (fread(&acdata, sizeof(acdata), 1, fp) == 1) {
         printf(FMT, (int)sizeof(acdata.ac_comm), (int)sizeof(acdata.ac_comm),
                acdata.ac_comm,

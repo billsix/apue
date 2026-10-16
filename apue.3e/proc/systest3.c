@@ -1,15 +1,14 @@
-#include <stdlib.h>    /* for exit, system */
+#include <stdlib.h> /* for exit, system */
 
 #include "apue.h"
 
 int main(int argc, char *argv[]) {
-    int status;
-
     if (argc < 2) {
         err_quit("command-line argument required");
     }
 
-    if ((status = system(argv[1])) < 0) {
+    const int status = system(argv[1]);
+    if (status < 0) {
         err_sys("system() error");
     }
 

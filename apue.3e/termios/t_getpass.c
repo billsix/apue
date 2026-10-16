@@ -1,14 +1,13 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit */
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
 
 #include "apue.h"
 
 char *getpass(const char *);
 
 int main(void) {
-    char *ptr;
-
-    if ((ptr = getpass("Enter password:")) == NULL) {
+    char *ptr = getpass("Enter password:");
+    if (ptr == nullptr) {
         err_sys("getpass error");
     }
     printf("password: %s\n", ptr);

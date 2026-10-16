@@ -1,6 +1,6 @@
-#include <stdio.h>   /* for sprintf */
-#include <string.h>  /* for strlen */
-#include <unistd.h>  /* for fork, close, dup2, execl, write, STDIN_FILENO, STDOUT_FILENO */
+#include <stdio.h>  /* for sprintf */
+#include <string.h> /* for strlen */
+#include <unistd.h> /* for fork, close, dup2, execl, write, STDIN_FILENO, STDOUT_FILENO */
 #include <sys/uio.h> /* for writev, struct iovec */
 
 #include "open.h"
@@ -40,8 +40,8 @@ int csopen(char *name, int oflag) {
         }
         close(fd[1]); /* parent */
     }
-    sprintf(buf, " %d", oflag);    /* oflag to ascii */
-    iov[0].iov_base = CL_OPEN " "; /* string concatenation */
+    snprintf(buf, sizeof(buf), " %d", oflag); /* oflag to ascii */
+    iov[0].iov_base = CL_OPEN " ";            /* string concatenation */
     iov[0].iov_len = strlen(CL_OPEN) + 1;
     iov[1].iov_base = name;
     iov[1].iov_len = strlen(name);

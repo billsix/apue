@@ -1,5 +1,4 @@
-#include <stddef.h>    /* for NULL */
-#include <string.h>    /* for strtok */
+#include <string.h> /* for strtok */
 
 #include "apue.h"
 
@@ -17,17 +16,17 @@ int buf_args(char *buf, int (*optfunc)(int, char **)) {
     char *ptr, *argv[MAXARGC];
     int argc;
 
-    if (strtok(buf, WHITE) == NULL) { /* an argv[0] is required */
+    if (strtok(buf, WHITE) == nullptr) { /* an argv[0] is required */
         return (-1);
     }
     argv[argc = 0] = buf;
-    while ((ptr = strtok(NULL, WHITE)) != NULL) {
+    while ((ptr = strtok(nullptr, WHITE)) != nullptr) {
         if (++argc >= MAXARGC - 1) { /* -1 for room for NULL at end */
             return (-1);
         }
         argv[argc] = ptr;
     }
-    argv[++argc] = NULL;
+    argv[++argc] = nullptr;
 
     /*
      * Since argv[] pointers point into the user's buf[],

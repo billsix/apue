@@ -7,7 +7,7 @@
 int debug, oflag, client_size, log_to_stderr;
 char errmsg[MAXLINE];
 char *pathname;
-Client *client = NULL;
+Client *client = nullptr;
 
 int main(int argc, char *argv[]) {
     int c;

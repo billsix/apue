@@ -1,9 +1,9 @@
-#include <stdio.h>      /* for printf */
-#include <stdlib.h>     /* for exit */
-#include <string.h>     /* for memset */
-#include <unistd.h>     /* for read, write */
-#include <poll.h>       /* for poll, struct pollfd, POLLIN */
-#include <pthread.h>    /* for pthread_create, pthread_mutex_*, pthread_cond_*, pthread_t */
+#include <stdio.h>  /* for printf */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for memset */
+#include <unistd.h> /* for read, write */
+#include <poll.h>   /* for poll, struct pollfd, POLLIN */
+#include <pthread.h> /* for pthread_create, pthread_mutex_*, pthread_cond_*, pthread_t */
 #include <sys/ipc.h>    /* for IPC_CREAT */
 #include <sys/msg.h>    /* for msgget, msgrcv, MSG_NOERROR */
 #include <sys/socket.h> /* for socketpair, AF_UNIX, SOCK_DGRAM */
@@ -29,12 +29,12 @@ struct threadinfo {
 };
 
 void *helper(void *arg) {
-    int n;
     struct threadinfo *tip = arg;
 
     for (;;) {
         memset(&tip->m, 0, sizeof(struct mymsg));
-        if ((n = msgrcv(tip->qid, &tip->m, MAXMSZ, 0, MSG_NOERROR)) < 0) {
+        const int n = msgrcv(tip->qid, &tip->m, MAXMSZ, 0, MSG_NOERROR);
+        if (n < 0) {
             err_sys("msgrcv error");
         }
         tip->len = n;
@@ -47,22 +47,20 @@ void *helper(void *arg) {
     }
 }
 
-int main() {
-    char c;
-    int i, n, err;
-    int fd[2];
+int main(void) {
     int qid[NQ];
     struct pollfd pfd[NQ];
     struct threadinfo ti[NQ];
     pthread_t tid[NQ];
 
-    for (i = 0; i < NQ; i++) {
+    for (int i = 0; i < NQ; i++) {
         if ((qid[i] = msgget((KEY + i), IPC_CREAT | 0666)) < 0) {
             err_sys("msgget error");
         }
 
         printf("queue ID %d is %d\n", i, qid[i]);
 
+        int fd[2];
         if (socketpair(AF_UNIX, SOCK_DGRAM, 0, fd) < 0) {
             err_sys("socketpair error");
         }
@@ -70,13 +68,14 @@ int main() {
         pfd[i].events = POLLIN;
         ti[i].qid = qid[i];
         ti[i].fd = fd[1];
-        if (pthread_cond_init(&ti[i].ready, NULL) != 0) {
+        if (pthread_cond_init(&ti[i].ready, nullptr) != 0) {
             err_sys("pthread_cond_init error");
         }
-        if (pthread_mutex_init(&ti[i].mutex, NULL) != 0) {
+        if (pthread_mutex_init(&ti[i].mutex, nullptr) != 0) {
             err_sys("pthread_mutex_init error");
         }
-        if ((err = pthread_create(&tid[i], NULL, helper, &ti[i])) != 0) {
+        const int err = pthread_create(&tid[i], nullptr, helper, &ti[i]);
+        if (err != 0) {
             err_exit(err, "pthread_create error");
         }
     }
@@ -85,9 +84,11 @@ int main() {
         if (poll(pfd, NQ, -1) < 0) {
             err_sys("poll error");
         }
-        for (i = 0; i < NQ; i++) {
+        for (int i = 0; i < NQ; i++) {
             if (pfd[i].revents & POLLIN) {
-                if ((n = read(pfd[i].fd, &c, sizeof(char))) < 0) {
+                char c;
+                const int n = read(pfd[i].fd, &c, sizeof(char));
+                if (n < 0) {
                     err_sys("read error");
                 }
                 ti[i].m.mtext[ti[i].len] = 0;

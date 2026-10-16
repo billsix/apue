@@ -13,10 +13,7 @@
 extern int lockfile(int);
 
 int already_running(void) {
-    int fd;
-    char buf[16];
-
-    fd = open(LOCKFILE, O_RDWR | O_CREAT, LOCKMODE);
+    const int fd = open(LOCKFILE, O_RDWR | O_CREAT, LOCKMODE);
     if (fd < 0) {
         syslog(LOG_ERR, "can't open %s: %s", LOCKFILE, strerror(errno));
         exit(1);
@@ -30,7 +27,8 @@ int already_running(void) {
         exit(1);
     }
     ftruncate(fd, 0);
-    sprintf(buf, "%ld", (long)getpid());
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%ld", (long)getpid());
     write(fd, buf, strlen(buf) + 1);
     return (0);
 }

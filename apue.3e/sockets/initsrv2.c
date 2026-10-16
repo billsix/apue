@@ -4,12 +4,11 @@
 
 int initserver(int type, const struct sockaddr *addr, socklen_t alen,
                int qlen) {
-    int fd, err;
-    int reuse = 1;
-
-    if ((fd = socket(addr->sa_family, type, 0)) < 0) {
+    const int fd = socket(addr->sa_family, type, 0);
+    if (fd < 0) {
         return (-1);
     }
+    const int reuse = 1;
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) < 0) {
         goto errout;
     }
@@ -23,8 +22,8 @@ int initserver(int type, const struct sockaddr *addr, socklen_t alen,
     }
     return (fd);
 
-errout:
-    err = errno;
+errout:;
+    const int err = errno;
     close(fd);
     errno = err;
     return (-1);

@@ -1,9 +1,9 @@
-#include <stdio.h>     /* for printf */
-#include <stdlib.h>    /* for exit, realloc */
-#include <string.h>    /* for strlen, strcpy, strcmp */
-#include <limits.h>    /* for NAME_MAX */
-#include <dirent.h>    /* for DIR, struct dirent, opendir, readdir, closedir */
-#include <sys/stat.h>  /* for struct stat, lstat, S_ISDIR, S_IF* constants */
+#include <stdio.h>    /* for printf */
+#include <stdlib.h>   /* for exit, realloc */
+#include <string.h>   /* for strlen, strcpy, strcmp */
+#include <limits.h>   /* for NAME_MAX */
+#include <dirent.h>   /* for DIR, struct dirent, opendir, readdir, closedir */
+#include <sys/stat.h> /* for struct stat, lstat, S_ISDIR, S_IF* constants */
 
 #include "apue.h"
 
@@ -17,13 +17,11 @@ static int dopath(Myfunc *);
 static long nreg, ndir, nblk, nchr, nfifo, nslink, nsock, ntot;
 
 int main(int argc, char *argv[]) {
-    int ret;
-
     if (argc != 2) {
         err_quit("usage:  ftw  <starting-pathname>");
     }
 
-    ret = myftw(argv[1], myfunc); /* does it all */
+    const int ret = myftw(argv[1], myfunc); /* does it all */
 
     ntot = nreg + ndir + nblk + nchr + nfifo + nslink + nsock;
     if (ntot == 0) {
@@ -57,11 +55,11 @@ myftw(char *pathname, Myfunc *func) {
                                      /* ({Prog pathalloc}) */
     if (pathlen <= strlen(pathname)) {
         pathlen = strlen(pathname) * 2;
-        if ((fullpath = realloc(fullpath, pathlen)) == NULL) {
+        if ((fullpath = realloc(fullpath, pathlen)) == nullptr) {
             err_sys("realloc failed");
         }
     }
-    strcpy(fullpath, pathname);
+    snprintf(fullpath, pathlen, "%s", pathname);
     return (dopath(func));
 }
 
@@ -74,10 +72,6 @@ myftw(char *pathname, Myfunc *func) {
 static int /* we return whatever func() returns */
 dopath(Myfunc *func) {
     struct stat statbuf;
-    struct dirent *dirp;
-    DIR *dp;
-    int ret, n;
-
     if (lstat(fullpath, &statbuf) < 0) { /* stat error */
         return (func(fullpath, &statbuf, FTW_NS));
     }
@@ -89,31 +83,35 @@ dopath(Myfunc *func) {
      * It's a directory.  First call func() for the directory,
      * then process each filename in the directory.
      */
-    if ((ret = func(fullpath, &statbuf, FTW_D)) != 0) {
+    int ret = func(fullpath, &statbuf, FTW_D);
+    if (ret != 0) {
         return (ret);
     }
 
-    n = strlen(fullpath);
+    size_t n = strlen(fullpath);
     if (n + NAME_MAX + 2 > pathlen) { /* expand path buffer */
         pathlen *= 2;
-        if ((fullpath = realloc(fullpath, pathlen)) == NULL) {
+        if ((fullpath = realloc(fullpath, pathlen)) == nullptr) {
             err_sys("realloc failed");
         }
     }
     fullpath[n++] = '/';
     fullpath[n] = 0;
 
-    if ((dp = opendir(fullpath)) == NULL) { /* can't read directory */
+    DIR *dp = opendir(fullpath);
+    if (dp == nullptr) { /* can't read directory */
         return (func(fullpath, &statbuf, FTW_DNR));
     }
 
-    while ((dirp = readdir(dp)) != NULL) {
+    struct dirent *dirp;
+    while ((dirp = readdir(dp)) != nullptr) {
         if (strcmp(dirp->d_name, ".") == 0 || strcmp(dirp->d_name, "..") == 0) {
             continue; /* ignore dot and dot-dot */
         }
-        strcpy(&fullpath[n], dirp->d_name); /* append name after "/" */
-        if ((ret = dopath(func)) != 0) {    /* recursive */
-            break;                          /* time to leave */
+        snprintf(&fullpath[n], pathlen - n, "%s",
+                 dirp->d_name);          /* append name after "/" */
+        if ((ret = dopath(func)) != 0) { /* recursive */
+            break;                       /* time to leave */
         }
     }
     fullpath[n - 1] = 0; /* erase everything from slash onward */

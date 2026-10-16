@@ -1,9 +1,9 @@
-#include <stdio.h>      /* for fprintf, stderr */
-#include <stdlib.h>     /* for exit */
-#include <string.h>     /* for memset, strerror */
-#include <unistd.h>     /* for write, alarm, STDOUT_FILENO */
-#include <signal.h>     /* for sigaction, sigemptyset, struct sigaction, SIGALRM */
-#include <errno.h>      /* for errno, EINTR */
+#include <stdio.h>  /* for fprintf, stderr */
+#include <stdlib.h> /* for exit */
+#include <string.h> /* for strerror */
+#include <unistd.h> /* for write, alarm, STDOUT_FILENO */
+#include <signal.h> /* for sigaction, sigemptyset, struct sigaction, SIGALRM */
+#include <errno.h>  /* for errno, EINTR */
 #include <sys/socket.h> /* for socket, sendto, recvfrom, SOCK_DGRAM */
 #include <netdb.h>      /* for getaddrinfo, gai_strerror, struct addrinfo */
 
@@ -12,18 +12,17 @@
 #define BUFLEN 128
 #define TIMEOUT 20
 
-void sigalrm(int signo) {}
+void sigalrm([[maybe_unused]] int signo) {}
 
-void print_uptime(int sockfd, struct addrinfo *aip) {
-    int n;
+void print_uptime(int sockfd, const struct addrinfo *aip) {
     char buf[BUFLEN];
-
     buf[0] = 0;
     if (sendto(sockfd, buf, 1, 0, aip->ai_addr, aip->ai_addrlen) < 0) {
         err_sys("sendto error");
     }
     alarm(TIMEOUT);
-    if ((n = recvfrom(sockfd, buf, BUFLEN, 0, NULL, NULL)) < 0) {
+    int n = recvfrom(sockfd, buf, BUFLEN, 0, nullptr, nullptr);
+    if (n < 0) {
         if (errno != EINTR) {
             alarm(0);
         }
@@ -34,31 +33,26 @@ void print_uptime(int sockfd, struct addrinfo *aip) {
 }
 
 int main(int argc, char *argv[]) {
-    struct addrinfo *ailist, *aip;
-    struct addrinfo hint;
-    int sockfd, err;
-    struct sigaction sa;
-
     if (argc != 2) {
         err_quit("usage: ruptime hostname");
     }
+    struct sigaction sa;
     sa.sa_handler = sigalrm;
     sa.sa_flags = 0;
     sigemptyset(&sa.sa_mask);
-    if (sigaction(SIGALRM, &sa, NULL) < 0) {
+    if (sigaction(SIGALRM, &sa, nullptr) < 0) {
         err_sys("sigaction error");
     }
-    memset(&hint, 0, sizeof(hint));
-    hint.ai_socktype = SOCK_DGRAM;
-    hint.ai_canonname = NULL;
-    hint.ai_addr = NULL;
-    hint.ai_next = NULL;
-    if ((err = getaddrinfo(argv[1], "ruptime", &hint, &ailist)) != 0) {
+    struct addrinfo hint = {.ai_socktype = SOCK_DGRAM};
+    struct addrinfo *ailist;
+    int err = getaddrinfo(argv[1], "ruptime", &hint, &ailist);
+    if (err != 0) {
         err_quit("getaddrinfo error: %s", gai_strerror(err));
     }
 
-    for (aip = ailist; aip != NULL; aip = aip->ai_next) {
-        if ((sockfd = socket(aip->ai_family, SOCK_DGRAM, 0)) < 0) {
+    for (struct addrinfo *aip = ailist; aip != nullptr; aip = aip->ai_next) {
+        int sockfd = socket(aip->ai_family, SOCK_DGRAM, 0);
+        if (sockfd < 0) {
             err = errno;
         } else {
             print_uptime(sockfd, aip);

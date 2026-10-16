@@ -18,6 +18,7 @@ CONTAINER_NAME = apue
 PODMAN_RUN_FLAGS ?= $(if $(filter 1,$(NESTED_PODMAN)),--cgroups=disabled)
 FILES_TO_MOUNT = -v $(shell pwd)/apue.3e:/apue/apue.3e:Z \
                  -v ./entrypoint/shell.sh:/usr/local/bin/shell.sh:Z \
+                 -v ./entrypoint/format.sh:/usr/local/bin/format.sh:Z \
                  -v ./entrypoint/dotfiles/.extrabashrc:/root/.extrabashrc:Z \
                  $(TMUX_MOUNT) \
 

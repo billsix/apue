@@ -1,25 +1,24 @@
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for close */
-#include <fcntl.h>     /* for open, O_RDWR, O_TRUNC */
-#include <time.h>      /* for struct timespec */
-#include <sys/stat.h>  /* for struct stat, stat, futimens */
+#include <stdlib.h>   /* for exit */
+#include <unistd.h>   /* for close */
+#include <fcntl.h>    /* for open, O_RDWR, O_TRUNC */
+#include <time.h>     /* for struct timespec */
+#include <sys/stat.h> /* for struct stat, stat, futimens */
 
 #include "apue.h"
 
 int main(int argc, char *argv[]) {
-    int i, fd;
-    struct stat statbuf;
-    struct timespec times[2];
-
-    for (i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
+        struct stat statbuf;
         if (stat(argv[i], &statbuf) < 0) { /* fetch current times */
             err_ret("%s: stat error", argv[i]);
             continue;
         }
-        if ((fd = open(argv[i], O_RDWR | O_TRUNC)) < 0) { /* truncate */
+        const int fd = open(argv[i], O_RDWR | O_TRUNC); /* truncate */
+        if (fd < 0) {
             err_ret("%s: open error", argv[i]);
             continue;
         }
+        struct timespec times[2];
         times[0] = statbuf.st_atim;
         times[1] = statbuf.st_mtim;
         if (futimens(fd, times) < 0) { /* reset times */

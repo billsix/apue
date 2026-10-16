@@ -1,23 +1,23 @@
-#include <stdlib.h>    /* for exit */
-#include <unistd.h>    /* for read, write, getpid, STDIN_FILENO, STDOUT_FILENO */
-#include <signal.h>    /* for signal, sigemptyset, sigaddset, sigprocmask, kill, sigset_t, SIG_DFL, SIG_IGN, SIG_UNBLOCK, SIGTSTP */
+#include <stdlib.h> /* for exit */
+#include <unistd.h> /* for read, write, getpid, STDIN_FILENO, STDOUT_FILENO */
+#include <signal.h> /* for signal, sigemptyset, sigaddset, sigprocmask, kill, sigset_t, SIG_DFL, SIG_IGN, SIG_UNBLOCK, SIGTSTP */
 
 #include "apue.h"
 
 #define BUFFSIZE 1024
 
-static void sig_tstp(int signo) /* signal handler for SIGTSTP */
+static void sig_tstp(
+    [[maybe_unused]] int signo) /* signal handler for SIGTSTP */
 {
-    sigset_t mask;
-
     /* ... move cursor to lower left corner, reset tty mode ... */
 
     /*
      * Unblock SIGTSTP, since it's blocked while we're handling it.
      */
+    sigset_t mask;
     sigemptyset(&mask);
     sigaddset(&mask, SIGTSTP);
-    sigprocmask(SIG_UNBLOCK, &mask, NULL);
+    sigprocmask(SIG_UNBLOCK, &mask, nullptr);
 
     signal(SIGTSTP, SIG_DFL); /* reset disposition to default */
 
@@ -32,7 +32,6 @@ static void sig_tstp(int signo) /* signal handler for SIGTSTP */
 
 int main(void) {
     int n;
-    char buf[BUFFSIZE];
 
     /*
      * Only catch SIGTSTP if we're running with a job-control shell.
@@ -41,6 +40,7 @@ int main(void) {
         signal(SIGTSTP, sig_tstp);
     }
 
+    char buf[BUFFSIZE];
     while ((n = read(STDIN_FILENO, buf, BUFFSIZE)) > 0) {
         if (write(STDOUT_FILENO, buf, n) != n) {
             err_sys("write error");

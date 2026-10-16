@@ -1,4 +1,3 @@
-#include <stddef.h>     /* for NULL */
 #include <stdlib.h>     /* for malloc */
 #include <sys/socket.h> /* for sendmsg, struct msghdr, struct cmsghdr, struct iovec, CMSG_LEN, CMSG_DATA, SOL_SOCKET, SCM_RIGHTS */
 
@@ -7,7 +6,7 @@
 /* size of control buffer to send/recv one file descriptor */
 #define CONTROLLEN CMSG_LEN(sizeof(int))
 
-static struct cmsghdr *cmptr = NULL; /* malloc'ed first time */
+static struct cmsghdr *cmptr = nullptr; /* malloc'ed first time */
 
 /*
  * Pass a file descriptor to another process.
@@ -22,18 +21,18 @@ int send_fd(int fd, int fd_to_send) {
     iov[0].iov_len = 2;
     msg.msg_iov = iov;
     msg.msg_iovlen = 1;
-    msg.msg_name = NULL;
+    msg.msg_name = nullptr;
     msg.msg_namelen = 0;
 
     if (fd_to_send < 0) {
-        msg.msg_control = NULL;
+        msg.msg_control = nullptr;
         msg.msg_controllen = 0;
         buf[1] = -fd_to_send; /* nonzero status means error */
         if (buf[1] == 0) {
             buf[1] = 1; /* -256, etc. would screw up protocol */
         }
     } else {
-        if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL) {
+        if (cmptr == nullptr && (cmptr = malloc(CONTROLLEN)) == nullptr) {
             return (-1);
         }
         cmptr->cmsg_level = SOL_SOCKET;

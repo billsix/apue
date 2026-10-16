@@ -1,21 +1,21 @@
 /*
  * Print server daemon.
  */
-#include <stdio.h>      /* for printf, sprintf */
-#include <stdlib.h>     /* for malloc, free, realloc, atol, atoi, exit */
-#include <stddef.h>     /* for offsetof */
-#include <stdint.h>     /* for int16_t, int32_t */
-#include <string.h>     /* for memcpy, strcpy, strncpy, strncmp, strlen, strerror, strsignal */
-#include <strings.h>    /* for strncasecmp */
-#include <unistd.h>     /* for read, write, close, unlink, lseek, sysconf, gethostname, setgid, setuid */
-#include <fcntl.h>      /* for open, creat, O_CREAT, O_RDWR, O_RDONLY */
-#include <ctype.h>      /* for isspace, isdigit */
-#include <errno.h>      /* for errno, EIO */
-#include <signal.h>     /* for sigaction, sigemptyset, sigaddset, sigwait, sigset_t, SIG_IGN, SIGPIPE, SIGHUP, SIGTERM */
-#include <time.h>       /* for nanosleep, struct timespec */
-#include <pthread.h>    /* for pthread_create, pthread_mutex_*, pthread_cond_*, pthread_sigmask, pthread_self, pthread_exit, pthread_cleanup_*, pthread_cancel */
-#include <pwd.h>        /* for getpwnam, struct passwd */
-#include <dirent.h>     /* for opendir, readdir, closedir, DIR, struct dirent */
+#include <stdio.h>  /* for printf, sprintf, snprintf */
+#include <stdlib.h> /* for malloc, free, realloc, atol, atoi, exit */
+#include <stddef.h> /* for offsetof */
+#include <stdint.h> /* for int16_t, int32_t */
+#include <string.h> /* for memcpy, strcpy, strncpy, strncmp, strlen, strerror, strsignal */
+#include <strings.h> /* for strncasecmp */
+#include <unistd.h> /* for read, write, close, unlink, lseek, sysconf, gethostname, setgid, setuid */
+#include <fcntl.h>  /* for open, creat, O_CREAT, O_RDWR, O_RDONLY */
+#include <ctype.h>  /* for isspace, isdigit */
+#include <errno.h>  /* for errno, EIO */
+#include <signal.h> /* for sigaction, sigemptyset, sigaddset, sigwait, sigset_t, SIG_IGN, SIGPIPE, SIGHUP, SIGTERM */
+#include <time.h>   /* for nanosleep, struct timespec */
+#include <pthread.h> /* for pthread_create, pthread_mutex_*, pthread_cond_*, pthread_sigmask, pthread_self, pthread_exit, pthread_cleanup_*, pthread_cancel */
+#include <pwd.h>     /* for getpwnam, struct passwd */
+#include <dirent.h>  /* for opendir, readdir, closedir, DIR, struct dirent */
 #include <sys/stat.h>   /* for fstat, struct stat, S_IRUSR, S_IWUSR */
 #include <sys/select.h> /* for select, fd_set, FD_ZERO, FD_SET, FD_ISSET */
 #include <sys/uio.h>    /* for writev, struct iovec */
@@ -88,7 +88,7 @@ void init_request(void);
 void init_printer(void);
 void update_jobno(void);
 int32_t get_newjobno(void);
-void add_job(struct printreq *, int32_t);
+void add_job(const struct printreq *, int32_t);
 void replace_job(struct job *);
 void remove_job(struct job *);
 void build_qonstart(void);
@@ -96,7 +96,7 @@ void *client_thread(void *);
 void *printer_thread(void *);
 void *signal_thread(void *);
 ssize_t readmore(int, char **, int, int *);
-int printer_status(int, struct job *);
+int printer_status(int, const struct job *);
 void add_worker(pthread_t, int);
 void kill_workers(void);
 void client_cleanup(void *);
@@ -107,53 +107,52 @@ void client_cleanup(void *);
  *
  * LOCKING: none.
  */
-int main(int argc, char *argv[]) {
-    pthread_t tid;
-    struct addrinfo *ailist, *aip;
-    int sockfd, err, i, n, maxfd;
-    char *host;
-    fd_set rendezvous, rset;
-    struct sigaction sa;
-    struct passwd *pwdp;
-
+int main(int argc, [[maybe_unused]] char *argv[]) {
     if (argc != 1) {
         err_quit("usage: printd");
     }
     daemonize("printd");
 
+    struct sigaction sa;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
     sa.sa_handler = SIG_IGN;
-    if (sigaction(SIGPIPE, &sa, NULL) < 0) {
+    if (sigaction(SIGPIPE, &sa, nullptr) < 0) {
         log_sys("sigaction failed");
     }
     sigemptyset(&mask);
     sigaddset(&mask, SIGHUP);
     sigaddset(&mask, SIGTERM);
-    if ((err = pthread_sigmask(SIG_BLOCK, &mask, NULL)) != 0) {
+    int err = pthread_sigmask(SIG_BLOCK, &mask, nullptr);
+    if (err != 0) {
         log_sys("pthread_sigmask failed");
     }
 
-    n = sysconf(_SC_HOST_NAME_MAX);
+    int n = sysconf(_SC_HOST_NAME_MAX);
     if (n < 0) { /* best guess */
         n = HOST_NAME_MAX;
     }
-    if ((host = malloc(n)) == NULL) {
+    char *host = malloc(n);
+    if (host == nullptr) {
         log_sys("malloc error");
     }
     if (gethostname(host, n) < 0) {
         log_sys("gethostname error");
     }
 
-    if ((err = getaddrlist(host, "print", &ailist)) != 0) {
+    struct addrinfo *ailist;
+    err = getaddrlist(host, "print", &ailist);
+    if (err != 0) {
         log_quit("getaddrinfo error: %s", gai_strerror(err));
         exit(1);
     }
+    fd_set rendezvous;
     FD_ZERO(&rendezvous);
-    maxfd = -1;
-    for (aip = ailist; aip != NULL; aip = aip->ai_next) {
-        if ((sockfd = initserver(SOCK_STREAM, aip->ai_addr, aip->ai_addrlen,
-                                 QLEN)) >= 0) {
+    int maxfd = -1;
+    for (struct addrinfo *aip = ailist; aip != nullptr; aip = aip->ai_next) {
+        int sockfd =
+            initserver(SOCK_STREAM, aip->ai_addr, aip->ai_addrlen, QLEN);
+        if (sockfd >= 0) {
             FD_SET(sockfd, &rendezvous);
             if (sockfd > maxfd) {
                 maxfd = sockfd;
@@ -164,8 +163,8 @@ int main(int argc, char *argv[]) {
         log_quit("service not enabled");
     }
 
-    pwdp = getpwnam(LPNAME);
-    if (pwdp == NULL) {
+    const struct passwd *pwdp = getpwnam(LPNAME);
+    if (pwdp == nullptr) {
         log_sys("can't find user %s", LPNAME);
     }
     if (pwdp->pw_uid == 0) {
@@ -178,9 +177,10 @@ int main(int argc, char *argv[]) {
     init_request();
     init_printer();
 
-    err = pthread_create(&tid, NULL, printer_thread, NULL);
+    pthread_t tid;
+    err = pthread_create(&tid, nullptr, printer_thread, nullptr);
     if (err == 0) {
-        err = pthread_create(&tid, NULL, signal_thread, NULL);
+        err = pthread_create(&tid, nullptr, signal_thread, nullptr);
     }
     if (err != 0) {
         log_exit(err, "can't create thread");
@@ -190,19 +190,20 @@ int main(int argc, char *argv[]) {
     log_msg("daemon initialized");
 
     for (;;) {
-        rset = rendezvous;
-        if (select(maxfd + 1, &rset, NULL, NULL, NULL) < 0) {
+        fd_set rset = rendezvous;
+        if (select(maxfd + 1, &rset, nullptr, nullptr, nullptr) < 0) {
             log_sys("select failed");
         }
-        for (i = 0; i <= maxfd; i++) {
+        for (int i = 0; i <= maxfd; i++) {
             if (FD_ISSET(i, &rset)) {
                 /*
                  * Accept the connection and handle the request.
                  */
-                if ((sockfd = accept(i, NULL, NULL)) < 0) {
+                int sockfd = accept(i, nullptr, nullptr);
+                if (sockfd < 0) {
                     log_ret("accept failed");
                 }
-                pthread_create(&tid, NULL, client_thread,
+                pthread_create(&tid, nullptr, client_thread,
                                (void *)((long)sockfd));
             }
         }
@@ -217,10 +218,8 @@ int main(int argc, char *argv[]) {
  * LOCKING: none, except for record-lock on job ID file.
  */
 void init_request(void) {
-    int n;
     char name[FILENMSZ];
-
-    sprintf(name, "%s/%s", SPOOLDIR, JOBFILE);
+    snprintf(name, sizeof(name), "%s/%s", SPOOLDIR, JOBFILE);
     jobfd = open(name, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
     if (write_lock(jobfd, 0, SEEK_SET, 0) < 0) {
         log_quit("daemon already running");
@@ -229,7 +228,8 @@ void init_request(void) {
     /*
      * Reuse the name buffer for the job counter.
      */
-    if ((n = read(jobfd, name, FILENMSZ)) < 0) {
+    const int n = read(jobfd, name, FILENMSZ);
+    if (n < 0) {
         log_sys("can't read job file");
     }
     if (n == 0) {
@@ -246,11 +246,11 @@ void init_request(void) {
  */
 void init_printer(void) {
     printer = get_printaddr();
-    if (printer == NULL) {
+    if (printer == nullptr) {
         exit(1); /* message already logged */
     }
     printer_name = printer->ai_canonname;
-    if (printer_name == NULL) {
+    if (printer_name == nullptr) {
         printer_name = "printer";
     }
     log_msg("printer is %s", printer_name);
@@ -268,7 +268,7 @@ void update_jobno(void) {
     if (lseek(jobfd, 0, SEEK_SET) == -1) {
         log_sys("can't seek in job file");
     }
-    sprintf(buf, "%d", nextjob);
+    snprintf(buf, sizeof(buf), "%d", nextjob);
     if (write(jobfd, buf, strlen(buf)) < 0) {
         log_sys("can't update job file");
     }
@@ -280,10 +280,8 @@ void update_jobno(void) {
  * LOCKING: acquires and releases joblock.
  */
 int32_t get_newjobno(void) {
-    int32_t jobid;
-
     pthread_mutex_lock(&joblock);
-    jobid = nextjob++;
+    const int32_t jobid = nextjob++;
     if (nextjob <= 0) {
         nextjob = 1;
     }
@@ -297,18 +295,17 @@ int32_t get_newjobno(void) {
  *
  * LOCKING: acquires and releases joblock.
  */
-void add_job(struct printreq *reqp, int32_t jobid) {
-    struct job *jp;
-
-    if ((jp = malloc(sizeof(struct job))) == NULL) {
+void add_job(const struct printreq *reqp, int32_t jobid) {
+    struct job *jp = malloc(sizeof(struct job));
+    if (jp == nullptr) {
         log_sys("malloc failed");
     }
     memcpy(&jp->req, reqp, sizeof(struct printreq));
     jp->jobid = jobid;
-    jp->next = NULL;
+    jp->next = nullptr;
     pthread_mutex_lock(&joblock);
     jp->prev = jobtail;
-    if (jobtail == NULL) {
+    if (jobtail == nullptr) {
         jobhead = jp;
     } else {
         jobtail->next = jp;
@@ -325,9 +322,9 @@ void add_job(struct printreq *reqp, int32_t jobid) {
  */
 void replace_job(struct job *jp) {
     pthread_mutex_lock(&joblock);
-    jp->prev = NULL;
+    jp->prev = nullptr;
     jp->next = jobhead;
-    if (jobhead == NULL) {
+    if (jobhead == nullptr) {
         jobtail = jp;
     } else {
         jobhead->prev = jp;
@@ -342,12 +339,12 @@ void replace_job(struct job *jp) {
  * LOCKING: caller must hold joblock.
  */
 void remove_job(struct job *target) {
-    if (target->next != NULL) {
+    if (target->next != nullptr) {
         target->next->prev = target->prev;
     } else {
         jobtail = target->prev;
     }
-    if (target->prev != NULL) {
+    if (target->prev != nullptr) {
         target->prev->next = target->next;
     } else {
         jobhead = target->next;
@@ -360,18 +357,14 @@ void remove_job(struct job *target) {
  * LOCKING: none.
  */
 void build_qonstart(void) {
-    int fd, err, nr;
-    int32_t jobid;
-    DIR *dirp;
-    struct dirent *entp;
-    struct printreq req;
-    char dname[FILENMSZ], fname[FILENMSZ];
-
-    sprintf(dname, "%s/%s", SPOOLDIR, REQDIR);
-    if ((dirp = opendir(dname)) == NULL) {
+    char dname[FILENMSZ];
+    snprintf(dname, sizeof(dname), "%s/%s", SPOOLDIR, REQDIR);
+    DIR *dirp = opendir(dname);
+    if (dirp == nullptr) {
         return;
     }
-    while ((entp = readdir(dirp)) != NULL) {
+    struct dirent *entp;
+    while ((entp = readdir(dirp)) != nullptr) {
         /*
          * Skip "." and ".."
          */
@@ -382,12 +375,17 @@ void build_qonstart(void) {
         /*
          * Read the request structure.
          */
-        sprintf(fname, "%s/%s/%s", SPOOLDIR, REQDIR, entp->d_name);
-        if ((fd = open(fname, O_RDONLY)) < 0) {
+        char fname[FILENMSZ];
+        snprintf(fname, sizeof(fname), "%s/%s/%s", SPOOLDIR, REQDIR,
+                 entp->d_name);
+        int fd = open(fname, O_RDONLY);
+        if (fd < 0) {
             continue;
         }
-        nr = read(fd, &req, sizeof(struct printreq));
+        struct printreq req;
+        int nr = read(fd, &req, sizeof(struct printreq));
         if (nr != sizeof(struct printreq)) {
+            int err;
             if (nr < 0) {
                 err = errno;
             } else {
@@ -396,11 +394,12 @@ void build_qonstart(void) {
             close(fd);
             log_msg("build_qonstart: can't read %s: %s", fname, strerror(err));
             unlink(fname);
-            sprintf(fname, "%s/%s/%s", SPOOLDIR, DATADIR, entp->d_name);
+            snprintf(fname, sizeof(fname), "%s/%s/%s", SPOOLDIR, DATADIR,
+                     entp->d_name);
             unlink(fname);
             continue;
         }
-        jobid = atol(entp->d_name);
+        const int32_t jobid = atol(entp->d_name);
         log_msg("adding job %d to queue", jobid);
         add_job(&req, jobid);
     }
@@ -413,31 +412,26 @@ void build_qonstart(void) {
  * LOCKING: none.
  */
 void *client_thread(void *arg) {
-    int n, fd, sockfd, nr, nw, first;
-    int32_t jobid;
-    pthread_t tid;
     struct printreq req;
     struct printresp res;
-    char name[FILENMSZ];
-    char buf[IOBUFSZ];
 
-    tid = pthread_self();
+    const pthread_t tid = pthread_self();
     pthread_cleanup_push(client_cleanup, (void *)((long)tid));
-    sockfd = (long)arg;
+    const int sockfd = (long)arg;
     add_worker(tid, sockfd);
 
     /*
      * Read the request header.
      */
-    if ((n = treadn(sockfd, &req, sizeof(struct printreq), 10)) !=
-        sizeof(struct printreq)) {
+    const int n = treadn(sockfd, &req, sizeof(struct printreq), 10);
+    if (n != sizeof(struct printreq)) {
         res.jobid = 0;
         if (n < 0) {
             res.retcode = htonl(errno);
         } else {
             res.retcode = htonl(EIO);
         }
-        strncpy(res.msg, strerror(res.retcode), MSGLEN_MAX);
+        snprintf(res.msg, sizeof(res.msg), "%s", strerror(res.retcode));
         writen(sockfd, &res, sizeof(struct printresp));
         pthread_exit((void *)1);
     }
@@ -447,15 +441,16 @@ void *client_thread(void *arg) {
     /*
      * Create the data file.
      */
-    jobid = get_newjobno();
-    sprintf(name, "%s/%s/%d", SPOOLDIR, DATADIR, jobid);
-    fd = creat(name, FILEPERM);
+    const int32_t jobid = get_newjobno();
+    char name[FILENMSZ];
+    snprintf(name, sizeof(name), "%s/%s/%d", SPOOLDIR, DATADIR, jobid);
+    int fd = creat(name, FILEPERM);
     if (fd < 0) {
         res.jobid = 0;
         res.retcode = htonl(errno);
         log_msg("client_thread: can't create %s: %s", name,
                 strerror(res.retcode));
-        strncpy(res.msg, strerror(res.retcode), MSGLEN_MAX);
+        snprintf(res.msg, sizeof(res.msg), "%s", strerror(res.retcode));
         writen(sockfd, &res, sizeof(struct printresp));
         pthread_exit((void *)1);
     }
@@ -465,15 +460,17 @@ void *client_thread(void *arg) {
      * Try to figure out if the file is a PostScript file
      * or a plain text file.
      */
-    first = 1;
+    bool first = true;
+    char buf[IOBUFSZ];
+    int nr;
     while ((nr = tread(sockfd, buf, IOBUFSZ, 20)) > 0) {
         if (first) {
-            first = 0;
+            first = false;
             if (strncmp(buf, "%!PS", 4) != 0) {
                 req.flags |= PR_TEXT;
             }
         }
-        nw = write(fd, buf, nr);
+        int nw = write(fd, buf, nr);
         if (nw != nr) {
             res.jobid = 0;
             if (nw < 0) {
@@ -484,7 +481,7 @@ void *client_thread(void *arg) {
             log_msg("client_thread: can't write %s: %s", name,
                     strerror(res.retcode));
             close(fd);
-            strncpy(res.msg, strerror(res.retcode), MSGLEN_MAX);
+            snprintf(res.msg, sizeof(res.msg), "%s", strerror(res.retcode));
             writen(sockfd, &res, sizeof(struct printresp));
             unlink(name);
             pthread_exit((void *)1);
@@ -497,20 +494,20 @@ void *client_thread(void *arg) {
      * print request information to the control
      * file.
      */
-    sprintf(name, "%s/%s/%d", SPOOLDIR, REQDIR, jobid);
+    snprintf(name, sizeof(name), "%s/%s/%d", SPOOLDIR, REQDIR, jobid);
     fd = creat(name, FILEPERM);
     if (fd < 0) {
         res.jobid = 0;
         res.retcode = htonl(errno);
         log_msg("client_thread: can't create %s: %s", name,
                 strerror(res.retcode));
-        strncpy(res.msg, strerror(res.retcode), MSGLEN_MAX);
+        snprintf(res.msg, sizeof(res.msg), "%s", strerror(res.retcode));
         writen(sockfd, &res, sizeof(struct printresp));
-        sprintf(name, "%s/%s/%d", SPOOLDIR, DATADIR, jobid);
+        snprintf(name, sizeof(name), "%s/%s/%d", SPOOLDIR, DATADIR, jobid);
         unlink(name);
         pthread_exit((void *)1);
     }
-    nw = write(fd, &req, sizeof(struct printreq));
+    int nw = write(fd, &req, sizeof(struct printreq));
     if (nw != sizeof(struct printreq)) {
         res.jobid = 0;
         if (nw < 0) {
@@ -521,10 +518,10 @@ void *client_thread(void *arg) {
         log_msg("client_thread: can't write %s: %s", name,
                 strerror(res.retcode));
         close(fd);
-        strncpy(res.msg, strerror(res.retcode), MSGLEN_MAX);
+        snprintf(res.msg, sizeof(res.msg), "%s", strerror(res.retcode));
         writen(sockfd, &res, sizeof(struct printresp));
         unlink(name);
-        sprintf(name, "%s/%s/%d", SPOOLDIR, DATADIR, jobid);
+        snprintf(name, sizeof(name), "%s/%s/%d", SPOOLDIR, DATADIR, jobid);
         unlink(name);
         pthread_exit((void *)1);
     }
@@ -535,7 +532,7 @@ void *client_thread(void *arg) {
      */
     res.retcode = 0;
     res.jobid = htonl(jobid);
-    sprintf(res.msg, "request ID %d", jobid);
+    snprintf(res.msg, sizeof(res.msg), "request ID %d", jobid);
     writen(sockfd, &res, sizeof(struct printresp));
 
     /*
@@ -553,18 +550,17 @@ void *client_thread(void *arg) {
  * LOCKING: acquires and releases workerlock.
  */
 void add_worker(pthread_t tid, int sockfd) {
-    struct worker_thread *wtp;
-
-    if ((wtp = malloc(sizeof(struct worker_thread))) == NULL) {
+    struct worker_thread *wtp = malloc(sizeof(struct worker_thread));
+    if (wtp == nullptr) {
         log_ret("add_worker: can't malloc");
         pthread_exit((void *)1);
     }
     wtp->tid = tid;
     wtp->sockfd = sockfd;
     pthread_mutex_lock(&workerlock);
-    wtp->prev = NULL;
+    wtp->prev = nullptr;
     wtp->next = workers;
-    if (workers == NULL) {
+    if (workers == nullptr) {
         workers = wtp;
     } else {
         workers->prev = wtp;
@@ -578,10 +574,8 @@ void add_worker(pthread_t tid, int sockfd) {
  * LOCKING: acquires and releases workerlock.
  */
 void kill_workers(void) {
-    struct worker_thread *wtp;
-
     pthread_mutex_lock(&workerlock);
-    for (wtp = workers; wtp != NULL; wtp = wtp->next) {
+    for (struct worker_thread *wtp = workers; wtp != nullptr; wtp = wtp->next) {
         pthread_cancel(wtp->tid);
     }
     pthread_mutex_unlock(&workerlock);
@@ -593,17 +587,15 @@ void kill_workers(void) {
  * LOCKING: acquires and releases workerlock.
  */
 void client_cleanup(void *arg) {
-    struct worker_thread *wtp;
-    pthread_t tid;
-
-    tid = (pthread_t)((long)arg);
+    const pthread_t tid = (pthread_t)((long)arg);
     pthread_mutex_lock(&workerlock);
-    for (wtp = workers; wtp != NULL; wtp = wtp->next) {
+    struct worker_thread *wtp;
+    for (wtp = workers; wtp != nullptr; wtp = wtp->next) {
         if (wtp->tid == tid) {
-            if (wtp->next != NULL) {
+            if (wtp->next != nullptr) {
                 wtp->next->prev = wtp->prev;
             }
-            if (wtp->prev != NULL) {
+            if (wtp->prev != nullptr) {
                 wtp->prev->next = wtp->next;
             } else {
                 workers = wtp->next;
@@ -612,7 +604,7 @@ void client_cleanup(void *arg) {
         }
     }
     pthread_mutex_unlock(&workerlock);
-    if (wtp != NULL) {
+    if (wtp != nullptr) {
         close(wtp->sockfd);
         free(wtp);
     }
@@ -623,11 +615,10 @@ void client_cleanup(void *arg) {
  *
  * LOCKING: acquires and releases configlock.
  */
-void *signal_thread(void *arg) {
-    int err, signo;
-
+void *signal_thread([[maybe_unused]] void *arg) {
     for (;;) {
-        err = sigwait(&mask, &signo);
+        int signo;
+        const int err = sigwait(&mask, &signo);
         if (err != 0) {
             log_quit("sigwait failed: %s", strerror(err));
         }
@@ -658,15 +649,14 @@ void *signal_thread(void *arg) {
  *
  * LOCKING: none.
  */
-char *add_option(char *cp, int tag, char *optname, char *optval) {
-    int n;
+char *add_option(char *cp, int tag, const char *optname, const char *optval) {
     union {
         int16_t s;
         char c[2];
     } u;
 
     *cp++ = tag;
-    n = strlen(optname);
+    int n = strlen(optname);
     u.s = htons(n);
     *cp++ = u.c[0];
     *cp++ = u.c[1];
@@ -685,10 +675,18 @@ char *add_option(char *cp, int tag, char *optname, char *optval) {
  *
  * LOCKING: acquires and releases joblock and configlock.
  */
-void *printer_thread(void *arg) {
+void *printer_thread([[maybe_unused]] void *arg) {
     struct job *jp;
-    int hlen, ilen, sockfd, fd, nr, nw, extra;
-    char *icp, *hcp, *p;
+    int hlen;
+    int ilen;
+    int sockfd;
+    int fd;
+    int nr;
+    int nw;
+    int extra;
+    char *icp;
+    char *hcp;
+    const char *p;
     struct ipp_hdr *hp;
     struct stat sbuf;
     struct iovec iov[2];
@@ -704,7 +702,7 @@ void *printer_thread(void *arg) {
          * Get a job to print.
          */
         pthread_mutex_lock(&joblock);
-        while (jobhead == NULL) {
+        while (jobhead == nullptr) {
             log_msg("printer_thread: waiting...");
             pthread_cond_wait(&jobwait, &joblock);
         }
@@ -719,8 +717,8 @@ void *printer_thread(void *arg) {
         pthread_mutex_lock(&configlock);
         if (reread) {
             freeaddrinfo(printer);
-            printer = NULL;
-            printer_name = NULL;
+            printer = nullptr;
+            printer_name = nullptr;
             reread = 0;
             pthread_mutex_unlock(&configlock);
             init_printer();
@@ -731,7 +729,7 @@ void *printer_thread(void *arg) {
         /*
          * Send job to printer.
          */
-        sprintf(name, "%s/%s/%d", SPOOLDIR, DATADIR, jp->jobid);
+        snprintf(name, sizeof(name), "%s/%s/%d", SPOOLDIR, DATADIR, jp->jobid);
         if ((fd = open(name, O_RDONLY)) < 0) {
             log_msg("job %d canceled - can't open %s: %s", jp->jobid, name,
                     strerror(errno));
@@ -766,7 +764,7 @@ void *printer_thread(void *arg) {
         icp = add_option(icp, TAG_CHARSET, "attributes-charset", "utf-8");
         icp = add_option(icp, TAG_NATULANG, "attributes-natural-language",
                          "en-us");
-        sprintf(str, "http://%s/ipp", printer_name);
+        snprintf(str, sizeof(str), "http://%s/ipp", printer_name);
         icp = add_option(icp, TAG_URI, "printer-uri", str);
         icp = add_option(icp, TAG_NAMEWOLANG, "requesting-user-name",
                          jp->req.usernm);
@@ -841,19 +839,20 @@ void *printer_thread(void *arg) {
          */
         if (printer_status(sockfd, jp)) {
             unlink(name);
-            sprintf(name, "%s/%s/%d", SPOOLDIR, REQDIR, jp->jobid);
+            snprintf(name, sizeof(name), "%s/%s/%d", SPOOLDIR, REQDIR,
+                     jp->jobid);
             unlink(name);
             free(jp);
-            jp = NULL;
+            jp = nullptr;
         }
     defer:
         close(fd);
         if (sockfd >= 0) {
             close(sockfd);
         }
-        if (jp != NULL) {
+        if (jp != nullptr) {
             replace_job(jp);
-            nanosleep(&ts, NULL);
+            nanosleep(&ts, nullptr);
         }
     }
 }
@@ -865,19 +864,19 @@ void *printer_thread(void *arg) {
  * LOCKING: none.
  */
 ssize_t readmore(int sockfd, char **bpp, int off, int *bszp) {
-    ssize_t nr;
     char *bp = *bpp;
     int bsz = *bszp;
-
     if (off >= bsz) {
         bsz += IOBUFSZ;
-        if ((bp = realloc(*bpp, bsz)) == NULL) {
+        bp = realloc(*bpp, bsz);
+        if (bp == nullptr) {
             log_sys("readmore: can't allocate bigger read buffer");
         }
         *bszp = bsz;
         *bpp = bp;
     }
-    if ((nr = tread(sockfd, &bp[off], bsz - off, 1)) > 0) {
+    const ssize_t nr = tread(sockfd, &bp[off], bsz - off, 1);
+    if (nr > 0) {
         return (off + nr);
     } else {
         return (-1);
@@ -890,11 +889,18 @@ ssize_t readmore(int sockfd, char **bpp, int off, int *bszp) {
  *
  * LOCKING: none.
  */
-int printer_status(int sfd, struct job *jp) {
-    int i, success, code, len, found, bufsz, datsz;
+int printer_status(int sfd, const struct job *jp) {
+    int i;
+    int code;
+    int len;
+    bool found;
+    int datsz;
     int32_t jobid;
     ssize_t nr;
-    char *bp, *cp, *statcode, *reason, *contentlen;
+    char *cp;
+    char *statcode;
+    char *reason;
+    char *contentlen;
     struct ipp_hdr *hp;
 
     /*
@@ -902,9 +908,10 @@ int printer_status(int sfd, struct job *jp) {
      * They can be returned in multiple read attempts.  Use the
      * Content-Length specifier to determine how much to read.
      */
-    success = 0;
-    bufsz = IOBUFSZ;
-    if ((bp = malloc(IOBUFSZ)) == NULL) {
+    bool success = false;
+    int bufsz = IOBUFSZ;
+    char *bp = malloc(IOBUFSZ);
+    if (bp == nullptr) {
         log_sys("printer_status: can't allocate read buffer");
     }
 
@@ -987,11 +994,11 @@ int printer_status(int sfd, struct job *jp) {
                 }
             }
 
-            found = 0;
+            found = false;
             while (!found) { /* look for end of HTTP header */
                 while (i < datsz - 2) {
                     if (*cp == '\n' && *(cp + 1) == '\r' && *(cp + 2) == '\n') {
-                        found = 1;
+                        found = true;
                         cp += 3;
                         i += 3;
                         break;
@@ -1031,7 +1038,7 @@ int printer_status(int sfd, struct job *jp) {
             }
 
             if (STATCLASS_OK(i)) {
-                success = 1;
+                success = true;
             }
             break;
         }

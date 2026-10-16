@@ -1,12 +1,12 @@
-#include <stddef.h>    /* for NULL */
-#include <signal.h>    /* for kill, sigemptyset, sigaddset, sigprocmask, sigsuspend, sig_atomic_t, sigset_t, SIG_ERR, SIG_BLOCK, SIG_SETMASK, SIGUSR1, SIGUSR2 */
+#include <signal.h> /* for kill, sigemptyset, sigaddset, sigprocmask, sigsuspend, sig_atomic_t, sigset_t, SIG_ERR, SIG_BLOCK, SIG_SETMASK, SIGUSR1, SIGUSR2 */
 
 #include "apue.h"
 
 static volatile sig_atomic_t sigflag; /* set nonzero by sig handler */
 static sigset_t newmask, oldmask, zeromask;
 
-static void sig_usr(int signo) /* one signal handler for SIGUSR1 and SIGUSR2 */
+static void sig_usr(
+    [[maybe_unused]] int signo) /* one signal handler for SIGUSR1 and SIGUSR2 */
 {
     sigflag = 1;
 }
@@ -38,7 +38,7 @@ void WAIT_PARENT(void) {
     sigflag = 0;
 
     /* Reset signal mask to original value */
-    if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0) {
+    if (sigprocmask(SIG_SETMASK, &oldmask, nullptr) < 0) {
         err_sys("SIG_SETMASK error");
     }
 }
@@ -52,7 +52,7 @@ void WAIT_CHILD(void) {
     sigflag = 0;
 
     /* Reset signal mask to original value */
-    if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0) {
+    if (sigprocmask(SIG_SETMASK, &oldmask, nullptr) < 0) {
         err_sys("SIG_SETMASK error");
     }
 }
