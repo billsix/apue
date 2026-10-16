@@ -15,7 +15,7 @@
  * Returns fd if all OK, <0 on error.
  */
 int serv_listen(const char *name) {
-    int fd, len, err, rval;
+    int rval;
     struct sockaddr_un un = {0};
 
     if (strlen(name) >= sizeof(un.sun_path)) {
@@ -24,7 +24,7 @@ int serv_listen(const char *name) {
     }
 
     /* create a UNIX domain stream socket */
-    fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    int fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (fd < 0) {
         return (-2);
     }
@@ -34,7 +34,7 @@ int serv_listen(const char *name) {
     /* fill in socket address structure */
     un.sun_family = AF_UNIX;
     snprintf(un.sun_path, sizeof(un.sun_path), "%s", name);
-    len = offsetof(struct sockaddr_un, sun_path) + strlen(name);
+    int len = offsetof(struct sockaddr_un, sun_path) + strlen(name);
 
     /* bind the name to the descriptor */
     if (bind(fd, (struct sockaddr *)&un, len) < 0) {
@@ -49,7 +49,7 @@ int serv_listen(const char *name) {
     return (fd);
 
 errout:
-    err = errno;
+    int err = errno;
     close(fd);
     errno = err;
     return (rval);

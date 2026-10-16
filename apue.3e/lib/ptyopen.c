@@ -10,10 +10,7 @@
 #include "apue.h"
 
 int ptym_open(char *pts_name, int pts_namesz) {
-    char *ptr;
-    int fdm, err;
-
-    fdm = posix_openpt(O_RDWR);
+    int fdm = posix_openpt(O_RDWR);
     if (fdm < 0) {
         return (-1);
     }
@@ -23,7 +20,7 @@ int ptym_open(char *pts_name, int pts_namesz) {
     if (unlockpt(fdm) < 0) { /* clear slave's lock flag */
         goto errout;
     }
-    ptr = ptsname(fdm); /* get slave's name */
+    char *ptr = ptsname(fdm); /* get slave's name */
     if (ptr == nullptr) {
         goto errout;
     }
@@ -36,19 +33,18 @@ int ptym_open(char *pts_name, int pts_namesz) {
     pts_name[pts_namesz - 1] = '\0';
     return (fdm); /* return fd of master */
 errout:
-    err = errno;
+    int err = errno;
     close(fdm);
     errno = err;
     return (-1);
 }
 
 int ptys_open(char *pts_name) {
-    int fds;
 #if defined(SOLARIS)
     int err, setup;
 #endif
 
-    fds = open(pts_name, O_RDWR);
+    int fds = open(pts_name, O_RDWR);
     if (fds < 0) {
         return (-1);
     }

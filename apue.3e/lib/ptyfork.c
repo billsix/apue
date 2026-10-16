@@ -10,11 +10,9 @@
 pid_t pty_fork(int *ptrfdm, char *slave_name, int slave_namesz,
                const struct termios *slave_termios,
                const struct winsize *slave_winsize) {
-    int fdm, fds;
-    pid_t pid;
     char pts_name[20];
 
-    fdm = ptym_open(pts_name, sizeof(pts_name));
+    int fdm = ptym_open(pts_name, sizeof(pts_name));
     if (fdm < 0) {
         err_sys("can't open master pty: %s, error %d", pts_name, fdm);
     }
@@ -28,7 +26,7 @@ pid_t pty_fork(int *ptrfdm, char *slave_name, int slave_namesz,
         slave_name[slave_namesz - 1] = '\0';
     }
 
-    pid = fork();
+    pid_t pid = fork();
     if (pid < 0) {
         return (-1);
     } else if (pid == 0) { /* child */
@@ -39,7 +37,7 @@ pid_t pty_fork(int *ptrfdm, char *slave_name, int slave_namesz,
         /*
          * System V acquires controlling terminal on open().
          */
-        fds = ptys_open(pts_name);
+        int fds = ptys_open(pts_name);
         if (fds < 0) {
             err_sys("can't open slave pty");
         }

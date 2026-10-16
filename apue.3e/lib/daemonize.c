@@ -10,7 +10,6 @@
 
 void daemonize(const char *cmd) {
     int fd0, fd1, fd2;
-    pid_t pid;
     struct rlimit rl;
     struct sigaction sa;
 
@@ -29,7 +28,7 @@ void daemonize(const char *cmd) {
     /*
      * Become a session leader to lose controlling TTY.
      */
-    pid = fork();
+    pid_t pid = fork();
     if (pid < 0) {
         err_quit("%s: can't fork", cmd);
     } else if (pid != 0) { /* parent */

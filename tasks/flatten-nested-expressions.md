@@ -65,6 +65,19 @@ repeating until nothing more is found. Tracked here as successive passes; each i
 and gate-verified on its own. (Declare-at-use was already applied tree-wide in the modernization's S1,
 so this pass targets residue the de-nesting newly exposed.)
 
+**Pass 2 — declare-at-use, DONE (2026-10-16), gate green.** The flatten split-in-place sites left a
+handle variable (`fd`/`fdm`/`fds`/`pid`/`name`/`clifd`/`ptr`/`len`/`staletime`) declared in a group at
+the top of a `lib/` socket/pty helper and first-used at the split assignment; pulled each down to a
+`T x = f();` declaration at first use, splitting the grouped declaration. Touched 7 files:
+`cliconn.c`, `servlisten.c`, `servaccept.c`, `ptyopen.c`, `ptyfork.c`, `daemonize.c`, `popen.c`. The
+goto-error-join `rval` (assigned in branches, read at `errout:`) stays declared before the branches;
+the error-only `err` moved to a `errout:  int err = errno;` (a declaration after a label — legal and
+clean in C23). Address-taken (`stat` in `pclose`, `un`/`statbuf` in `serv_accept`) and `static` vars
+left in place. **Left alone deliberately:** the `ipc2/opend/loop.{select,poll}.c` grouped loop-state
+declarations (select/poll state reassigned each iteration — fragmenting the cohesive group would hurt
+readability, not help), `semaph.c` (`register` + `goto again`), and app first-assignments the
+modernization/flatten already had at use.
+
 ## BLUF
 
 Apply the de-nesting teaching convention (`tasks/reference/teaching-flatten-expressions.md`) across the

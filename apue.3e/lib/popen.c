@@ -19,7 +19,6 @@ static int maxfd;
 FILE *popen(const char *cmdstring, const char *type) {
     int i;
     int pfd[2];
-    pid_t pid;
     FILE *fp;
 
     /* only allow "r" or "w" */
@@ -47,7 +46,7 @@ FILE *popen(const char *cmdstring, const char *type) {
         return (nullptr);
     }
 
-    pid = fork();
+    pid_t pid = fork();
     if (pid < 0) {
         return (nullptr);  /* errno set by fork() */
     } else if (pid == 0) { /* child */
@@ -96,20 +95,19 @@ FILE *popen(const char *cmdstring, const char *type) {
 }
 
 int pclose(FILE *fp) {
-    int fd, stat;
-    pid_t pid;
+    int stat;
 
     if (childpid == nullptr) {
         errno = EINVAL;
         return (-1); /* popen() has never been called */
     }
 
-    fd = fileno(fp);
+    int fd = fileno(fp);
     if (fd >= maxfd) {
         errno = EINVAL;
         return (-1); /* invalid file descriptor */
     }
-    pid = childpid[fd];
+    pid_t pid = childpid[fd];
     if (pid == 0) {
         errno = EINVAL;
         return (-1); /* fp wasn't opened by popen() */
