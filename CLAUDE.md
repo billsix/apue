@@ -76,6 +76,13 @@ programs need a TTY/stdin and aren't auto-tested.
   `nullptr`, `bool`, `[[maybe_unused]]`, declare-at-first-use, `snprintf` over `strcpy`/`strcat`,
   designated initializers). **Preserve each program's runtime behavior** — the wired `meson test`
   cases and a green compile are the oracle. Keep each file's includes explicit and commented.
+- **Teaching style — flatten nested expressions** for C/Unix newcomers: prefer plain steps over an
+  assignment folded into its test (split `(c = getc(stdin)) != EOF` into an assignment and a plain
+  `c != EOF` compare; give a deeply nested sub-expression a named intermediate). A deliberate
+  pedagogical choice that **overrides the shared standard's expression-density idioms for the
+  `apue.3e/` example tree**; behavior-preserving. Pattern + rationale:
+  `tasks/reference/teaching-flatten-expressions.md`; tree-wide application (not yet done):
+  `tasks/flatten-nested-expressions.md` (proposed).
 - Lint: `apue.3e/.clang-tidy` (scoped to the tree; `musl/` is never linted) + `apue.3e/tools/lint.sh`
   (`tools/lint.sh [--fix] [dir...]`). Advisory; the modernization sweep fixes findings at the source.
 - Generated sources: `advio/rot13c2.c` is generated from `rot13c2.c.in` + `scripts/gen_rot13c2.sh`
