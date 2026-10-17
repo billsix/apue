@@ -97,6 +97,11 @@ to `tasks/archive/<YYYY>/<MM>/<DD>/`. The modernization design docs (header
 inlining, Meson port, musl-clang warning suppression — all done) live under
 `tasks/archive/2026/05/04/`.
 
+In flight: `tasks/modernization-parity-with-gltron.md` (proposed) — the gap list bringing apue to
+parity with gltron's 2026-10-17 C sweep (double-`const`, `-Wpedantic`/`-Wsign-conversion`, a gcc
+build lane, `[[nodiscard]]`/`[[fallthrough]]`, remaining `sprintf`, cppcheck in lint.sh); and
+`tasks/add-sanitizer-gate.md` (proposed) — the UBSan+ASan gate it cross-references.
+
 **Reference docs:** `tasks/reference/build-toolchain-musl-clang.md` (added 2026-08-27) —
 how the examples build through the two-stage musl-clang wrapper + the meson native file;
 read it before touching the build (it explains why the sanitizer gate needs a separate
