@@ -49,4 +49,16 @@ status=0
 for f in "${files[@]}"; do
   clang-tidy "${fix[@]}" -p "$build" "$f" || status=1
 done
+
+# Cppcheck (advisory, like gltron's lint.sh): catches a different bug class than
+# clang-tidy. Informational only -- it does NOT affect the exit status (clang-tidy
+# above is the gate). Skipped cleanly if cppcheck is not installed.
+if command -v cppcheck >/dev/null 2>&1; then
+  echo "== cppcheck (advisory) =="
+  cppcheck --enable=warning,style,performance,portability --quiet \
+    --suppress=missingIncludeSystem -I include "${files[@]}" || true
+else
+  echo "lint: cppcheck not installed; skipping the advisory cppcheck pass" >&2
+fi
+
 exit "$status"

@@ -595,8 +595,8 @@ static void _db_writeidx(DB *db, const char *key, off_t offset, int whence,
     if (ptrval < 0 || ptrval > PTR_MAX) {
         err_quit("_db_writeidx: invalid ptr: %d", ptrval);
     }
-    sprintf(db->idxbuf, "%s%c%lld%c%ld\n", key, SEP, (long long)db->datoff, SEP,
-            (long)db->datlen);
+    snprintf(db->idxbuf, IDXLEN_MAX + 2, "%s%c%lld%c%ld\n", key, SEP,
+             (long long)db->datoff, SEP, (long)db->datlen);
     const int len = strlen(db->idxbuf);
     if (len < IDXLEN_MIN || len > IDXLEN_MAX) {
         err_dump("_db_writeidx: invalid length");

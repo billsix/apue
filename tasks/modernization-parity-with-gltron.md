@@ -1,6 +1,12 @@
 # Modernization parity with the gltron C sweep
 
-**Status:** proposed — needs go-ahead
+**Status:** in progress — **clear bits done 2026-10-17** (validated in the musl-clang image: meson
+compile clean under `-Werror`, 8/8 tests): gap 1 double-`const` (closed by the pointer const sweep);
+gap 5 `[[nodiscard]]` on `path_alloc`; gap 6 the 4 `sprintf`→`snprintf` (`db/db.c`, `printer/printd.c`
+×3); gap 7 cppcheck added to `tools/lint.sh` (advisory) + to the Dockerfile dnf list. **Remaining —
+needs a maintainer decision:** gap 2/3 the `-Wsign-conversion`/`-Wpedantic` warning flags (the
+deferred "count-first" pass) + a gcc build lane; `[[fallthrough]]` where intentional fall-throughs
+exist; gap 4 the sanitizer gate is its own task (`tasks/add-sanitizer-gate.md`).
 **Priority:** 6
 **Difficulty:** 4
 **Created:** 2026-10-17 (William Emerison Six <billsix@gmail.com>)

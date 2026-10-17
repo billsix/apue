@@ -11,6 +11,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
                    automake  \
                    clang  \
                    clang-tools-extra  \
+                   cppcheck  \
                    emacs  \
                    g++  \
                    gcc  \

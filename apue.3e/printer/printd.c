@@ -792,14 +792,16 @@ void *printer_thread([[maybe_unused]] void *arg) {
          * Set up the HTTP header.
          */
         hcp = hbuf;
-        sprintf(hcp, "POST /ipp HTTP/1.1\r\n");
+        snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf),
+                 "POST /ipp HTTP/1.1\r\n");
         hcp += strlen(hcp);
-        sprintf(hcp, "Content-Length: %ld\r\n",
-                (long)sbuf.st_size + ilen + extra);
+        snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf),
+                 "Content-Length: %ld\r\n", (long)sbuf.st_size + ilen + extra);
         hcp += strlen(hcp);
         strcpy(hcp, "Content-Type: application/ipp\r\n");
         hcp += strlen(hcp);
-        sprintf(hcp, "Host: %s:%d\r\n", printer_name, IPP_PORT);
+        snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf), "Host: %s:%d\r\n",
+                 printer_name, IPP_PORT);
         hcp += strlen(hcp);
         *hcp++ = '\r';
         *hcp++ = '\n';
