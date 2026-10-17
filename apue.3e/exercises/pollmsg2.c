@@ -32,7 +32,7 @@ void *helper(void *arg) {
     struct threadinfo *tip = arg;
 
     for (;;) {
-        memset(&tip->m, 0, sizeof(struct mymsg));
+        memset(&tip->m, 0, sizeof(struct mymesg));
         const int n = msgrcv(tip->qid, &tip->m, MAXMSZ, 0, MSG_NOERROR);
         if (n < 0) {
             err_sys("msgrcv error");
@@ -54,7 +54,8 @@ int main(void) {
     pthread_t tid[NQ];
 
     for (int i = 0; i < NQ; i++) {
-        if ((qid[i] = msgget((KEY + i), IPC_CREAT | 0666)) < 0) {
+        qid[i] = msgget((KEY + i), IPC_CREAT | 0666);
+        if (qid[i] < 0) {
             err_sys("msgget error");
         }
 

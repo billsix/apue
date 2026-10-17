@@ -19,7 +19,6 @@ void loop(int, bool);         /* in the file loop.c */
 
 int main(int argc, char *argv[]) {
     int fdm;
-    int c;
     bool interactive = isatty(STDIN_FILENO);
     bool ignoreeof = false;
     bool noecho = false;
@@ -27,11 +26,13 @@ int main(int argc, char *argv[]) {
     pid_t pid;
     char *driver = nullptr;
     char slave_name[20];
-    struct termios orig_termios;
-    struct winsize size;
 
     opterr = 0; /* don't want getopt() writing to stderr */
-    while ((c = getopt(argc, argv, OPTSTR)) != EOF) {
+    for (;;) {
+        int c = getopt(argc, argv, OPTSTR);
+        if (c == EOF) {
+            break;
+        }
         switch (c) {
             case 'd': /* driver for stdin/stdout */
                 driver = optarg;
@@ -62,6 +63,8 @@ int main(int argc, char *argv[]) {
     }
 
     if (interactive) { /* fetch current termios and window size */
+        struct termios orig_termios;
+        struct winsize size;
         if (tcgetattr(STDIN_FILENO, &orig_termios) < 0) {
             err_sys("tcgetattr error on stdin");
         }

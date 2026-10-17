@@ -32,8 +32,11 @@ int send_fd(int fd, int fd_to_send) {
             buf[1] = 1; /* -256, etc. would screw up protocol */
         }
     } else {
-        if (cmptr == nullptr && (cmptr = malloc(CONTROLLEN)) == nullptr) {
-            return (-1);
+        if (cmptr == nullptr) {
+            cmptr = malloc(CONTROLLEN);
+            if (cmptr == nullptr) {
+                return (-1);
+            }
         }
         cmptr->cmsg_level = SOL_SOCKET;
         cmptr->cmsg_type = SCM_RIGHTS;

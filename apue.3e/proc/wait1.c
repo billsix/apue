@@ -20,7 +20,8 @@ int main(void) {
     }
     pr_exit(status); /* and print its status */
 
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* child */
         abort();           /* generates SIGABRT */
@@ -31,7 +32,8 @@ int main(void) {
     }
     pr_exit(status); /* and print its status */
 
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid == 0) { /* child */
         /* divide by 0 generates SIGFPE; a volatile divisor keeps the fault at

@@ -7,14 +7,14 @@
 #define NALLOC 10 /* # pollfd structs to alloc/realloc */
 
 static struct pollfd *grow_pollfd(struct pollfd *pfd, int *maxfd) {
-    int i;
     int oldmax = *maxfd;
     int newmax = oldmax + NALLOC;
 
-    if ((pfd = realloc(pfd, newmax * sizeof(struct pollfd))) == nullptr) {
+    pfd = realloc(pfd, newmax * sizeof(struct pollfd));
+    if (pfd == nullptr) {
         err_sys("realloc error");
     }
-    for (i = oldmax; i < newmax; i++) {
+    for (int i = oldmax; i < newmax; i++) {
         pfd[i].fd = -1;
         pfd[i].events = POLLIN;
         pfd[i].revents = 0;
@@ -24,24 +24,28 @@ static struct pollfd *grow_pollfd(struct pollfd *pfd, int *maxfd) {
 }
 
 void loop(void) {
-    int i, listenfd, clifd, nread;
+    int listenfd;
+    int clifd;
+    int nread;
     char buf[MAXLINE];
     uid_t uid;
     struct pollfd *pollfd;
     int numfd = 1;
     int maxfd = NALLOC;
 
-    if ((pollfd = malloc(NALLOC * sizeof(struct pollfd))) == nullptr) {
+    pollfd = malloc(NALLOC * sizeof(struct pollfd));
+    if (pollfd == nullptr) {
         err_sys("malloc error");
     }
-    for (i = 0; i < NALLOC; i++) {
+    for (int i = 0; i < NALLOC; i++) {
         pollfd[i].fd = -1;
         pollfd[i].events = POLLIN;
         pollfd[i].revents = 0;
     }
 
     /* obtain fd to listen for client requests on */
-    if ((listenfd = serv_listen(CS_OPEN)) < 0) {
+    listenfd = serv_listen(CS_OPEN);
+    if (listenfd < 0) {
         log_sys("serv_listen error");
     }
     client_add(listenfd, 0); /* we use [0] for listenfd */
@@ -54,7 +58,8 @@ void loop(void) {
 
         if (pollfd[0].revents & POLLIN) {
             /* accept new client request */
-            if ((clifd = serv_accept(listenfd, &uid)) < 0) {
+            clifd = serv_accept(listenfd, &uid);
+            if (clifd < 0) {
                 log_sys("serv_accept error: %d", clifd);
             }
             client_add(clifd, uid);
@@ -70,12 +75,13 @@ void loop(void) {
             log_msg("new connection: uid %d, fd %d", uid, clifd);
         }
 
-        for (i = 1; i < numfd; i++) {
+        for (int i = 1; i < numfd; i++) {
             if (pollfd[i].revents & POLLHUP) {
                 goto hungup;
             } else if (pollfd[i].revents & POLLIN) {
                 /* read argument buffer from client */
-                if ((nread = read(pollfd[i].fd, buf, MAXLINE)) < 0) {
+                nread = read(pollfd[i].fd, buf, MAXLINE);
+                if (nread < 0) {
                     log_sys("read error on fd %d", pollfd[i].fd);
                 } else if (nread == 0) {
                 hungup:

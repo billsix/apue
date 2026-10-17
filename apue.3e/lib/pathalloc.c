@@ -30,7 +30,8 @@ char *path_alloc(size_t *sizep) /* also return allocated size, if nonnull */
 
     if (pathmax == 0) { /* first time through */
         errno = 0;
-        if ((pathmax = pathconf("/", _PC_PATH_MAX)) < 0) {
+        pathmax = pathconf("/", _PC_PATH_MAX);
+        if (pathmax < 0) {
             if (errno == 0) {
                 pathmax = PATH_MAX_GUESS; /* it's indeterminate */
             } else {

@@ -28,8 +28,11 @@ char *getpass(const char *prompt) {
     fputs(prompt, fp);
 
     char *ptr = buf;
-    int c;
-    while ((c = getc(fp)) != EOF && c != '\n') {
+    for (;;) {
+        int c = getc(fp);
+        if (c == EOF || c == '\n') {
+            break;
+        }
         if (ptr < &buf[MAX_PASS_LEN]) {
             *ptr++ = c;
         }

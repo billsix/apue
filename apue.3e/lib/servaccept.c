@@ -19,19 +19,18 @@
  * Returns new fd if all OK, <0 on error
  */
 int serv_accept(int listenfd, uid_t *uidptr) {
-    int clifd, err, rval;
-    socklen_t len;
-    time_t staletime;
+    int rval;
     struct sockaddr_un un;
     struct stat statbuf;
-    char *name;
 
     /* allocate enough space for longest name plus terminating null */
-    if ((name = malloc(sizeof(un.sun_path) + 1)) == nullptr) {
+    char *name = malloc(sizeof(un.sun_path) + 1);
+    if (name == nullptr) {
         return (-1);
     }
-    len = sizeof(un);
-    if ((clifd = accept(listenfd, (struct sockaddr *)&un, &len)) < 0) {
+    socklen_t len = sizeof(un);
+    int clifd = accept(listenfd, (struct sockaddr *)&un, &len);
+    if (clifd < 0) {
         free(name);
         return (-2); /* often errno=EINTR, if signal caught */
     }
@@ -58,7 +57,7 @@ int serv_accept(int listenfd, uid_t *uidptr) {
         goto errout;
     }
 
-    staletime = time(nullptr) - STALE;
+    time_t staletime = time(nullptr) - STALE;
     if (statbuf.st_atime < staletime || statbuf.st_ctime < staletime ||
         statbuf.st_mtime < staletime) {
         rval = -6; /* i-node is too old */
@@ -73,7 +72,7 @@ int serv_accept(int listenfd, uid_t *uidptr) {
     return (clifd);
 
 errout:
-    err = errno;
+    int err = errno;
     close(clifd);
     free(name);
     errno = err;

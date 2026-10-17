@@ -27,7 +27,8 @@ FILE *popen(const char *cmdstring, const char *type) {
     if (childpid == nullptr) { /* first time through */
         /* allocate zeroed out array for child pids */
         maxfd = open_max();
-        if ((childpid = calloc(maxfd, sizeof(pid_t))) == nullptr) {
+        childpid = calloc(maxfd, sizeof(pid_t));
+        if (childpid == nullptr) {
             return (nullptr);
         }
     }
@@ -76,12 +77,14 @@ FILE *popen(const char *cmdstring, const char *type) {
     FILE *fp;
     if (*type == 'r') {
         close(pfd[1]);
-        if ((fp = fdopen(pfd[0], type)) == nullptr) {
+        fp = fdopen(pfd[0], type);
+        if (fp == nullptr) {
             return (nullptr);
         }
     } else {
         close(pfd[0]);
-        if ((fp = fdopen(pfd[1], type)) == nullptr) {
+        fp = fdopen(pfd[1], type);
+        if (fp == nullptr) {
             return (nullptr);
         }
     }

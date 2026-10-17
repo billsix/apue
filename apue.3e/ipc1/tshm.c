@@ -25,7 +25,8 @@ int main(void) {
     }
     printf("malloced from %p to %p\n", (void *)ptr, (void *)ptr + MALLOC_SIZE);
 
-    if ((shmid = shmget(IPC_PRIVATE, SHM_SIZE, SHM_MODE)) < 0) {
+    shmid = shmget(IPC_PRIVATE, SHM_SIZE, SHM_MODE);
+    if (shmid < 0) {
         err_sys("shmget error");
     }
     char *shmptr = shmat(shmid, nullptr, 0);

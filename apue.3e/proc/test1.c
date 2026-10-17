@@ -15,21 +15,24 @@ int main(void) {
         exit(2); /* terminate with exit status 2 */
     }
 
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid != 0) { /* first child */
         sleep(4);
         abort(); /* terminate with core dump */
     }
 
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid != 0) { /* second child */
         execl("/bin/dd", "dd", "if=/etc/passwd", "of=/dev/null", (char *)0);
         exit(7); /* shouldn't get here */
     }
 
-    if ((pid = fork()) < 0) {
+    pid = fork();
+    if (pid < 0) {
         err_sys("fork error");
     } else if (pid != 0) { /* third child */
         sleep(8);

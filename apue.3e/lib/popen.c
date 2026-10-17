@@ -17,9 +17,7 @@ static pid_t *childpid = nullptr;
 static int maxfd;
 
 FILE *popen(const char *cmdstring, const char *type) {
-    int i;
     int pfd[2];
-    pid_t pid;
     FILE *fp;
 
     /* only allow "r" or "w" */
@@ -31,7 +29,8 @@ FILE *popen(const char *cmdstring, const char *type) {
     if (childpid == nullptr) { /* first time through */
         /* allocate zeroed out array for child pids */
         maxfd = open_max();
-        if ((childpid = calloc(maxfd, sizeof(pid_t))) == nullptr) {
+        childpid = calloc(maxfd, sizeof(pid_t));
+        if (childpid == nullptr) {
             return (nullptr);
         }
     }
@@ -46,7 +45,8 @@ FILE *popen(const char *cmdstring, const char *type) {
         return (nullptr);
     }
 
-    if ((pid = fork()) < 0) {
+    pid_t pid = fork();
+    if (pid < 0) {
         return (nullptr);  /* errno set by fork() */
     } else if (pid == 0) { /* child */
         if (*type == 'r') {
@@ -64,7 +64,7 @@ FILE *popen(const char *cmdstring, const char *type) {
         }
 
         /* close all descriptors in childpid[] */
-        for (i = 0; i < maxfd; i++) {
+        for (int i = 0; i < maxfd; i++) {
             if (childpid[i] > 0) {
                 close(i);
             }
@@ -77,12 +77,14 @@ FILE *popen(const char *cmdstring, const char *type) {
     /* parent continues... */
     if (*type == 'r') {
         close(pfd[1]);
-        if ((fp = fdopen(pfd[0], type)) == nullptr) {
+        fp = fdopen(pfd[0], type);
+        if (fp == nullptr) {
             return (nullptr);
         }
     } else {
         close(pfd[0]);
-        if ((fp = fdopen(pfd[1], type)) == nullptr) {
+        fp = fdopen(pfd[1], type);
+        if (fp == nullptr) {
             return (nullptr);
         }
     }
@@ -92,20 +94,20 @@ FILE *popen(const char *cmdstring, const char *type) {
 }
 
 int pclose(FILE *fp) {
-    int fd, stat;
-    pid_t pid;
+    int stat;
 
     if (childpid == nullptr) {
         errno = EINVAL;
         return (-1); /* popen() has never been called */
     }
 
-    fd = fileno(fp);
+    int fd = fileno(fp);
     if (fd >= maxfd) {
         errno = EINVAL;
         return (-1); /* invalid file descriptor */
     }
-    if ((pid = childpid[fd]) == 0) {
+    pid_t pid = childpid[fd];
+    if (pid == 0) {
         errno = EINVAL;
         return (-1); /* fp wasn't opened by popen() */
     }

@@ -17,7 +17,7 @@
  * Returns fd if all OK, <0 on error.
  */
 int cli_conn(const char *name) {
-    int fd, len, err, rval;
+    int rval;
     struct sockaddr_un un = {0};
     struct sockaddr_un sun = {0};
     bool do_unlink = false;
@@ -28,7 +28,8 @@ int cli_conn(const char *name) {
     }
 
     /* create a UNIX domain stream socket */
-    if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
+    int fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (fd < 0) {
         return (-1);
     }
 
@@ -37,7 +38,7 @@ int cli_conn(const char *name) {
     snprintf(un.sun_path, sizeof(un.sun_path), "%s%05ld", CLI_PATH,
              (long)getpid());
     printf("file is %s\n", un.sun_path);
-    len = offsetof(struct sockaddr_un, sun_path) + strlen(un.sun_path);
+    int len = offsetof(struct sockaddr_un, sun_path) + strlen(un.sun_path);
 
     unlink(un.sun_path); /* in case it already exists */
     if (bind(fd, (struct sockaddr *)&un, len) < 0) {
@@ -62,7 +63,7 @@ int cli_conn(const char *name) {
     return (fd);
 
 errout:
-    err = errno;
+    int err = errno;
     close(fd);
     if (do_unlink) {
         unlink(un.sun_path);

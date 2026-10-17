@@ -9,7 +9,7 @@
 #define BUFFSIZE 8192
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
-    int n, fd;
+    int n;
     char buf[BUFFSIZE];
     char line[MAXLINE];
 
@@ -20,12 +20,17 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         }
 
         /* open the file */
-        if ((fd = csopen(line, O_RDONLY)) < 0) {
+        int fd = csopen(line, O_RDONLY);
+        if (fd < 0) {
             continue; /* csopen() prints error from server */
         }
 
         /* and cat to stdout */
-        while ((n = read(fd, buf, BUFFSIZE)) > 0) {
+        for (;;) {
+            n = read(fd, buf, BUFFSIZE);
+            if (n <= 0) {
+                break;
+            }
             if (write(STDOUT_FILENO, buf, n) != n) {
                 err_sys("write error");
             }

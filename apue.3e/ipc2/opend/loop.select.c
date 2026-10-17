@@ -12,7 +12,8 @@ void loop(void) {
     FD_ZERO(&allset);
 
     /* obtain fd to listen for client requests on */
-    if ((listenfd = serv_listen(CS_OPEN)) < 0) {
+    listenfd = serv_listen(CS_OPEN);
+    if (listenfd < 0) {
         log_sys("serv_listen error");
     }
     FD_SET(listenfd, &allset);
@@ -21,13 +22,15 @@ void loop(void) {
 
     for (;;) {
         rset = allset; /* rset gets modified each time around */
-        if ((n = select(maxfd + 1, &rset, nullptr, nullptr, nullptr)) < 0) {
+        n = select(maxfd + 1, &rset, nullptr, nullptr, nullptr);
+        if (n < 0) {
             log_sys("select error");
         }
 
         if (FD_ISSET(listenfd, &rset)) {
             /* accept new client request */
-            if ((clifd = serv_accept(listenfd, &uid)) < 0) {
+            clifd = serv_accept(listenfd, &uid);
+            if (clifd < 0) {
                 log_sys("serv_accept error: %d", clifd);
             }
             i = client_add(clifd, uid);
@@ -43,12 +46,14 @@ void loop(void) {
         }
 
         for (i = 0; i <= maxi; i++) { /* go through client[] array */
-            if ((clifd = client[i].fd) < 0) {
+            clifd = client[i].fd;
+            if (clifd < 0) {
                 continue;
             }
             if (FD_ISSET(clifd, &rset)) {
                 /* read argument buffer from client */
-                if ((nread = read(clifd, buf, MAXLINE)) < 0) {
+                nread = read(clifd, buf, MAXLINE);
+                if (nread < 0) {
                     log_sys("read error on fd %d", clifd);
                 } else if (nread == 0) {
                     log_msg("closed: uid %d, fd %d", client[i].uid, clifd);

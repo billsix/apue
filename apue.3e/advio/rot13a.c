@@ -39,8 +39,11 @@ int main(int argc, char *argv[]) {
         err_sys("can't create %s", argv[2]);
     }
 
-    int n;
-    while ((n = read(ifd, buf, BSZ)) > 0) {
+    for (;;) {
+        int n = read(ifd, buf, BSZ);
+        if (n <= 0) {
+            break;
+        }
         for (int i = 0; i < n; i++) {
             buf[i] = translate(buf[i]);
         }

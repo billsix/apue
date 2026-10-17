@@ -13,8 +13,11 @@ int main(int argc, char *argv[]) {
     if (dp == nullptr) {
         err_sys("can't open %s", argv[1]);
     }
-    struct dirent *dirp;
-    while ((dirp = readdir(dp)) != nullptr) {
+    for (;;) {
+        struct dirent *dirp = readdir(dp);
+        if (dirp == nullptr) {
+            break;
+        }
         printf("%s\n", dirp->d_name);
     }
 

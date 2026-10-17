@@ -46,7 +46,8 @@ static void pr_times(clock_t real, const struct tms *tmsstart,
     static long clktck = 0;
 
     if (clktck == 0) { /* fetch clock ticks per second first time */
-        if ((clktck = sysconf(_SC_CLK_TCK)) < 0) {
+        clktck = sysconf(_SC_CLK_TCK);
+        if (clktck < 0) {
             err_sys("sysconf error");
         }
     }

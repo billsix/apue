@@ -10,10 +10,8 @@
 #include "apue.h"
 
 int ptym_open(char *pts_name, int pts_namesz) {
-    char *ptr;
-    int fdm, err;
-
-    if ((fdm = posix_openpt(O_RDWR)) < 0) {
+    int fdm = posix_openpt(O_RDWR);
+    if (fdm < 0) {
         return (-1);
     }
     if (grantpt(fdm) < 0) { /* grant access to slave */
@@ -22,7 +20,8 @@ int ptym_open(char *pts_name, int pts_namesz) {
     if (unlockpt(fdm) < 0) { /* clear slave's lock flag */
         goto errout;
     }
-    if ((ptr = ptsname(fdm)) == nullptr) { /* get slave's name */
+    char *ptr = ptsname(fdm); /* get slave's name */
+    if (ptr == nullptr) {
         goto errout;
     }
 
@@ -34,19 +33,19 @@ int ptym_open(char *pts_name, int pts_namesz) {
     pts_name[pts_namesz - 1] = '\0';
     return (fdm); /* return fd of master */
 errout:
-    err = errno;
+    int err = errno;
     close(fdm);
     errno = err;
     return (-1);
 }
 
 int ptys_open(char *pts_name) {
-    int fds;
 #if defined(SOLARIS)
     int err, setup;
 #endif
 
-    if ((fds = open(pts_name, O_RDWR)) < 0) {
+    int fds = open(pts_name, O_RDWR);
+    if (fds < 0) {
         return (-1);
     }
 
@@ -54,7 +53,8 @@ int ptys_open(char *pts_name) {
     /*
      * Check if stream is already set up by autopush facility.
      */
-    if ((setup = ioctl(fds, I_FIND, "ldterm")) < 0) {
+    setup = ioctl(fds, I_FIND, "ldterm");
+    if (setup < 0) {
         goto errout;
     }
 

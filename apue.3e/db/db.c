@@ -190,7 +190,8 @@ static DB *_db_alloc(int namelen) {
      * Allocate room for the name.
      * +5 for ".idx" or ".dat" plus null at end.
      */
-    if ((db->name = malloc(namelen + 5)) == nullptr) {
+    db->name = malloc(namelen + 5);
+    if (db->name == nullptr) {
         err_dump("_db_alloc: malloc error for name");
     }
 
@@ -198,10 +199,12 @@ static DB *_db_alloc(int namelen) {
      * Allocate an index buffer and a data buffer.
      * +2 for newline and null at end.
      */
-    if ((db->idxbuf = malloc(IDXLEN_MAX + 2)) == nullptr) {
+    db->idxbuf = malloc(IDXLEN_MAX + 2);
+    if (db->idxbuf == nullptr) {
         err_dump("_db_alloc: malloc error for index buffer");
     }
-    if ((db->datbuf = malloc(DATLEN_MAX + 2)) == nullptr) {
+    db->datbuf = malloc(DATLEN_MAX + 2);
+    if (db->datbuf == nullptr) {
         err_dump("_db_alloc: malloc error for data buffer");
     }
     return (db);
@@ -352,8 +355,8 @@ static off_t _db_readidx(DB *db, off_t offset) {
      * calls us with offset==0, meaning read from current offset.
      * We still need to call lseek to record the current offset.
      */
-    if ((db->idxoff = lseek(db->idxfd, offset,
-                            offset == 0 ? SEEK_CUR : SEEK_SET)) == -1) {
+    db->idxoff = lseek(db->idxfd, offset, offset == 0 ? SEEK_CUR : SEEK_SET);
+    if (db->idxoff == -1) {
         err_dump("_db_readidx: lseek error");
     }
 
@@ -384,7 +387,8 @@ static off_t _db_readidx(DB *db, off_t offset) {
     db->ptrval = atol(asciiptr); /* offset of next key in chain */
 
     asciilen[IDXLEN_SZ] = 0; /* null terminate */
-    if ((db->idxlen = atoi(asciilen)) < IDXLEN_MIN || db->idxlen > IDXLEN_MAX) {
+    db->idxlen = atoi(asciilen);
+    if (db->idxlen < IDXLEN_MIN || db->idxlen > IDXLEN_MAX) {
         err_dump("_db_readidx: invalid length");
     }
 
@@ -392,7 +396,8 @@ static off_t _db_readidx(DB *db, off_t offset) {
      * Now read the actual index record.  We read it into the key
      * buffer that we malloced when we opened the database.
      */
-    if ((i = read(db->idxfd, db->idxbuf, db->idxlen)) != (ssize_t)db->idxlen) {
+    i = read(db->idxfd, db->idxbuf, db->idxlen);
+    if (i != (ssize_t)db->idxlen) {
         err_dump("_db_readidx: read error of index record");
     }
     if (db->idxbuf[db->idxlen - 1] != NEWLINE) { /* sanity check */
@@ -422,10 +427,12 @@ static off_t _db_readidx(DB *db, off_t offset) {
     /*
      * Get the starting offset and length of the data record.
      */
-    if ((db->datoff = atol(ptr1)) < 0) {
+    db->datoff = atol(ptr1);
+    if (db->datoff < 0) {
         err_dump("_db_readidx: starting offset < 0");
     }
-    if ((db->datlen = atol(ptr2)) <= 0 || db->datlen > DATLEN_MAX) {
+    db->datlen = atol(ptr2);
+    if (db->datlen <= 0 || db->datlen > DATLEN_MAX) {
         err_dump("_db_readidx: invalid length");
     }
     return (db->ptrval); /* return offset of next key in chain */
@@ -555,7 +562,8 @@ static void _db_writedat(DB *db, const char *data, off_t offset, int whence) {
         }
     }
 
-    if ((db->datoff = lseek(db->datfd, offset, whence)) == -1) {
+    db->datoff = lseek(db->datfd, offset, whence);
+    if (db->datoff == -1) {
         err_dump("_db_writedat: lseek error");
     }
     db->datlen = strlen(data) + 1; /* datlen includes newline */
@@ -583,7 +591,8 @@ static void _db_writedat(DB *db, const char *data, off_t offset, int whence) {
  */
 static void _db_writeidx(DB *db, const char *key, off_t offset, int whence,
                          off_t ptrval) {
-    if ((db->ptrval = ptrval) < 0 || ptrval > PTR_MAX) {
+    db->ptrval = ptrval;
+    if (ptrval < 0 || ptrval > PTR_MAX) {
         err_quit("_db_writeidx: invalid ptr: %d", ptrval);
     }
     sprintf(db->idxbuf, "%s%c%lld%c%ld\n", key, SEP, (long long)db->datoff, SEP,
@@ -611,7 +620,8 @@ static void _db_writeidx(DB *db, const char *key, off_t offset, int whence,
     /*
      * Position the index file and record the offset.
      */
-    if ((db->idxoff = lseek(db->idxfd, offset, whence)) == -1) {
+    db->idxoff = lseek(db->idxfd, offset, whence);
+    if (db->idxoff == -1) {
         err_dump("_db_writeidx: lseek error");
     }
 
@@ -840,7 +850,8 @@ void db_rewind(DBHANDLE h) {
      * to the start of the index records; no need to lock.
      * +1 below for newline at end of hash table.
      */
-    if ((db->idxoff = lseek(db->idxfd, offset + 1, SEEK_SET)) == -1) {
+    db->idxoff = lseek(db->idxfd, offset + 1, SEEK_SET);
+    if (db->idxoff == -1) {
         err_dump("db_rewind: lseek error");
     }
 }
@@ -877,8 +888,10 @@ char *db_nextrec(DBHANDLE h, char *key) {
          * Check if key is all blank (empty record).
          */
         ptr = db->idxbuf;
-        while ((c = *ptr++) != 0 &&
-               c == SPACE); /* skip until null byte or nonblank */
+        c = *ptr++;
+        while (c != 0 && c == SPACE) { /* skip until null byte or nonblank */
+            c = *ptr++;
+        }
     } while (c == 0); /* loop until a nonblank key is found */
 
     if (key != nullptr) {

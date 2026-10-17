@@ -34,7 +34,8 @@ static void add(const char *dirname) {
         return;
     }
 
-    if ((ddp->d_name = strdup(dirname)) == nullptr) {
+    ddp->d_name = strdup(dirname);
+    if (ddp->d_name == nullptr) {
         free(ddp);
         return;
     }
@@ -68,8 +69,11 @@ static char *searchdir(const char *dirname, const struct stat *fdstatp) {
         return (nullptr);
     }
     const int devlen = strlen(pathname);
-    struct dirent *dirp;
-    while ((dirp = readdir(dp)) != nullptr) {
+    for (;;) {
+        struct dirent *dirp = readdir(dp);
+        if (dirp == nullptr) {
+            break;
+        }
         snprintf(pathname + devlen, sizeof(pathname) - devlen, "%s",
                  dirp->d_name);
 
@@ -115,7 +119,8 @@ char *ttyname(int fd) {
     char *rval = searchdir("/dev", &fdstat);
     if (rval == nullptr) {
         for (struct devdir *ddp = head; ddp != nullptr; ddp = ddp->d_next) {
-            if ((rval = searchdir(ddp->d_name, &fdstat)) != nullptr) {
+            rval = searchdir(ddp->d_name, &fdstat);
+            if (rval != nullptr) {
                 break;
             }
         }

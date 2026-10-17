@@ -80,9 +80,10 @@ programs need a TTY/stdin and aren't auto-tested.
   assignment folded into its test (split `(c = getc(stdin)) != EOF` into an assignment and a plain
   `c != EOF` compare; give a deeply nested sub-expression a named intermediate). A deliberate
   pedagogical choice that **overrides the shared standard's expression-density idioms for the
-  `apue.3e/` example tree**; behavior-preserving. Pattern + rationale:
-  `tasks/reference/teaching-flatten-expressions.md`; tree-wide application (not yet done):
-  `tasks/flatten-nested-expressions.md` (proposed).
+  `apue.3e/` example tree**; behavior-preserving. **Applied tree-wide (2026-10-16)** — every folded
+  assignment de-nested except the intentional `stdio/getcharbug.c` bug. Pattern + rationale:
+  `tasks/reference/teaching-flatten-expressions.md`; the completed sweep:
+  `tasks/archive/2026/10/16/flatten-nested-expressions.md`.
 - Lint: `apue.3e/.clang-tidy` (scoped to the tree; `musl/` is never linted) + `apue.3e/tools/lint.sh`
   (`tools/lint.sh [--fix] [dir...]`). Advisory; the modernization sweep fixes findings at the source.
 - Generated sources: `advio/rot13c2.c` is generated from `rot13c2.c.in` + `scripts/gen_rot13c2.sh`

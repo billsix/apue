@@ -4,12 +4,10 @@
 
 ssize_t /* Write "n" bytes to a descriptor  */
 writen(int fd, const void *ptr, size_t n) {
-    size_t nleft;
-    ssize_t nwritten;
-
-    nleft = n;
+    size_t nleft = n;
     while (nleft > 0) {
-        if ((nwritten = write(fd, ptr, nleft)) < 0) {
+        ssize_t nwritten = write(fd, ptr, nleft);
+        if (nwritten < 0) {
             if (nleft == n) {
                 return (-1); /* error, return -1 */
             } else {
