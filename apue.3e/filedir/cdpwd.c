@@ -10,7 +10,7 @@ int main(void) {
     }
 
     size_t size;
-    char *ptr = path_alloc(&size); /* our own function */
+    char *const ptr = path_alloc(&size); /* our own function */
     if (getcwd(ptr, size) == nullptr) {
         err_sys("getcwd failed");
     }

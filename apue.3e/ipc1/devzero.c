@@ -18,7 +18,8 @@ int main(void) {
     if (fd < 0) {
         err_sys("open error");
     }
-    void *area = mmap(nullptr, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    void *const area =
+        mmap(nullptr, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (area == MAP_FAILED) {
         err_sys("mmap error");
     }

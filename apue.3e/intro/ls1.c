@@ -9,12 +9,12 @@ int main(int argc, char *argv[]) {
         err_quit("usage: ls directory_name");
     }
 
-    DIR *dp = opendir(argv[1]);
+    DIR *const dp = opendir(argv[1]);
     if (dp == nullptr) {
         err_sys("can't open %s", argv[1]);
     }
     for (;;) {
-        struct dirent *dirp = readdir(dp);
+        const struct dirent *const dirp = readdir(dp);
         if (dirp == nullptr) {
             break;
         }

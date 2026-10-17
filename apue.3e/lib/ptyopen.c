@@ -20,7 +20,7 @@ int ptym_open(char *pts_name, int pts_namesz) {
     if (unlockpt(fdm) < 0) { /* clear slave's lock flag */
         goto errout;
     }
-    char *ptr = ptsname(fdm); /* get slave's name */
+    const char *const ptr = ptsname(fdm); /* get slave's name */
     if (ptr == nullptr) {
         goto errout;
     }
@@ -39,7 +39,7 @@ errout:
     return (-1);
 }
 
-int ptys_open(char *pts_name) {
+int ptys_open(const char *pts_name) {
 #if defined(SOLARIS)
     int err, setup;
 #endif

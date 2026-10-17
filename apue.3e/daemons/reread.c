@@ -39,7 +39,7 @@ void *thr_fn([[maybe_unused]] void *arg) {
 }
 
 int main([[maybe_unused]] int argc, char *argv[]) {
-    char *cmd = strrchr(argv[0], '/');
+    const char *cmd = strrchr(argv[0], '/');
     if (cmd == nullptr) {
         cmd = argv[0];
     } else {

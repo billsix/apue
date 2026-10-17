@@ -8,7 +8,7 @@
 
 static void my_alarm([[maybe_unused]] int signo) {
     printf("in signal handler\n");
-    const struct passwd *rootptr = getpwnam("root");
+    const struct passwd *const rootptr = getpwnam("root");
     if (rootptr == nullptr) {
         err_sys("getpwnam(root) error");
     }
@@ -19,7 +19,7 @@ int main(void) {
     signal(SIGALRM, my_alarm);
     alarm(1);
     for (;;) {
-        const struct passwd *ptr = getpwnam("sar");
+        const struct passwd *const ptr = getpwnam("sar");
         if (ptr == nullptr) {
             err_sys("getpwnam error");
         }

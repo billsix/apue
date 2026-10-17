@@ -6,7 +6,7 @@
 
 int main(void) /* FreeBSD/Mac OS X version */
 {
-    const struct passwd *ptr = getpwnam("sar");
+    const struct passwd *const ptr = getpwnam("sar");
     if (ptr == nullptr) {
         err_sys("getpwnam error");
     }

@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
         err_quit("usage: a.out <pathname>");
     }
 
-    FILE *fp = fopen(argv[1], "r");
+    FILE *const fp = fopen(argv[1], "r");
     if (fp == nullptr) {
         err_sys("can't open %s", argv[1]);
     }

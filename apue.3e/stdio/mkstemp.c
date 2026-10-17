@@ -9,8 +9,8 @@
 void make_temp(char *template);
 
 int main(void) {
-    char good_template[] = "/tmp/dirXXXXXX"; /* right way */
-    char *bad_template = "/tmp/dirXXXXXX";   /* wrong way*/
+    char good_template[] = "/tmp/dirXXXXXX";     /* right way */
+    char *const bad_template = "/tmp/dirXXXXXX"; /* wrong way*/
 
     printf("trying to create first temp file...\n");
     make_temp(good_template);

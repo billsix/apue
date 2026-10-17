@@ -6,7 +6,7 @@
 #include "apue_db.h"
 
 int main(void) {
-    DBHANDLE db = db_open("db4", O_RDWR | O_CREAT | O_TRUNC, FILE_MODE);
+    const DBHANDLE db = db_open("db4", O_RDWR | O_CREAT | O_TRUNC, FILE_MODE);
     if (db == nullptr) {
         err_sys("db_open error");
     }

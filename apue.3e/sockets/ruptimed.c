@@ -29,7 +29,7 @@ void serve(int sockfd) {
             exit(1);
         }
         set_cloexec(clfd);
-        FILE *fp = popen("/usr/bin/uptime", "r");
+        FILE *const fp = popen("/usr/bin/uptime", "r");
         if (fp == nullptr) {
             snprintf(buf, sizeof(buf), "error: %s\n", strerror(errno));
             send(clfd, buf, strlen(buf), 0);
@@ -51,7 +51,7 @@ int main(int argc, [[maybe_unused]] char *argv[]) {
     if (n < 0) {
         n = HOST_NAME_MAX; /* best guess */
     }
-    char *host = malloc(n);
+    char *const host = malloc(n);
     if (host == nullptr) {
         err_sys("malloc error");
     }

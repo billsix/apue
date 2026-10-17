@@ -76,7 +76,7 @@ int recv_ufd(int fd, uid_t *uidptr,
          * is next to last byte of buffer; status byte is last byte.
          * Zero status means there is a file descriptor to receive.
          */
-        for (char *ptr = buf; ptr < &buf[nr];) {
+        for (const char *ptr = buf; ptr < &buf[nr];) {
             if (*ptr++ == 0) {
                 if (ptr != &buf[nr - 1]) {
                     err_dump("message format error");
@@ -102,7 +102,7 @@ int recv_ufd(int fd, uid_t *uidptr,
                                 newfd = *(int *)CMSG_DATA(cmp);
                                 break;
                             case SCM_CREDTYPE: {
-                                const struct CREDSTRUCT *credp =
+                                const struct CREDSTRUCT *const credp =
                                     (struct CREDSTRUCT *)CMSG_DATA(cmp);
                                 *uidptr = credp->CR_UID;
                             }

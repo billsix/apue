@@ -5,7 +5,7 @@
 int main(void) {
     time_t t;
     time(&t);
-    const struct tm *tmp = localtime(&t);
+    const struct tm *const tmp = localtime(&t);
 
     char buf1[16];
     if (strftime(buf1, 16, "time and date: %r, %a %b %d, %Y", tmp) == 0) {

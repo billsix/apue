@@ -48,7 +48,7 @@ static char *scan_configfile(const char *keyword) {
     char line[MAXCFGLINE];
     static char valbuf[MAXCFGLINE];
 
-    FILE *fp = fopen(CONFIG_FILE, "r");
+    FILE *const fp = fopen(CONFIG_FILE, "r");
     if (fp == nullptr) {
         log_sys("can't open %s", CONFIG_FILE);
     }
@@ -83,7 +83,7 @@ char *get_printserver(void) { return (scan_configfile("printserver")); }
  * LOCKING: none.
  */
 struct addrinfo *get_printaddr(void) {
-    const char *p = scan_configfile("printer");
+    const char *const p = scan_configfile("printer");
     if (p != nullptr) {
         struct addrinfo *ailist;
         const int err = getaddrlist(p, "ipp", &ailist);

@@ -119,8 +119,9 @@ int main(int argc, char *argv[]) {
         print_protocol(aip);
         printf("\n\thost %s", aip->ai_canonname ? aip->ai_canonname : "-");
         if (aip->ai_family == AF_INET) {
-            const struct sockaddr_in *sinp = (struct sockaddr_in *)aip->ai_addr;
-            const char *addr =
+            const struct sockaddr_in *const sinp =
+                (struct sockaddr_in *)aip->ai_addr;
+            const char *const addr =
                 inet_ntop(AF_INET, &sinp->sin_addr, abuf, INET_ADDRSTRLEN);
             printf(" address %s", addr ? addr : "unknown");
             printf(" port %d", ntohs(sinp->sin_port));

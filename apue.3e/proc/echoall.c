@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
         printf("argv[%d]: %s\n", i, argv[i]);
     }
 
-    for (char **ptr = environ; *ptr != nullptr;
+    for (char *const *ptr = environ; *ptr != nullptr;
          ptr++) { /* and all env strings */
         printf("%s\n", *ptr);
     }

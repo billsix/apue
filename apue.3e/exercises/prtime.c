@@ -9,7 +9,7 @@ int main(void) {
     if (caltime == -1) {
         err_sys("time error");
     }
-    const struct tm *tm = localtime(&caltime);
+    const struct tm *const tm = localtime(&caltime);
     if (tm == nullptr) {
         err_sys("localtime error");
     }

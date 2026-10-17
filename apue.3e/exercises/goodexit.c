@@ -18,7 +18,7 @@ void printfoo(const char *s, const struct foo *fp) {
 }
 
 void *thr_fn1([[maybe_unused]] void *arg) {
-    struct foo *fp = malloc(sizeof(struct foo));
+    struct foo *const fp = malloc(sizeof(struct foo));
     if (fp == nullptr) {
         err_sys("can't allocate memory");
     }
@@ -36,7 +36,7 @@ int main(void) {
     if (err != 0) {
         err_exit(err, "can't create thread 1");
     }
-    struct foo *fp;
+    const struct foo *fp;
     err = pthread_join(tid1, (void *)&fp);
     if (err != 0) {
         err_exit(err, "can't join with thread 1");

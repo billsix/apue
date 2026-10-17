@@ -3,7 +3,7 @@
 FILE *open_data(void) {
     char databuf[BUFSIZ]; /* setvbuf makes this the stdio buffer */
 
-    FILE *fp = fopen("datafile", "r");
+    FILE *const fp = fopen("datafile", "r");
     if (fp == nullptr) {
         return (nullptr);
     }

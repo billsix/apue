@@ -66,7 +66,7 @@ int send_fd(int fd, int fd_to_send) {
         cmp->cmsg_level = SOL_SOCKET;
         cmp->cmsg_type = SCM_CREDTYPE;
         cmp->cmsg_len = CREDSLEN;
-        struct CREDSTRUCT *credp = (struct CREDSTRUCT *)CMSG_DATA(cmp);
+        struct CREDSTRUCT *const credp = (struct CREDSTRUCT *)CMSG_DATA(cmp);
 #if defined(SCM_CREDENTIALS)
         credp->uid = geteuid();
         credp->gid = getegid();

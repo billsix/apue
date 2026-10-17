@@ -14,7 +14,7 @@ int main(void) {
     pthread_mutex_lock(&lock);
     printf("mutex is locked\n");
     clock_gettime(CLOCK_REALTIME, &tout);
-    struct tm *tmp = localtime(&tout.tv_sec);
+    const struct tm *tmp = localtime(&tout.tv_sec);
     strftime(buf, sizeof(buf), "%r", tmp);
     printf("current time is %s\n", buf);
     tout.tv_sec += 10; /* 10 seconds from now */

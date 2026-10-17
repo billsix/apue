@@ -11,7 +11,7 @@ int main(void) {
     memset(buf, 'a', BSZ - 2);
     buf[BSZ - 2] = '\0';
     buf[BSZ - 1] = 'X';
-    FILE *fp = fmemopen(buf, BSZ, "w+");
+    FILE *const fp = fmemopen(buf, BSZ, "w+");
     if (fp == nullptr) {
         err_sys("fmemopen failed");
     }

@@ -6,7 +6,7 @@
 
 int main(void) /* Linux/Solaris version */
 {
-    const struct spwd *ptr = getspnam("sar");
+    const struct spwd *const ptr = getspnam("sar");
     if (ptr == nullptr) {
         err_sys("getspnam error");
     }

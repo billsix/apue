@@ -3,10 +3,10 @@
 
 #include "apue.h"
 
-void pr_stdio(const char *, FILE *);
-int is_unbuffered(FILE *);
-int is_linebuffered(FILE *);
-int buffer_size(FILE *);
+void pr_stdio(const char *, const FILE *);
+int is_unbuffered(const FILE *);
+int is_linebuffered(const FILE *);
+int buffer_size(const FILE *);
 
 int main(void) {
     fputs("enter any character\n", stdout);
@@ -19,7 +19,7 @@ int main(void) {
     pr_stdio("stdout", stdout);
     pr_stdio("stderr", stderr);
 
-    FILE *fp = fopen("/etc/passwd", "r");
+    FILE *const fp = fopen("/etc/passwd", "r");
     if (fp == nullptr) {
         err_sys("fopen error");
     }
@@ -30,7 +30,7 @@ int main(void) {
     exit(0);
 }
 
-void pr_stdio(const char *name, FILE *fp) {
+void pr_stdio(const char *name, const FILE *fp) {
     printf("stream = %s, ", name);
     if (is_unbuffered(fp)) {
         printf("unbuffered");
@@ -48,19 +48,19 @@ void pr_stdio(const char *name, FILE *fp) {
 
 #if defined(_IO_UNBUFFERED)
 
-int is_unbuffered(FILE *fp) { return (fp->_flags & _IO_UNBUFFERED); }
+int is_unbuffered(const FILE *fp) { return (fp->_flags & _IO_UNBUFFERED); }
 
-int is_linebuffered(FILE *fp) { return (fp->_flags & _IO_LINE_BUF); }
+int is_linebuffered(const FILE *fp) { return (fp->_flags & _IO_LINE_BUF); }
 
-int buffer_size(FILE *fp) { return (fp->_IO_buf_end - fp->_IO_buf_base); }
+int buffer_size(const FILE *fp) { return (fp->_IO_buf_end - fp->_IO_buf_base); }
 
 #elif defined(__SNBF)
 
-int is_unbuffered(FILE *fp) { return (fp->_flags & __SNBF); }
+int is_unbuffered(const FILE *fp) { return (fp->_flags & __SNBF); }
 
-int is_linebuffered(FILE *fp) { return (fp->_flags & __SLBF); }
+int is_linebuffered(const FILE *fp) { return (fp->_flags & __SLBF); }
 
-int buffer_size(FILE *fp) { return (fp->_bf._size); }
+int buffer_size(const FILE *fp) { return (fp->_bf._size); }
 
 #elif defined(_IONBF)
 
@@ -70,11 +70,11 @@ int buffer_size(FILE *fp) { return (fp->_bf._size); }
 #define _base __pad[2]
 #endif
 
-int is_unbuffered(FILE *fp) { return (fp->_flag & _IONBF); }
+int is_unbuffered(const FILE *fp) { return (fp->_flag & _IONBF); }
 
-int is_linebuffered(FILE *fp) { return (fp->_flag & _IOLBF); }
+int is_linebuffered(const FILE *fp) { return (fp->_flag & _IOLBF); }
 
-int buffer_size(FILE *fp) {
+int buffer_size(const FILE *fp) {
 #ifdef _LP64
     return (fp->_base - fp->_ptr);
 #else

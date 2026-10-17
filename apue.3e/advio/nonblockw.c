@@ -16,7 +16,7 @@ int main(void) {
 
     set_fl(STDOUT_FILENO, O_NONBLOCK); /* set nonblocking */
 
-    char *ptr = buf;
+    const char *ptr = buf;
     while (ntowrite > 0) {
         errno = 0;
         int nwrite = write(STDOUT_FILENO, ptr, ntowrite);

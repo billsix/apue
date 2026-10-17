@@ -7,7 +7,7 @@
 char *getpass(const char *prompt) {
     static char buf[MAX_PASS_LEN + 1]; /* null byte at end */
 
-    FILE *fp = fopen(ctermid(nullptr), "r+");
+    FILE *const fp = fopen(ctermid(nullptr), "r+");
     if (fp == nullptr) {
         return (nullptr);
     }

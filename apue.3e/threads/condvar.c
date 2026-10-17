@@ -17,7 +17,7 @@ void process_msg(void) {
         while (workq == nullptr) {
             pthread_cond_wait(&qready, &qlock);
         }
-        struct msg *mp = workq;
+        struct msg *const mp = workq;
         workq = mp->m_next;
         pthread_mutex_unlock(&qlock);
         /* now process the message mp */

@@ -132,7 +132,7 @@ int main(int argc, [[maybe_unused]] char *argv[]) {
     if (n < 0) { /* best guess */
         n = HOST_NAME_MAX;
     }
-    char *host = malloc(n);
+    char *const host = malloc(n);
     if (host == nullptr) {
         log_sys("malloc error");
     }
@@ -163,7 +163,7 @@ int main(int argc, [[maybe_unused]] char *argv[]) {
         log_quit("service not enabled");
     }
 
-    const struct passwd *pwdp = getpwnam(LPNAME);
+    const struct passwd *const pwdp = getpwnam(LPNAME);
     if (pwdp == nullptr) {
         log_sys("can't find user %s", LPNAME);
     }
@@ -296,7 +296,7 @@ int32_t get_newjobno(void) {
  * LOCKING: acquires and releases joblock.
  */
 void add_job(const struct printreq *reqp, int32_t jobid) {
-    struct job *jp = malloc(sizeof(struct job));
+    struct job *const jp = malloc(sizeof(struct job));
     if (jp == nullptr) {
         log_sys("malloc failed");
     }
@@ -359,12 +359,12 @@ void remove_job(struct job *target) {
 void build_qonstart(void) {
     char dname[FILENMSZ];
     snprintf(dname, sizeof(dname), "%s/%s", SPOOLDIR, REQDIR);
-    DIR *dirp = opendir(dname);
+    DIR *const dirp = opendir(dname);
     if (dirp == nullptr) {
         return;
     }
     for (;;) {
-        struct dirent *entp = readdir(dirp);
+        const struct dirent *const entp = readdir(dirp);
         if (entp == nullptr) {
             break;
         }
@@ -556,7 +556,7 @@ void *client_thread(void *arg) {
  * LOCKING: acquires and releases workerlock.
  */
 void add_worker(pthread_t tid, int sockfd) {
-    struct worker_thread *wtp = malloc(sizeof(struct worker_thread));
+    struct worker_thread *const wtp = malloc(sizeof(struct worker_thread));
     if (wtp == nullptr) {
         log_ret("add_worker: can't malloc");
         pthread_exit((void *)1);
@@ -911,10 +911,10 @@ int printer_status(int sfd, const struct job *jp) {
     int32_t jobid;
     ssize_t nr;
     char *cp;
-    char *statcode;
-    char *reason;
-    char *contentlen;
-    struct ipp_hdr *hp;
+    const char *statcode;
+    const char *reason;
+    const char *contentlen;
+    const struct ipp_hdr *hp;
 
     /*
      * Read the HTTP header followed by the IPP response header.

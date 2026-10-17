@@ -26,7 +26,7 @@ struct mymesg {
 
 void *helper(void *arg) {
     struct mymesg m;
-    const struct threadinfo *tip = arg;
+    const struct threadinfo *const tip = arg;
 
     for (;;) {
         memset(&m, 0, sizeof(m));

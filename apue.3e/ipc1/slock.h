@@ -10,6 +10,6 @@ struct slock {
 
 struct slock *s_alloc();
 void s_free(struct slock *);
-int s_lock(struct slock *);
-int s_trylock(struct slock *);
-int s_unlock(struct slock *);
+int s_lock(const struct slock *);
+int s_trylock(const struct slock *);
+int s_unlock(const struct slock *);

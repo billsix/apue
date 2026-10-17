@@ -11,7 +11,7 @@
 typedef int Myfunc(const char *, const struct stat *, int);
 
 static Myfunc myfunc;
-static int myftw(char *, Myfunc *);
+static int myftw(const char *, Myfunc *);
 static int dopath(Myfunc *);
 
 static long nreg, ndir, nblk, nchr, nfifo, nslink, nsock, ntot;
@@ -50,7 +50,7 @@ static char *fullpath; /* contains full pathname for every file */
 static size_t pathlen;
 
 static int /* we return whatever func() returns */
-myftw(char *pathname, Myfunc *func) {
+myftw(const char *pathname, Myfunc *func) {
     fullpath = path_alloc(&pathlen); /* malloc PATH_MAX+1 bytes */
                                      /* ({Prog pathalloc}) */
     if (pathlen <= strlen(pathname)) {
@@ -100,13 +100,13 @@ dopath(Myfunc *func) {
     fullpath[n++] = '/';
     fullpath[n] = 0;
 
-    DIR *dp = opendir(fullpath);
+    DIR *const dp = opendir(fullpath);
     if (dp == nullptr) { /* can't read directory */
         return (func(fullpath, &statbuf, FTW_DNR));
     }
 
     for (;;) {
-        struct dirent *dirp = readdir(dp);
+        const struct dirent *const dirp = readdir(dp);
         if (dirp == nullptr) {
             break;
         }

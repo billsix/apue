@@ -19,7 +19,7 @@ int main(void) {
            (void *)&array[ARRAY_SIZE]);
     printf("stack around %p\n", (void *)&shmid);
 
-    char *ptr = malloc(MALLOC_SIZE);
+    char *const ptr = malloc(MALLOC_SIZE);
     if (ptr == nullptr) {
         err_sys("malloc error");
     }
@@ -29,7 +29,7 @@ int main(void) {
     if (shmid < 0) {
         err_sys("shmget error");
     }
-    char *shmptr = shmat(shmid, nullptr, 0);
+    char *const shmptr = shmat(shmid, nullptr, 0);
     if (shmptr == (void *)-1) {
         err_sys("shmat error");
     }

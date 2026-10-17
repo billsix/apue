@@ -4,7 +4,7 @@
 
 int main(void) {
     const uint32_t i = 0x04030201;
-    const unsigned char *cp = (const unsigned char *)&i;
+    const unsigned char *const cp = (const unsigned char *)&i;
 
     if (*cp == 1) {
         printf("little-endian\n");

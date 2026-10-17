@@ -10,7 +10,7 @@ int main(void) {
     tmpnam(name); /* second temp name */
     printf("%s\n", name);
 
-    FILE *fp = tmpfile(); /* create temp file */
+    FILE *const fp = tmpfile(); /* create temp file */
     if (fp == nullptr) {
         err_sys("tmpfile error");
     }

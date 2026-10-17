@@ -24,7 +24,7 @@ int serv_accept(int listenfd, uid_t *uidptr) {
     struct stat statbuf;
 
     /* allocate enough space for longest name plus terminating null */
-    char *name = malloc(sizeof(un.sun_path) + 1);
+    char *const name = malloc(sizeof(un.sun_path) + 1);
     if (name == nullptr) {
         return (-1);
     }

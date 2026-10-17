@@ -8,7 +8,7 @@
 struct slock *s_alloc() {
     static int cnt;
 
-    struct slock *sp = malloc(sizeof(struct slock));
+    struct slock *const sp = malloc(sizeof(struct slock));
     if (sp == nullptr) {
         return (nullptr);
     }
@@ -29,8 +29,8 @@ void s_free(struct slock *sp) {
     free(sp);
 }
 
-int s_lock(struct slock *sp) { return (sem_wait(sp->semp)); }
+int s_lock(const struct slock *sp) { return (sem_wait(sp->semp)); }
 
-int s_trylock(struct slock *sp) { return (sem_trywait(sp->semp)); }
+int s_trylock(const struct slock *sp) { return (sem_trywait(sp->semp)); }
 
-int s_unlock(struct slock *sp) { return (sem_post(sp->semp)); }
+int s_unlock(const struct slock *sp) { return (sem_post(sp->semp)); }

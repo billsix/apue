@@ -21,7 +21,7 @@ extern int initserver(int, const struct sockaddr *, socklen_t, int);
 void serve(int sockfd) {
     char buf[BUFLEN];
     char abuf[MAXADDRLEN];
-    struct sockaddr *addr = (struct sockaddr *)abuf;
+    struct sockaddr *const addr = (struct sockaddr *)abuf;
 
     set_cloexec(sockfd);
     for (;;) {
@@ -31,7 +31,7 @@ void serve(int sockfd) {
             syslog(LOG_ERR, "ruptimed: recvfrom error: %s", strerror(errno));
             exit(1);
         }
-        FILE *fp = popen("/usr/bin/uptime", "r");
+        FILE *const fp = popen("/usr/bin/uptime", "r");
         if (fp == nullptr) {
             snprintf(buf, sizeof(buf), "error: %s\n", strerror(errno));
             sendto(sockfd, buf, strlen(buf), 0, addr, alen);
@@ -52,7 +52,7 @@ int main(int argc, [[maybe_unused]] char *argv[]) {
     if (n < 0) {
         n = HOST_NAME_MAX; /* best guess */
     }
-    char *host = malloc(n);
+    char *const host = malloc(n);
     if (host == nullptr) {
         err_sys("malloc error");
     }

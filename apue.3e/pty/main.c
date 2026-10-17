@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     bool noecho = false;
     bool verbose = false;
     pid_t pid;
-    char *driver = nullptr;
+    const char *driver = nullptr;
     char slave_name[20];
 
     opterr = 0; /* don't want getopt() writing to stderr */

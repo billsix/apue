@@ -29,7 +29,7 @@ static void add(const char *dirname) {
     if (strcmp(dirname, "/dev/fd") == 0) {
         return;
     }
-    struct devdir *ddp = malloc(sizeof(struct devdir));
+    struct devdir *const ddp = malloc(sizeof(struct devdir));
     if (ddp == nullptr) {
         return;
     }
@@ -53,7 +53,7 @@ static void add(const char *dirname) {
 static void cleanup(void) {
     struct devdir *ddp = head;
     while (ddp != nullptr) {
-        struct devdir *nddp = ddp->d_next;
+        struct devdir *const nddp = ddp->d_next;
         free(ddp->d_name);
         free(ddp);
         ddp = nddp;
@@ -64,13 +64,13 @@ static void cleanup(void) {
 
 static char *searchdir(const char *dirname, const struct stat *fdstatp) {
     snprintf(pathname, sizeof(pathname), "%s/", dirname);
-    DIR *dp = opendir(dirname);
+    DIR *const dp = opendir(dirname);
     if (dp == nullptr) {
         return (nullptr);
     }
     const int devlen = strlen(pathname);
     for (;;) {
-        struct dirent *dirp = readdir(dp);
+        const struct dirent *const dirp = readdir(dp);
         if (dirp == nullptr) {
             break;
         }

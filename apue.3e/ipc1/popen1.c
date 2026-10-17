@@ -4,7 +4,7 @@
 #include "apue.h"
 
 int main(void) {
-    FILE *fpin = popen("myuclc", "r");
+    FILE *const fpin = popen("myuclc", "r");
     if (fpin == nullptr) {
         err_sys("popen error");
     }

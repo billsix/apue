@@ -33,7 +33,7 @@ void clock_gettime(int id, struct timespec *tsp) {
 #endif
 
 void *timeout_helper(void *arg) {
-    const struct to_info *tip = arg;
+    const struct to_info *const tip = arg;
 
     clock_nanosleep(CLOCK_REALTIME, 0, &tip->to_wait, nullptr);
     (*tip->to_fn)(tip->to_arg);
@@ -46,7 +46,7 @@ void timeout(const struct timespec *when, void (*func)(void *), void *arg) {
     clock_gettime(CLOCK_REALTIME, &now);
     if ((when->tv_sec > now.tv_sec) ||
         (when->tv_sec == now.tv_sec && when->tv_nsec > now.tv_nsec)) {
-        struct to_info *tip = malloc(sizeof(struct to_info));
+        struct to_info *const tip = malloc(sizeof(struct to_info));
         if (tip != nullptr) {
             tip->to_fn = func;
             tip->to_arg = arg;

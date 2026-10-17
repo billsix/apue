@@ -37,7 +37,7 @@ FILE *fmemopen(void *__restrict buf, size_t size, const char *__restrict type) {
         errno = EINVAL;
         return (nullptr);
     }
-    struct memstream *ms = malloc(sizeof(struct memstream));
+    struct memstream *const ms = malloc(sizeof(struct memstream));
     if (ms == nullptr) {
         errno = ENOMEM;
         return (nullptr);
@@ -79,7 +79,7 @@ FILE *fmemopen(void *__restrict buf, size_t size, const char *__restrict type) {
     } else { /* "r" mode */
         ms->vsize = size;
     }
-    FILE *fp =
+    FILE *const fp =
         funopen(ms, mstream_read, mstream_write, mstream_seek, mstream_close);
     if (fp == nullptr) {
         if (ms->flags & MS_MYBUF) {
@@ -149,7 +149,7 @@ static off_t find_end(const char *buf, size_t len) {
 }
 
 static int mstream_read(void *cookie, char *buf, int len) {
-    struct memstream *ms = cookie;
+    struct memstream *const ms = cookie;
 
     if (!(ms->flags & MS_READ)) {
         errno = EBADF;
@@ -167,7 +167,7 @@ static int mstream_read(void *cookie, char *buf, int len) {
 }
 
 static int mstream_write(void *cookie, const char *buf, int len) {
-    struct memstream *ms = cookie;
+    struct memstream *const ms = cookie;
 
     if (!(ms->flags & (MS_APPEND | MS_WRITE))) {
         errno = EBADF;
@@ -196,7 +196,7 @@ static int mstream_write(void *cookie, const char *buf, int len) {
 
 static fpos_t mstream_seek(void *cookie, fpos_t pos, int whence) {
     int off;
-    struct memstream *ms = cookie;
+    struct memstream *const ms = cookie;
 
     switch (whence) {
         case SEEK_SET:
@@ -218,7 +218,7 @@ static fpos_t mstream_seek(void *cookie, fpos_t pos, int whence) {
 }
 
 static int mstream_close(void *cookie) {
-    struct memstream *ms = cookie;
+    struct memstream *const ms = cookie;
 
     if (ms->flags & MS_MYBUF) {
         free(ms->buf);

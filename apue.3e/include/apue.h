@@ -80,8 +80,8 @@ int tty_reset(int);                /* {Prog raw} */
 void tty_atexit(void);             /* {Prog raw} */
 struct termios *tty_termios(void); /* {Prog raw} */
 
-int ptym_open(char *, int); /* {Prog ptyopen} */
-int ptys_open(char *);      /* {Prog ptyopen} */
+int ptym_open(char *, int);  /* {Prog ptyopen} */
+int ptys_open(const char *); /* {Prog ptyopen} */
 #ifdef TIOCGWINSZ
 pid_t pty_fork(int *, char *, int, const struct termios *,
                const struct winsize *); /* {Prog ptyfork} */

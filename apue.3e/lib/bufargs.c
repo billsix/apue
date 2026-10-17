@@ -22,7 +22,7 @@ int buf_args(char *buf, int (*optfunc)(int, char **)) {
     argc = 0;
     argv[argc] = buf;
     for (;;) {
-        char *ptr = strtok(nullptr, WHITE);
+        char *const ptr = strtok(nullptr, WHITE);
         if (ptr == nullptr) {
             break;
         }

@@ -93,7 +93,7 @@ db_open(const char *pathname, int oflag, ...) {
      * Allocate a DB structure, and the buffers it needs.
      */
     const int len = strlen(pathname);
-    DB *db = _db_alloc(len);
+    DB *const db = _db_alloc(len);
     if (db == nullptr) {
         err_dump("db_open: _db_alloc error for DB");
     }
@@ -180,7 +180,7 @@ static DB *_db_alloc(int namelen) {
     /*
      * Use calloc, to initialize the structure to zero.
      */
-    DB *db = calloc(1, sizeof(DB));
+    DB *const db = calloc(1, sizeof(DB));
     if (db == nullptr) {
         err_dump("_db_alloc: calloc error for DB");
     }
@@ -244,7 +244,7 @@ static void _db_free(DB *db) {
  * Fetch a record.  Return a pointer to the null-terminated data.
  */
 char *db_fetch(DBHANDLE h, const char *key) {
-    DB *db = h;
+    DB *const db = h;
     char *ptr;
 
     if (_db_find_and_lock(db, key, 0) < 0) {
@@ -460,7 +460,7 @@ static char *_db_readdat(DB *db) {
  * Delete the specified record.
  */
 int db_delete(DBHANDLE h, const char *key) {
-    DB *db = h;
+    DB *const db = h;
     int rc = 0; /* assume record will be found */
 
     if (_db_find_and_lock(db, key, 1) == 0) {
@@ -667,7 +667,7 @@ static void _db_writeptr(const DB *db, off_t offset, off_t ptrval) {
  * exists and DB_INSERT specified, -1 on error.
  */
 int db_store(DBHANDLE h, const char *key, const char *data, int flag) {
-    DB *db = h;
+    DB *const db = h;
     int rc;
 
     if (flag != DB_INSERT && flag != DB_REPLACE && flag != DB_STORE) {
@@ -841,7 +841,7 @@ static int _db_findfree(DB *db, int keylen, int datlen) {
  * Must be called before first db_nextrec.
  */
 void db_rewind(DBHANDLE h) {
-    DB *db = h;
+    DB *const db = h;
 
     const off_t offset = (db->nhash + 1) * PTR_SZ; /* +1 for free list ptr */
 
@@ -863,7 +863,7 @@ void db_rewind(DBHANDLE h) {
  * called the first time.
  */
 char *db_nextrec(DBHANDLE h, char *key) {
-    DB *db = h;
+    DB *const db = h;
     char c;
     char *ptr;
 

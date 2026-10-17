@@ -22,7 +22,7 @@ static struct cmsghdr *cmptr = nullptr; /* malloc'ed first time */
  */
 int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
     int newfd, nr, status;
-    char *ptr;
+    const char *ptr;
     char buf[MAXLINE];
     struct iovec iov[1];
     struct msghdr msg;

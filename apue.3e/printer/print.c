@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
     /*
      * Get the hostname of the host acting as the print server.
      */
-    const char *host = get_printserver();
+    const char *const host = get_printserver();
     if (host == nullptr) {
         err_quit("print: no print server defined");
     }
@@ -94,7 +94,7 @@ void submit_file(int fd, int sockfd, const char *fname, size_t nbytes,
     /*
      * First build the header.
      */
-    const struct passwd *pwd = getpwuid(geteuid());
+    const struct passwd *const pwd = getpwuid(geteuid());
     if (pwd == nullptr) {
         strcpy(req.usernm, "unknown");
     } else {

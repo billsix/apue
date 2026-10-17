@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     if (argc != 2) {
         err_quit("usage: pracct filename");
     }
-    FILE *fp = fopen(argv[1], "r");
+    FILE *const fp = fopen(argv[1], "r");
     if (fp == nullptr) {
         err_sys("can't open %s", argv[1]);
     }

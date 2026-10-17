@@ -9,12 +9,12 @@ int main(int argc, char *argv[]) {
     if (argc != 2) {
         err_quit("usage: a.out <pathname>");
     }
-    FILE *fpin = fopen(argv[1], "r");
+    FILE *const fpin = fopen(argv[1], "r");
     if (fpin == nullptr) {
         err_sys("can't open %s", argv[1]);
     }
 
-    FILE *fpout = popen(PAGER, "w");
+    FILE *const fpout = popen(PAGER, "w");
     if (fpout == nullptr) {
         err_sys("popen error");
     }

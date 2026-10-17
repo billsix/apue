@@ -42,12 +42,13 @@ int main(int argc, char *argv[]) {
             copysz = sbuf.st_size - fsz;
         }
 
-        void *src = mmap(nullptr, copysz, PROT_READ, MAP_SHARED, fdin, fsz);
+        void *const src =
+            mmap(nullptr, copysz, PROT_READ, MAP_SHARED, fdin, fsz);
         if (src == MAP_FAILED) {
             err_sys("mmap error for input");
         }
-        void *dst = mmap(nullptr, copysz, PROT_READ | PROT_WRITE, MAP_SHARED,
-                         fdout, fsz);
+        void *const dst = mmap(nullptr, copysz, PROT_READ | PROT_WRITE,
+                               MAP_SHARED, fdout, fsz);
         if (dst == MAP_FAILED) {
             err_sys("mmap error for output");
         }
