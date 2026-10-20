@@ -1,6 +1,8 @@
 # Port the in-container Emacs + LSP (clangd) developer setup from Craft
 
-**Status:** in progress — infrastructure implemented & staged 2026-10-20; remaining steps are the maintainer's
+**Status:** blocked — infrastructure committed + docs reconciled 2026-10-20; blocked on the maintainer's one-time emacs verification (needs network + a live Emacs)
+**Blocked on:** the maintainer running `make update-emacs-packages` (network) and confirming clangd resolves a musl header in a live Emacs — neither is doable autonomously in this sandbox.
+**Recheck:** `git -C . ls-files entrypoint/dotfiles/.emacs.d/elpa | head` returns package files ⇒ the fetch ran; then the only open item is whether the `--query-driver` musl-header check passed (ask the maintainer / see Remaining step 2).
 **Priority:** 5
 **Difficulty:** 4 (mostly mechanical copy + path edits; the one real unknown is clangd vs. the musl-clang wrapper — see step 4)
 **Created:** 2026-10-20 (William Emerison Six <billsix@gmail.com>: "make a task to port emacs lsp
@@ -12,7 +14,8 @@ clangd, as Craft; (2) full MELPA set, copied verbatim. Scope clarified: copy the
 
 ## Progress (2026-10-20)
 
-**Done and staged** (steps 1–7 below): the four hand-written config files
+**Done and committed** 2026-10-20 (the "reformatted and added emacs lsp" commit on `master`), steps
+1–7 below AND step 9's doc notes: the four hand-written config files
 (`entrypoint/dotfiles/.emacs.d/{init.el,preferences.el,helm.el,install-melpa-packages.el}`,
 `init.el` adapted to apue's `/apue/apue.3e/` root + `--compile-commands-dir=/apue/apue.3e/build`
 + the musl-clang `--query-driver=/apue/musl/bldInstall/bin/*,/usr/bin/clang*`), the `Makefile`
@@ -27,13 +30,24 @@ USE_EMACS=0`.
 > image-build time — **that needs network**. Pass `USE_EMACS=0` to skip it (the C build doesn't need
 > Emacs). This matches Craft's default.
 
-**Remaining — the maintainer's (needs network and/or a live Emacs):**
-- Run `make update-emacs-packages` once to generate apue's own committed `entrypoint/dotfiles/.emacs.d/elpa/` pin.
-- Verify (BLUF acceptance): `make build` once (writes `compile_commands.json`), then `make shell`,
-  open a `.c` under `/apue/apue.3e/`, confirm clangd attaches AND resolves a **musl libc header**
-  with no spurious "file not found" (that's the `--query-driver` check — the one genuinely new piece).
-- If clangd still can't find musl headers, see Open question 1 below (may need an extra `--isystem`).
-- Add the short Emacs-workflow note to `CLAUDE.md`/`README` (step 9) once it's confirmed working.
+The `CLAUDE.md` "Build / container workflow" section and the `README.md` Quick-start now document
+the `update-emacs-packages` target, the Emacs/LSP workflow, and the `USE_EMACS` network caveat (step
+9 done, with a "first-run verification pending" pointer back here).
+
+**Remaining — the maintainer's, cold-start (needs network and/or a live Emacs; nothing autonomous left):**
+1. **Fetch the packages.** From the repo root: `make update-emacs-packages`. It rebuilds the image
+   with `USE_EMACS=1`, reinstalls the MELPA set, strips `*.elc`/`*.eln`, and `git add -f`s the new
+   `entrypoint/dotfiles/.emacs.d/elpa/` (~45 package dirs) — **needs network**. Then commit that
+   staged `elpa/` ("vendor emacs packages").
+2. **Verify LSP end-to-end (the one thing unverifiable in this sandbox).** `make build` once (writes
+   `apue.3e/build/compile_commands.json`), then `make shell`, then `emacs -nw apue.3e/lib/daemonize.c`.
+   Confirm: lsp-mode attaches (modeline shows `LSP`), completion works, AND a musl libc header (e.g.
+   the `#include <signal.h>` chain) resolves with **no spurious "file not found"**. That last part is
+   the `--query-driver=/apue/musl/bldInstall/bin/*,...` check (the one genuinely new piece vs. Craft).
+3. **If musl headers still 404:** add `-isystem /apue/musl/bldInstall/include` to
+   `lsp-clients-clangd-args` in `entrypoint/dotfiles/.emacs.d/init.el` (see Open question 1), rebuild
+   with `make update-emacs-packages` (or just re-`make shell`), re-verify.
+4. On success, this task is done — archive it to `tasks/archive/<YYYY>/<MM>/<DD>/`.
 
 ## BLUF
 

@@ -55,6 +55,18 @@ Fedora-44 + podman, the usual family template. `make` targets:
 - `make build` — inside the container: `meson setup build --native-file
   native-linux.ini && meson compile -C build && meson test -C build`.
 - `make format` — clang-format all `apue.3e` C.
+- `make update-emacs-packages` — refresh the vendored Emacs packages
+  (`entrypoint/dotfiles/.emacs.d/elpa/`): rebuilds the image, reinstalls from MELPA,
+  strips `*.elc`/`*.eln`, stages the `.el` sources. Needs network.
+
+**Emacs / LSP dev setup:** `make shell` bind-mounts the vendored `.emacs.d/`
+(`lsp-mode` + `clangd`, pointed at `apue.3e/build/compile_commands.json` with
+`--query-driver` for the musl-clang wrapper), so `emacs -nw apue.3e/<file>.c` gets
+completion/diagnostics — run `make build` once first to generate
+`compile_commands.json`. `USE_EMACS` defaults to `1`, which also bakes the MELPA set
+into the image at build time (**needs network**); pass `USE_EMACS=0` for a C-only
+build that skips it. First-run setup + the clangd-vs-musl-header verification are
+tracked in `tasks/port-emacs-lsp-from-craft.md`.
 
 There is **no `ENTRYPOINT`** in the image — every target passes
 `--entrypoint /bin/bash` (a prior stale entrypoint was removed; see the Dockerfile
