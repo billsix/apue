@@ -26,16 +26,17 @@ make build     # configure + compile + test apue.3e via Meson, inside the contai
 Inside the shell the Meson build lives in `apue.3e/build/`. lldb/gdb work — the
 container starts with ptrace capability and ASLR disabled.
 
-Emacs with `lsp-mode` + `clangd` is wired up in the container. First time:
+Emacs with `lsp-mode` + `clangd` is wired up in the container. `make image` bakes
+a build of the examples into `/apue/build`, so clangd has its `compile_commands.json`
+with no extra step. First time, fetch the Emacs packages (needs network):
 
 ```sh
 make update-emacs-packages   # fetch the Emacs packages (needs network)
-make build                   # generates apue.3e/build/compile_commands.json for clangd
 ```
 
 then inside `make shell` run `emacs -nw apue.3e/<file>.c` for completion and
-diagnostics. `USE_EMACS=0` skips the Emacs image bake for a C-only build. Details:
-`tasks/port-emacs-lsp-from-craft.md`.
+diagnostics — including `apue.h` and the musl headers. `USE_EMACS=0` skips the Emacs
+image bake for a C-only build. Details: `tasks/port-emacs-lsp-from-craft.md`.
 
 ## Layout
 

@@ -40,7 +40,7 @@
         ;; compile_commands.json so clangd may run it to extract its built-in
         ;; include paths; without it the musl libc headers show spurious
         ;; "file not found".
-        lsp-clients-clangd-args '("--compile-commands-dir=/apue/apue.3e/build"
+        lsp-clients-clangd-args '("--compile-commands-dir=/apue/build"
                                   "--query-driver=/apue/musl/bldInstall/bin/*,/usr/bin/clang*")
         lsp-enable-snippet nil
         lsp-prefer-capf t))

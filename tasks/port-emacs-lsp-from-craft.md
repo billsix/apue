@@ -17,7 +17,7 @@ clangd, as Craft; (2) full MELPA set, copied verbatim. Scope clarified: copy the
 **Done and committed** 2026-10-20 (the "reformatted and added emacs lsp" commit on `master`), steps
 1–7 below AND step 9's doc notes: the four hand-written config files
 (`entrypoint/dotfiles/.emacs.d/{init.el,preferences.el,helm.el,install-melpa-packages.el}`,
-`init.el` adapted to apue's `/apue/apue.3e/` root + `--compile-commands-dir=/apue/apue.3e/build`
+`init.el` adapted to apue's `/apue/apue.3e/` root + `--compile-commands-dir=/apue/build`
 + the musl-clang `--query-driver=/apue/musl/bldInstall/bin/*,/usr/bin/clang*`), the `Makefile`
 `USE_EMACS ?= 1`/`ELPA_MOUNT` plumbing + `$(ELPA_MOUNT)` in `SHELL_RUN_FLAGS` + `--build-arg
 USE_EMACS` on `image` + the `update-emacs-packages` target, the `Dockerfile` `USE_EMACS` bake block
@@ -34,13 +34,29 @@ The `CLAUDE.md` "Build / container workflow" section and the `README.md` Quick-s
 the `update-emacs-packages` target, the Emacs/LSP workflow, and the `USE_EMACS` network caveat (step
 9 done, with a "first-run verification pending" pointer back here).
 
+**Baked out-of-source build added** 2026-10-20 (William Emerison Six <billsix@gmail.com>: "check how
+I deal with gltron, I may build gltron as part of the dockerfile build, see if you can do something
+similar in apue"): mirroring gltron's image-build `cmake … && ctest`, the `Dockerfile` now runs
+`meson setup /apue/build --native-file native-linux.ini && meson compile -C /apue/build && meson
+test -C /apue/build` right after the `COPY apue.3e`. The build dir is `/apue/build` — a **sibling of
+`apue.3e`, deliberately NOT under `apue.3e/build`** — because `make shell` bind-mounts the host
+`apue.3e` over `/apue/apue.3e`, which would hide any build written inside it; `/apue/build` is
+outside that mount and survives, so Emacs/clangd has a `compile_commands.json` with no prior `make
+build`. `init.el`'s `--compile-commands-dir` was repointed `/apue/apue.3e/build` → `/apue/build` to
+match. `make build` still writes `apue.3e/build` against the live mounted tree (for building/running
+the examples); the baked `/apue/build` is clangd's default. This makes Remaining step 2's "`make
+build` once first" unnecessary for LSP. **Craft's `init.el` had the identical latent `clang-format`
+`:bind` bug** (`c-mode-base-map` referenced before `cc-mode` loads); the `:after cc-mode` one-liner
+was applied + staged in both apue and Craft the same day.
+
 **Remaining — the maintainer's, cold-start (needs network and/or a live Emacs; nothing autonomous left):**
 1. **Fetch the packages.** From the repo root: `make update-emacs-packages`. It rebuilds the image
    with `USE_EMACS=1`, reinstalls the MELPA set, strips `*.elc`/`*.eln`, and `git add -f`s the new
    `entrypoint/dotfiles/.emacs.d/elpa/` (~45 package dirs) — **needs network**. Then commit that
    staged `elpa/` ("vendor emacs packages").
-2. **Verify LSP end-to-end (the one thing unverifiable in this sandbox).** `make build` once (writes
-   `apue.3e/build/compile_commands.json`), then `make shell`, then `emacs -nw apue.3e/lib/daemonize.c`.
+2. **Verify LSP end-to-end (the one thing unverifiable in this sandbox).** No `make build` needed
+   first — `make image` bakes `/apue/build/compile_commands.json`. Just `make shell`, then `emacs -nw
+   apue.3e/lib/daemonize.c`.
    Confirm: lsp-mode attaches (modeline shows `LSP`), completion works, AND a musl libc header (e.g.
    the `#include <signal.h>` chain) resolves with **no spurious "file not found"**. That last part is
    the `--query-driver=/apue/musl/bldInstall/bin/*,...` check (the one genuinely new piece vs. Craft).

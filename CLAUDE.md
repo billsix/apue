@@ -49,7 +49,9 @@ longer a byte-faithful transcription of the book.
 Fedora-44 + podman, the usual family template. `make` targets:
 
 - `make help` *(default)* — list the documented targets.
-- `make image` — build the image (`apue`); compiles musl-clang from source.
+- `make image` — build the image (`apue`); compiles musl-clang from source, then
+  bakes an out-of-source build to `/apue/build` (its `compile_commands.json` is what
+  clangd reads) and runs `meson test` as a build gate.
 - `make shell` — ephemeral container, mounts `apue.3e/`, drops to bash.
   Adds `--cap-add=SYS_ADMIN --security-opt seccomp=unconfined` so lldb/gdb can ptrace.
 - `make build` — inside the container: `meson setup build --native-file
@@ -59,11 +61,15 @@ Fedora-44 + podman, the usual family template. `make` targets:
   (`entrypoint/dotfiles/.emacs.d/elpa/`): rebuilds the image, reinstalls from MELPA,
   strips `*.elc`/`*.eln`, stages the `.el` sources. Needs network.
 
-**Emacs / LSP dev setup:** `make shell` bind-mounts the vendored `.emacs.d/`
-(`lsp-mode` + `clangd`, pointed at `apue.3e/build/compile_commands.json` with
-`--query-driver` for the musl-clang wrapper), so `emacs -nw apue.3e/<file>.c` gets
-completion/diagnostics — run `make build` once first to generate
-`compile_commands.json`. `USE_EMACS` defaults to `1`, which also bakes the MELPA set
+**Emacs / LSP dev setup:** `make image` bakes an out-of-source build to `/apue/build`
+(a sibling of `apue.3e`, so it survives `make shell`'s `apue.3e` bind-mount — a build
+under `apue.3e/build` would be hidden by that mount), and `make shell` bind-mounts the
+vendored `.emacs.d/` (`lsp-mode` + `clangd`, pointed at
+`/apue/build/compile_commands.json` with `--query-driver` for the musl-clang wrapper).
+So `emacs -nw apue.3e/<file>.c` gets completion/diagnostics — including `apue.h` and the
+musl headers — with no prior `make build`. (`make build` still writes `apue.3e/build`
+against the live mounted tree, for building and running the examples.) `USE_EMACS`
+defaults to `1`, which also bakes the MELPA set
 into the image at build time (**needs network**); pass `USE_EMACS=0` for a C-only
 build that skips it. First-run setup + the clangd-vs-musl-header verification are
 tracked in `tasks/port-emacs-lsp-from-craft.md`.
