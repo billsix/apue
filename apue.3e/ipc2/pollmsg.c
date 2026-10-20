@@ -41,12 +41,10 @@ void *helper(void *arg) {
 }
 
 int main(void) {
-    int fd[2];
     int qid[NQ];
     struct pollfd pfd[NQ];
     struct threadinfo ti[NQ];
     pthread_t tid[NQ];
-    char buf[MAXMSZ];
 
     for (int i = 0; i < NQ; i++) {
         qid[i] = msgget((KEY + i), IPC_CREAT | 0666);
@@ -56,6 +54,7 @@ int main(void) {
 
         printf("queue ID %d is %d\n", i, qid[i]);
 
+        int fd[2];
         if (socketpair(AF_UNIX, SOCK_DGRAM, 0, fd) < 0) {
             err_sys("socketpair error");
         }
@@ -75,6 +74,7 @@ int main(void) {
         }
         for (int i = 0; i < NQ; i++) {
             if (pfd[i].revents & POLLIN) {
+                char buf[MAXMSZ];
                 int n = read(pfd[i].fd, buf, sizeof(buf));
                 if (n < 0) {
                     err_sys("read error");

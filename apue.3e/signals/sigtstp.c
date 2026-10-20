@@ -31,8 +31,6 @@ static void sig_tstp(
 }
 
 int main(void) {
-    int n;
-
     /*
      * Only catch SIGTSTP if we're running with a job-control shell.
      */
@@ -41,6 +39,7 @@ int main(void) {
     }
 
     char buf[BUFFSIZE];
+    int n;
     while (true) {
         n = read(STDIN_FILENO, buf, BUFFSIZE);
         if (n <= 0) {

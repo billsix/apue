@@ -23,15 +23,16 @@
  */
 int getaddrlist(const char *host, const char *service,
                 struct addrinfo **ailistpp) {
-    struct addrinfo hint;
-    hint.ai_flags = AI_CANONNAME;
-    hint.ai_family = AF_INET;
-    hint.ai_socktype = SOCK_STREAM;
-    hint.ai_protocol = 0;
-    hint.ai_addrlen = 0;
-    hint.ai_canonname = nullptr;
-    hint.ai_addr = nullptr;
-    hint.ai_next = nullptr;
+    const struct addrinfo hint = {
+        .ai_flags = AI_CANONNAME,
+        .ai_family = AF_INET,
+        .ai_socktype = SOCK_STREAM,
+        .ai_protocol = 0,
+        .ai_addrlen = 0,
+        .ai_addr = nullptr,
+        .ai_canonname = nullptr,
+        .ai_next = nullptr,
+    };
     const int err = getaddrinfo(host, service, &hint, ailistpp);
     return (err);
 }
@@ -43,19 +44,19 @@ int getaddrlist(const char *host, const char *service,
  * LOCKING: none.
  */
 static char *scan_configfile(const char *keyword) {
-    char keybuf[MAXKWLEN];
-    char pattern[MAXFMTLEN];
-    char line[MAXCFGLINE];
     static char valbuf[MAXCFGLINE];
 
     FILE *const fp = fopen(CONFIG_FILE, "r");
     if (fp == nullptr) {
         log_sys("can't open %s", CONFIG_FILE);
     }
+    char pattern[MAXFMTLEN];
     snprintf(pattern, sizeof(pattern), "%%%ds %%%ds", MAXKWLEN - 1,
              MAXCFGLINE - 1);
     bool match = false;
+    char line[MAXCFGLINE];
     while (fgets(line, MAXCFGLINE, fp) != nullptr) {
+        char keybuf[MAXKWLEN];
         int n = sscanf(line, pattern, keybuf, valbuf);
         if (n == 2 && strcmp(keyword, keybuf) == 0) {
             match = true;
@@ -105,10 +106,8 @@ struct addrinfo *get_printaddr(void) {
  * LOCKING: none.
  */
 ssize_t tread(int fd, void *buf, size_t nbytes, unsigned int timout) {
+    struct timeval tv = {.tv_sec = timout, .tv_usec = 0};
     fd_set readfds;
-    struct timeval tv;
-    tv.tv_sec = timout;
-    tv.tv_usec = 0;
     FD_ZERO(&readfds);
     FD_SET(fd, &readfds);
     const int nfds = select(fd + 1, &readfds, nullptr, nullptr, &tv);

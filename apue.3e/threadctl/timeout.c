@@ -25,7 +25,6 @@ struct to_info {
 
 void clock_gettime(int id, struct timespec *tsp) {
     struct timeval tv;
-
     gettimeofday(&tv, nullptr);
     tsp->tv_sec = tv.tv_sec;
     tsp->tv_nsec = tv.tv_usec * USECTONSEC;

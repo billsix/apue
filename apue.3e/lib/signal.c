@@ -4,11 +4,8 @@
 
 /* Reliable version of signal(), using POSIX sigaction().  */
 Sigfunc *signal(int signo, Sigfunc *func) {
-    struct sigaction act, oact;
-
-    act.sa_handler = func;
+    struct sigaction act = {.sa_handler = func, .sa_flags = 0};
     sigemptyset(&act.sa_mask);
-    act.sa_flags = 0;
     if (signo == SIGALRM) {
 #ifdef SA_INTERRUPT
         act.sa_flags |= SA_INTERRUPT;
@@ -16,6 +13,7 @@ Sigfunc *signal(int signo, Sigfunc *func) {
     } else {
         act.sa_flags |= SA_RESTART;
     }
+    struct sigaction oact;
     if (sigaction(signo, &act, &oact) < 0) {
         return (SIG_ERR);
     }

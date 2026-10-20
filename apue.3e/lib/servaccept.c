@@ -21,7 +21,6 @@
 int serv_accept(int listenfd, uid_t *uidptr) {
     int rval;
     struct sockaddr_un un;
-    struct stat statbuf;
 
     /* allocate enough space for longest name plus terminating null */
     char *const name = malloc(sizeof(un.sun_path) + 1);
@@ -39,6 +38,7 @@ int serv_accept(int listenfd, uid_t *uidptr) {
     len -= offsetof(struct sockaddr_un, sun_path); /* len of pathname */
     memcpy(name, un.sun_path, len);
     name[len] = 0; /* null terminate */
+    struct stat statbuf;
     if (stat(name, &statbuf) < 0) {
         rval = -3;
         goto errout;

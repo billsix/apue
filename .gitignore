@@ -1,2 +1,9 @@
 # exported OCI image tars (make image-export) — large, never commit
 apue-*.tar
+
+# Emacs compiled artifacts. The vendored .emacs.d/elpa/*.el SOURCES are committed
+# (via `make update-emacs-packages`, which strips these first and force-adds the
+# rest); the compiled/machine-specific outputs are not.
+*.elc
+*.eln
+eln-cache/

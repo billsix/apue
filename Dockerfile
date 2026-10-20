@@ -37,6 +37,18 @@ RUN mkdir /apue/musl/bld && mkdir /apue/musl/bldInstall && \
     CC=clang CFLAGS='-g -O0' ../musl/configure --prefix=/apue/musl/bldInstall && \
     make && make install
 
+# Emacs MELPA packages, only when USE_EMACS=1 (the Makefile default). emacs itself
+# is installed unconditionally above; this bakes the lsp-mode/clangd package set.
+# The Makefile bind-mounts the host .emacs.d (with its committed elpa/) over this
+# at run time, and `make update-emacs-packages` regenerates that committed elpa/.
+# Placed after the musl build so refreshing packages never invalidates that layer,
+# and before the apue.3e COPY so editing sources never re-runs the MELPA install.
+ARG USE_EMACS=0
+COPY entrypoint/dotfiles/.emacs.d/install-melpa-packages.el /root/.emacs.d/install-melpa-packages.el
+RUN if [ "$USE_EMACS" = "1" ]; then \
+        emacs --batch --load /root/.emacs.d/install-melpa-packages.el ; \
+    fi
+
 COPY .clang-format /apue/
 COPY entrypoint/dotfiles/.lldbinit /root/.lldbinit
 

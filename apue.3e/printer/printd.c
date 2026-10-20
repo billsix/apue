@@ -263,11 +263,10 @@ void init_printer(void) {
  * LOCKING: none.
  */
 void update_jobno(void) {
-    char buf[32];
-
     if (lseek(jobfd, 0, SEEK_SET) == -1) {
         log_sys("can't seek in job file");
     }
+    char buf[32];
     snprintf(buf, sizeof(buf), "%d", nextjob);
     if (write(jobfd, buf, strlen(buf)) < 0) {
         log_sys("can't update job file");
@@ -682,31 +681,11 @@ char *add_option(char *cp, int tag, const char *optname, const char *optval) {
  * LOCKING: acquires and releases joblock and configlock.
  */
 void *printer_thread([[maybe_unused]] void *arg) {
-    struct job *jp;
-    int hlen;
-    int ilen;
-    int sockfd;
-    int fd;
-    int nr;
-    int nw;
-    int extra;
-    char *icp;
-    char *hcp;
-    const char *p;
-    struct ipp_hdr *hp;
-    struct stat sbuf;
-    struct iovec iov[2];
-    char name[FILENMSZ];
-    char hbuf[HBUFSZ];
-    char ibuf[IBUFSZ];
-    char buf[IOBUFSZ];
-    char str[64];
-    struct timespec ts = {60, 0}; /* 1 minute */
-
     while (true) {
         /*
          * Get a job to print.
          */
+        struct job *jp;
         pthread_mutex_lock(&joblock);
         while (jobhead == nullptr) {
             log_msg("printer_thread: waiting...");
@@ -735,14 +714,16 @@ void *printer_thread([[maybe_unused]] void *arg) {
         /*
          * Send job to printer.
          */
+        char name[FILENMSZ];
         snprintf(name, sizeof(name), "%s/%s/%d", SPOOLDIR, DATADIR, jp->jobid);
-        fd = open(name, O_RDONLY);
+        const int fd = open(name, O_RDONLY);
         if (fd < 0) {
             log_msg("job %d canceled - can't open %s: %s", jp->jobid, name,
                     strerror(errno));
             free(jp);
             continue;
         }
+        struct stat sbuf;
         if (fstat(fd, &sbuf) < 0) {
             log_msg("job %d canceled - can't fstat %s: %s", jp->jobid, name,
                     strerror(errno));
@@ -750,73 +731,83 @@ void *printer_thread([[maybe_unused]] void *arg) {
             close(fd);
             continue;
         }
-        sockfd = connect_retry(AF_INET, SOCK_STREAM, 0, printer->ai_addr,
-                               printer->ai_addrlen);
+        const int sockfd = connect_retry(AF_INET, SOCK_STREAM, 0,
+                                         printer->ai_addr, printer->ai_addrlen);
         if (sockfd < 0) {
             log_msg("job %d deferred - can't contact printer: %s", jp->jobid,
                     strerror(errno));
             goto defer;
         }
 
-        /*
-         * Set up the IPP header.
-         */
-        icp = ibuf;
-        hp = (struct ipp_hdr *)icp;
-        hp->major_version = 1;
-        hp->minor_version = 1;
-        hp->operation = htons(OP_PRINT_JOB);
-        hp->request_id = htonl(jp->jobid);
-        icp += offsetof(struct ipp_hdr, attr_group);
-        *icp++ = TAG_OPERATION_ATTR;
-        icp = add_option(icp, TAG_CHARSET, "attributes-charset", "utf-8");
-        icp = add_option(icp, TAG_NATULANG, "attributes-natural-language",
-                         "en-us");
-        snprintf(str, sizeof(str), "http://%s/ipp", printer_name);
-        icp = add_option(icp, TAG_URI, "printer-uri", str);
-        icp = add_option(icp, TAG_NAMEWOLANG, "requesting-user-name",
-                         jp->req.usernm);
-        icp = add_option(icp, TAG_NAMEWOLANG, "job-name", jp->req.jobnm);
-        if (jp->req.flags & PR_TEXT) {
-            p = "text/plain";
-            extra = 1;
-        } else {
-            p = "application/postscript";
-            extra = 0;
-        }
-        icp = add_option(icp, TAG_MIMETYPE, "document-format", p);
-        *icp++ = TAG_END_OF_ATTR;
-        ilen = icp - ibuf;
+        // Build and send the request headers; these locals die afterward.
+        {
+            /*
+             * Set up the IPP header.
+             */
+            char ibuf[IBUFSZ];
+            char *icp = ibuf;
+            struct ipp_hdr *const hp = (struct ipp_hdr *)icp;
+            hp->major_version = 1;
+            hp->minor_version = 1;
+            hp->operation = htons(OP_PRINT_JOB);
+            hp->request_id = htonl(jp->jobid);
+            icp += offsetof(struct ipp_hdr, attr_group);
+            *icp++ = TAG_OPERATION_ATTR;
+            icp = add_option(icp, TAG_CHARSET, "attributes-charset", "utf-8");
+            icp = add_option(icp, TAG_NATULANG, "attributes-natural-language",
+                             "en-us");
+            char str[64];
+            snprintf(str, sizeof(str), "http://%s/ipp", printer_name);
+            icp = add_option(icp, TAG_URI, "printer-uri", str);
+            icp = add_option(icp, TAG_NAMEWOLANG, "requesting-user-name",
+                             jp->req.usernm);
+            icp = add_option(icp, TAG_NAMEWOLANG, "job-name", jp->req.jobnm);
+            const char *p;
+            int extra;
+            if (jp->req.flags & PR_TEXT) {
+                p = "text/plain";
+                extra = 1;
+            } else {
+                p = "application/postscript";
+                extra = 0;
+            }
+            icp = add_option(icp, TAG_MIMETYPE, "document-format", p);
+            *icp++ = TAG_END_OF_ATTR;
+            const int ilen = icp - ibuf;
 
-        /*
-         * Set up the HTTP header.
-         */
-        hcp = hbuf;
-        snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf),
-                 "POST /ipp HTTP/1.1\r\n");
-        hcp += strlen(hcp);
-        snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf),
-                 "Content-Length: %ld\r\n", (long)sbuf.st_size + ilen + extra);
-        hcp += strlen(hcp);
-        strcpy(hcp, "Content-Type: application/ipp\r\n");
-        hcp += strlen(hcp);
-        snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf), "Host: %s:%d\r\n",
-                 printer_name, IPP_PORT);
-        hcp += strlen(hcp);
-        *hcp++ = '\r';
-        *hcp++ = '\n';
-        hlen = hcp - hbuf;
+            /*
+             * Set up the HTTP header.
+             */
+            char hbuf[HBUFSZ];
+            char *hcp = hbuf;
+            snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf),
+                     "POST /ipp HTTP/1.1\r\n");
+            hcp += strlen(hcp);
+            snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf),
+                     "Content-Length: %ld\r\n",
+                     (long)sbuf.st_size + ilen + extra);
+            hcp += strlen(hcp);
+            strcpy(hcp, "Content-Type: application/ipp\r\n");
+            hcp += strlen(hcp);
+            snprintf(hcp, sizeof(hbuf) - (size_t)(hcp - hbuf),
+                     "Host: %s:%d\r\n", printer_name, IPP_PORT);
+            hcp += strlen(hcp);
+            *hcp++ = '\r';
+            *hcp++ = '\n';
+            const int hlen = hcp - hbuf;
 
-        /*
-         * Write the headers first.  Then send the file.
-         */
-        iov[0].iov_base = hbuf;
-        iov[0].iov_len = hlen;
-        iov[1].iov_base = ibuf;
-        iov[1].iov_len = ilen;
-        if (writev(sockfd, iov, 2) != hlen + ilen) {
-            log_ret("can't write to printer");
-            goto defer;
+            /*
+             * Write the headers first.  Then send the file.
+             */
+            struct iovec iov[2];
+            iov[0].iov_base = hbuf;
+            iov[0].iov_len = hlen;
+            iov[1].iov_base = ibuf;
+            iov[1].iov_len = ilen;
+            if (writev(sockfd, iov, 2) != hlen + ilen) {
+                log_ret("can't write to printer");
+                goto defer;
+            }
         }
 
         if (jp->req.flags & PR_TEXT) {
@@ -829,12 +820,14 @@ void *printer_thread([[maybe_unused]] void *arg) {
             }
         }
 
+        int nr;
+        char buf[IOBUFSZ];
         while (true) {
             nr = read(fd, buf, IOBUFSZ);
             if (nr <= 0) {
                 break;
             }
-            nw = writen(sockfd, buf, nr);
+            const int nw = writen(sockfd, buf, nr);
             if (nw != nr) {
                 if (nw < 0) {
                     log_ret("can't write to printer");
@@ -867,6 +860,7 @@ void *printer_thread([[maybe_unused]] void *arg) {
         }
         if (jp != nullptr) {
             replace_job(jp);
+            const struct timespec ts = {60, 0}; /* 1 minute */
             nanosleep(&ts, nullptr);
         }
     }
@@ -906,17 +900,11 @@ ssize_t readmore(int sockfd, char **bpp, int off, int *bszp) {
  */
 int printer_status(int sfd, const struct job *jp) {
     int i;
-    int code;
     int len;
-    bool found;
     int datsz;
     int32_t jobid;
     ssize_t nr;
     char *cp;
-    const char *statcode;
-    const char *reason;
-    const char *contentlen;
-    const struct ipp_hdr *hp;
 
     /*
      * Read the HTTP header followed by the IPP response header.
@@ -944,7 +932,7 @@ int printer_status(int sfd, const struct job *jp) {
         while (isspace((int)*cp)) {
             cp++;
         }
-        statcode = cp;
+        const char *const statcode = cp;
         while (isdigit((int)*cp)) {
             cp++;
         }
@@ -952,12 +940,12 @@ int printer_status(int sfd, const struct job *jp) {
             log_msg(bp);
         } else {
             *cp++ = '\0';
-            reason = cp;
+            const char *const reason = cp;
             while (*cp != '\r' && *cp != '\n') {
                 cp++;
             }
             *cp = '\0';
-            code = atoi(statcode);
+            const int code = atoi(statcode);
             if (HTTP_INFO(code)) {
                 continue;
             }
@@ -992,7 +980,7 @@ int printer_status(int sfd, const struct job *jp) {
                     while (isspace((int)*cp)) {
                         cp++;
                     }
-                    contentlen = cp;
+                    const char *const contentlen = cp;
                     while (isdigit((int)*cp)) {
                         cp++;
                     }
@@ -1015,7 +1003,7 @@ int printer_status(int sfd, const struct job *jp) {
                 }
             }
 
-            found = false;
+            bool found = false;
             while (!found) { /* look for end of HTTP header */
                 while (i < datsz - 2) {
                     if (*cp == '\n' && *(cp + 1) == '\r' && *(cp + 2) == '\n') {
@@ -1048,7 +1036,7 @@ int printer_status(int sfd, const struct job *jp) {
                 }
             }
 
-            hp = (struct ipp_hdr *)cp;
+            const struct ipp_hdr *const hp = (struct ipp_hdr *)cp;
             i = ntohs(hp->status);
             jobid = ntohl(hp->request_id);
 

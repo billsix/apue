@@ -19,7 +19,6 @@
 int cli_conn(const char *name) {
     int rval;
     struct sockaddr_un un = {0};
-    struct sockaddr_un sun = {0};
     bool do_unlink = false;
 
     if (strlen(name) >= sizeof(un.sun_path)) {
@@ -52,6 +51,7 @@ int cli_conn(const char *name) {
     }
 
     /* fill socket address structure with server's address */
+    struct sockaddr_un sun = {0};
     sun.sun_family = AF_UNIX;
     snprintf(sun.sun_path, sizeof(sun.sun_path), "%s", name);
     len = offsetof(struct sockaddr_un, sun_path) + strlen(name);

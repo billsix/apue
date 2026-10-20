@@ -13,13 +13,11 @@
  * array is modified (nulls placed after each token).
  */
 int buf_args(char *buf, int (*optfunc)(int, char **)) {
-    char *argv[MAXARGC];
-    int argc;
-
     if (strtok(buf, WHITE) == nullptr) { /* an argv[0] is required */
         return (-1);
     }
-    argc = 0;
+    char *argv[MAXARGC];
+    int argc = 0;
     argv[argc] = buf;
     while (true) {
         char *const ptr = strtok(nullptr, WHITE);

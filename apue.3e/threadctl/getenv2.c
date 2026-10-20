@@ -11,7 +11,6 @@ static pthread_once_t init_done = PTHREAD_ONCE_INIT;
 
 static void thread_init(void) {
     pthread_mutexattr_t attr;
-
     pthread_mutexattr_init(&attr);
     pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&env_mutex, &attr);

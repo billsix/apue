@@ -10,9 +10,6 @@
 #include "apue.h"
 
 void daemonize(const char *cmd) {
-    struct rlimit rl;
-    struct sigaction sa;
-
     /*
      * Clear file creation mask.
      */
@@ -21,6 +18,7 @@ void daemonize(const char *cmd) {
     /*
      * Get maximum number of file descriptors.
      */
+    struct rlimit rl;
     if (getrlimit(RLIMIT_NOFILE, &rl) < 0) {
         err_quit("%s: can't get file limit", cmd);
     }
@@ -39,11 +37,12 @@ void daemonize(const char *cmd) {
     /*
      * Ensure future opens won't allocate controlling TTYs.
      */
-    sa.sa_handler = SIG_IGN;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    if (sigaction(SIGHUP, &sa, nullptr) < 0) {
-        err_quit("%s: can't ignore SIGHUP", cmd);
+    {  // ignore SIGHUP
+        struct sigaction sa = {.sa_handler = SIG_IGN, .sa_flags = 0};
+        sigemptyset(&sa.sa_mask);
+        if (sigaction(SIGHUP, &sa, nullptr) < 0) {
+            err_quit("%s: can't ignore SIGHUP", cmd);
+        }
     }
     pid = fork();
     if (pid < 0) {

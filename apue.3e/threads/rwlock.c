@@ -85,12 +85,11 @@ void job_remove(struct queue *qp, struct job *jp) {
  * Find a job for the given thread ID.
  */
 struct job *job_find(struct queue *qp, pthread_t id) {
-    struct job *jp;
-
     if (pthread_rwlock_rdlock(&qp->q_lock) != 0) {
         return (nullptr);
     }
 
+    struct job *jp;
     for (jp = qp->q_head; jp != nullptr; jp = jp->j_next) {
         if (pthread_equal(jp->j_id, id)) {
             break;

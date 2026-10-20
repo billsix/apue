@@ -17,9 +17,6 @@ static pid_t *childpid = nullptr;
 static int maxfd;
 
 FILE *popen(const char *cmdstring, const char *type) {
-    int pfd[2];
-    FILE *fp;
-
     /* only allow "r" or "w" */
     if ((type[0] != 'r' && type[0] != 'w') || type[1] != 0) {
         errno = EINVAL;
@@ -35,6 +32,7 @@ FILE *popen(const char *cmdstring, const char *type) {
         }
     }
 
+    int pfd[2];
     if (pipe(pfd) < 0) {
         return (nullptr); /* errno set by pipe() */
     }
@@ -75,6 +73,7 @@ FILE *popen(const char *cmdstring, const char *type) {
     }
 
     /* parent continues... */
+    FILE *fp;
     if (*type == 'r') {
         close(pfd[1]);
         fp = fdopen(pfd[0], type);
@@ -94,8 +93,6 @@ FILE *popen(const char *cmdstring, const char *type) {
 }
 
 int pclose(FILE *fp) {
-    int stat;
-
     if (childpid == nullptr) {
         errno = EINVAL;
         return (-1); /* popen() has never been called */
@@ -117,6 +114,7 @@ int pclose(FILE *fp) {
         return (-1);
     }
 
+    int stat;
     while (waitpid(pid, &stat, 0) < 0) {
         if (errno != EINTR) {
             return (-1); /* error other than EINTR from waitpid() */

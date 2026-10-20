@@ -3,14 +3,12 @@
 #include "apue.h"
 
 Sigfunc *signal_intr(int signo, Sigfunc *func) {
-    struct sigaction act, oact;
-
-    act.sa_handler = func;
+    struct sigaction act = {.sa_handler = func, .sa_flags = 0};
     sigemptyset(&act.sa_mask);
-    act.sa_flags = 0;
 #ifdef SA_INTERRUPT
     act.sa_flags |= SA_INTERRUPT;
 #endif
+    struct sigaction oact;
     if (sigaction(signo, &act, &oact) < 0) {
         return (SIG_ERR);
     }

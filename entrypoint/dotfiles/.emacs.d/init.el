@@ -1,0 +1,58 @@
+(package-initialize)
+
+(load-file "~/.emacs.d/helm.el")
+(load-file "~/.emacs.d/preferences.el")
+
+;; theme
+(load-theme 'modus-vivendi t)
+;(load-theme 'material t)
+;(load-theme 'dracula t)
+;(load-theme 'monokai t)
+;(load-theme 'zenburn t)
+
+(global-auto-revert-mode)
+(setq auto-revert-avoid-polling t)
+
+;; Disable eglot hooks for python-mode
+(remove-hook 'python-mode-hook 'eglot-ensure)
+
+(require 'lsp-mode)
+
+(setq lsp-auto-guess-root nil)
+
+(defun my-lsp-root (&rest _)
+  "/apue/apue.3e/")
+
+(advice-add 'lsp--calculate-root :override #'my-lsp-root)
+
+(add-hook 'prog-mode-hook #'lsp-deferred)
+
+
+;; LSP setup
+(use-package lsp-mode
+  :hook ((c-mode c++-mode) . lsp)
+  :commands lsp
+  :init
+  (setq lsp-clients-clangd-executable "clangd"
+        ;; apue's Meson build writes compile_commands.json to apue.3e/build/
+        ;; (run `make build`); clangd's auto-search only checks ./ and build/.
+        ;; --query-driver allowlists the musl-clang wrapper recorded in
+        ;; compile_commands.json so clangd may run it to extract its built-in
+        ;; include paths; without it the musl libc headers show spurious
+        ;; "file not found".
+        lsp-clients-clangd-args '("--compile-commands-dir=/apue/apue.3e/build"
+                                  "--query-driver=/apue/musl/bldInstall/bin/*,/usr/bin/clang*")
+        lsp-enable-snippet nil
+        lsp-prefer-capf t))
+
+(use-package lsp-ui :commands lsp-ui-mode)
+
+(use-package company
+  :hook (after-init . global-company-mode)
+  :config
+  (setq company-minimum-prefix-length 1
+        company-idle-delay 0.0))
+
+(use-package clang-format
+  :bind (:map c-mode-base-map
+              ("C-c f" . clang-format-buffer)))

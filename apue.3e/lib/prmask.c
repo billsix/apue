@@ -5,10 +5,8 @@
 #include "apue.h"
 
 void pr_mask(const char *str) {
+    const int errno_save = errno; /* we can be called by signal handlers */
     sigset_t sigset;
-    int errno_save;
-
-    errno_save = errno; /* we can be called by signal handlers */
     if (sigprocmask(0, nullptr, &sigset) < 0) {
         err_ret("sigprocmask error");
     } else {

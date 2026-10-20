@@ -3,9 +3,7 @@
 #include <sys/select.h>
 
 unsigned sleep(unsigned seconds) {
-    struct timeval tv;
-    tv.tv_sec = seconds;
-    tv.tv_usec = 0;
+    struct timeval tv = {.tv_sec = seconds, .tv_usec = 0};
     time_t start;
     time(&start);
     const int n = select(0, nullptr, nullptr, nullptr, &tv);

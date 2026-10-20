@@ -1,11 +1,46 @@
 # Finish declare-at-use: move the leftover top-of-function declaration blocks
 
-**Status:** proposed — needs go-ahead
+**Status:** done 2026-10-20 (both passes; verified) — staged, awaiting the maintainer's commit, then archive
 **Priority:** 5
 **Difficulty:** 4 (mechanical per-site, but behavior-preserving; needs a warning-clean rebuild per file)
 **Created:** 2026-10-20 (William Emerison Six <billsix@gmail.com>: "in [apue], look at daemonize,
 there's a lot of variables declared at the top, and not made local, nor bracketed scope. It could
 really use that … add a task to apue to fix that and anything else that looks like it")
+
+## Done (2026-10-20, two passes, fanned out to fresh Edit-only subagents, coordinator-audited)
+
+**Open question resolved** (the scope question below): fixed the clear wins, left variables genuinely
+read throughout a whole function, left the preservation hazards — exactly as recommended.
+
+**Pass 1 — declare-at-first-use** (the leftover C89 top-of-function blocks): ~40 files edited across
+`lib/`, `ipc1/ipc2/`, `printer/`, `db/`, `threads/threadctl/exercises/`, `proc/pty/termios/sockets/`,
+`intro/fileio/stdio/environ/`. Each top-of-function declaration pushed to first use and initialized
+(scalars assigned once → `const`; address-taken/output-filled structs moved adjacent to their fill
+call with **no** `const`; field-set structs → designated initializers, e.g. `struct sigaction`,
+`struct flock`, `struct timeval`). `daemonize.c`/`daemons/init.c` are the exemplar.
+
+**Pass 2 — bare `{ }` phase blocks** (the maintainer's "sweep again … perhaps brackets can be added
+to limit scope"): deliberately conservative for a teaching tree. Only **3 files** earned a block —
+`daemonize.c` + `daemons/init.c` (the SIGHUP phase's `struct sigaction sa`, which leaked across five
+later phases) and `printer/printd.c` (`printer_thread()`'s IPP/HTTP request-construction phase; block
+extended through the `writev` that consumes the iovec bases). Everywhere else a block was *not*
+warranted — pass 1's declare-at-use had already closed the leak windows, and a block would only
+clutter short/single-phase teaching code.
+
+**Preservation hazards left untouched** (with reasons recorded at the time): the setjmp/longjmp
+files (`environ/testjmp.c`, `environ/cmd2.c`, `signals/mask.c`, `signals/read2.c`), the deliberate
+teaching bug `stdio/getcharbug.c`, `static` function-locals (`lib/strerror.c`, `ipc1/slock.c`,
+`lib/semaph.c` `register`), loop-carried accumulators (`loop.select.c` `maxfd`/`maxi`, `printd.c`
+relay I/O counters), the thread-held `ipc2/pollmsg.c` `ti[NQ]` (its address outlives any inner
+scope), and `ipc2/tshm.c` `shmid` (printed as a stack-address demo before assignment).
+
+**Verification:** `make build` (meson compile + `meson test`) **green under `-Werror`** after pass 1,
+and again after pass 2 + `make format` — **8/8 wired tests OK, 0 fail, zero warnings**. Behavior
+preservation for the untested majority rests on the mechanical, compiler-checked nature of the moves
+(a scope that's too tight fails to compile; the one hazard the compiler can't catch — address-escape —
+was opted out of explicitly). One incidental `termios/winch.c` whitespace fix came from `make format`
+(a trailing comment left mis-aligned by the earlier `for(;;)`→`while(true)` sweep). Discovery worklog:
+`tasks/adhoc/finish-declare-at-use/`.
 
 ## BLUF
 
@@ -79,11 +114,9 @@ and judge by eye) and `c-modernization-sweep.md` ("Two high-value transforms are
 
 ## Open questions
 
-1. Scope of the sweep: fix **every** top-of-function declaration block found, or only the clear wins
-   (daemonize and its obvious siblings) and list borderline ones (a variable genuinely used in most
-   of a function, where moving it buys little) for a per-site call? Recommend: fix the clear ones,
-   leave a declaration that is read throughout the whole function where it is, and list the borderline
-   set.
+1. ~~Scope of the sweep: fix **every** top-of-function declaration block, or only the clear wins?~~
+   **Resolved (maintainer, 2026-10-20): fix the clear wins, leave a declaration read throughout a
+   whole function where it is, leave the hazards.** Done exactly that — see the Done record above.
 
 ## See also
 

@@ -9,8 +9,7 @@
 #define BUFFSIZE 8192
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
-    int n;
-    char buf[BUFFSIZE], line[MAXLINE];
+    char line[MAXLINE];
 
     /* read filename to cat from stdin */
     while (fgets(line, MAXLINE, stdin) != nullptr) {
@@ -25,6 +24,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         }
 
         /* and cat to stdout */
+        char buf[BUFFSIZE];
+        int n;
         while (true) {
             n = read(fd, buf, BUFFSIZE);
             if (n <= 0) {

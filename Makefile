@@ -4,6 +4,17 @@ TMUX_FILE := $(HOME)/.tmux.conf
 TMUX_REAL_PATH := $(shell readlink -f $(TMUX_FILE))
 TMUX_MOUNT := $(shell if [ -f $(TMUX_REAL_PATH) ]; then echo "-v $(TMUX_REAL_PATH):/root/.tmux.conf:Z" ; fi)
 
+# USE_EMACS=1 (the default) bind-mounts the vendored .emacs.d/ into the container
+# so Emacs + lsp-mode/clangd work against the mounted apue.3e tree (:U chowns to
+# the container user, :z relabels for SELinux). USE_EMACS=0 skips the mount. To
+# REFRESH the vendored elpa packages, use `make update-emacs-packages`.
+USE_EMACS ?= 1
+ifeq ($(USE_EMACS),1)
+  ELPA_MOUNT = -v $(CURDIR)/entrypoint/dotfiles/.emacs.d/:/root/.emacs.d/:U,z
+else
+  ELPA_MOUNT =
+endif
+
 
 CONTAINER_CMD ?= $(shell command -v podman >/dev/null 2>&1 && echo podman || echo docker)
 CONTAINER_NAME = apue
@@ -43,6 +54,7 @@ all: shell ## Build the image and get a shell in it
 image: ## Build podman image to run the examples
 	# build the container
 	$(CONTAINER_CMD) build \
+                         --build-arg USE_EMACS=$(USE_EMACS) \
                          -t $(CONTAINER_NAME) \
                          .
 
@@ -54,6 +66,7 @@ image: ## Build podman image to run the examples
 SHELL_RUN_FLAGS = \
 		--entrypoint /bin/bash \
 		$(FILES_TO_MOUNT) \
+		$(ELPA_MOUNT) \
 		$(X_FLAGS_FOR_CONTAINER) \
 		$(WAYLAND_FLAGS_FOR_CONTAINER) \
 		$(ALLOW_LLDB)
@@ -84,6 +97,27 @@ format: image ## Format the C code
 		$(X_FLAGS_FOR_CONTAINER) \
 		$(CONTAINER_NAME) \
 		/usr/local/bin/format.sh
+
+
+# Refresh the vendored Emacs packages. Forces USE_EMACS=1 and rebuilds the image,
+# then wipes ONLY .emacs.d/elpa (the hand-written init.el/preferences.el/helm.el/
+# install-melpa-packages.el are left untouched) and reinstalls from MELPA into the
+# host's bind-mounted .emacs.d/elpa. Finally strips compiled *.elc/*.eln
+# (machine-specific) and force-adds the .el sources. Needs network. Stages, does
+# not commit.
+.PHONY: update-emacs-packages
+update-emacs-packages: ## USE_EMACS=1: rebuild image, wipe+reinstall elpa, strip *.elc/*.eln, git add -f
+	$(MAKE) image USE_EMACS=1
+	$(CONTAINER_CMD) run --rm $(PODMAN_RUN_FLAGS) \
+		-v $(CURDIR)/entrypoint/dotfiles/.emacs.d/:/root/.emacs.d/:U,z \
+		--entrypoint /bin/bash \
+		$(CONTAINER_NAME) \
+		-c 'mkdir -p /root/.emacs.d/elpa; find /root/.emacs.d/elpa -mindepth 1 -delete; \
+		    emacs --batch --load /root/.emacs.d/install-melpa-packages.el'
+	mkdir -p $(CURDIR)/entrypoint/dotfiles/.emacs.d/elpa && cd $(CURDIR)/entrypoint/dotfiles/.emacs.d/elpa && \
+		find . \( -iname '*.elc' -o -iname '*.eln' \) -delete && \
+		git add -A -f .
+	@echo "Done: reinstalled packages, stripped *.elc/*.eln, staged elpa -- review and commit."
 
 
 .PHONY: build

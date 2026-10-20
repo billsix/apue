@@ -21,16 +21,13 @@ static struct cmsghdr *cmptr = nullptr; /* malloc'ed first time */
  * We have a 2-byte protocol for receiving the fd from send_fd().
  */
 int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
-    int newfd, nr, status;
-    const char *ptr;
-    char buf[MAXLINE];
-    struct iovec iov[1];
-    struct msghdr msg;
-
-    status = -1;
+    int status = -1;
     while (true) {
+        char buf[MAXLINE];
+        struct iovec iov[1];
         iov[0].iov_base = buf;
         iov[0].iov_len = sizeof(buf);
+        struct msghdr msg;
         msg.msg_iov = iov;
         msg.msg_iovlen = 1;
         msg.msg_name = nullptr;
@@ -43,7 +40,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
         }
         msg.msg_control = cmptr;
         msg.msg_controllen = CONTROLLEN;
-        nr = recvmsg(fd, &msg, 0);
+        int nr = recvmsg(fd, &msg, 0);
         if (nr < 0) {
             err_ret("recvmsg error");
             return (-1);
@@ -57,7 +54,8 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
          * is next to last byte of buffer; status byte is last byte.
          * Zero status means there is a file descriptor to receive.
          */
-        for (ptr = buf; ptr < &buf[nr];) {
+        int newfd;
+        for (const char *ptr = buf; ptr < &buf[nr];) {
             if (*ptr++ == 0) {
                 if (ptr != &buf[nr - 1]) {
                     err_dump("message format error");

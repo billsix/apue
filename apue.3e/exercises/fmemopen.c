@@ -195,9 +195,9 @@ static int mstream_write(void *cookie, const char *buf, int len) {
 }
 
 static fpos_t mstream_seek(void *cookie, fpos_t pos, int whence) {
-    int off;
     struct memstream *const ms = cookie;
 
+    int off;
     switch (whence) {
         case SEEK_SET:
             off = pos;

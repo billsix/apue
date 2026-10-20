@@ -8,8 +8,7 @@
 #include "apue.h"
 
 int main(void) {
-    struct sockaddr_un un;
-    un.sun_family = AF_UNIX;
+    struct sockaddr_un un = {.sun_family = AF_UNIX};
     snprintf(un.sun_path, sizeof(un.sun_path), "foo.socket");
 
     const int fd = socket(AF_UNIX, SOCK_STREAM, 0);

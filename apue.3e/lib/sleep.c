@@ -6,23 +6,21 @@ static void sig_alrm(int signo) {
 }
 
 unsigned int sleep(unsigned int seconds) {
-    struct sigaction newact, oldact;
-    sigset_t newmask, oldmask, suspmask;
-    unsigned int unslept;
-
     /* set our handler, save previous information */
-    newact.sa_handler = sig_alrm;
+    struct sigaction newact = {.sa_handler = sig_alrm, .sa_flags = 0};
     sigemptyset(&newact.sa_mask);
-    newact.sa_flags = 0;
+    struct sigaction oldact;
     sigaction(SIGALRM, &newact, &oldact);
 
     /* block SIGALRM and save current signal mask */
+    sigset_t newmask;
     sigemptyset(&newmask);
     sigaddset(&newmask, SIGALRM);
+    sigset_t oldmask;
     sigprocmask(SIG_BLOCK, &newmask, &oldmask);
 
     alarm(seconds);
-    suspmask = oldmask;
+    sigset_t suspmask = oldmask;
 
     /* make sure SIGALRM isn't blocked */
     sigdelset(&suspmask, SIGALRM);
@@ -32,7 +30,7 @@ unsigned int sleep(unsigned int seconds) {
 
     /* some signal has been caught, SIGALRM is now blocked */
 
-    unslept = alarm(0);
+    const unsigned int unslept = alarm(0);
 
     /* reset previous action */
     sigaction(SIGALRM, &oldact, nullptr);

@@ -9,10 +9,6 @@
 #include "apue.h"
 
 void daemonize(const char *cmd) {
-    int fd0, fd1, fd2;
-    struct rlimit rl;
-    struct sigaction sa;
-
     /*
      * Clear file creation mask.
      */
@@ -21,6 +17,7 @@ void daemonize(const char *cmd) {
     /*
      * Get maximum number of file descriptors.
      */
+    struct rlimit rl;
     if (getrlimit(RLIMIT_NOFILE, &rl) < 0) {
         err_quit("%s: can't get file limit", cmd);
     }
@@ -39,11 +36,12 @@ void daemonize(const char *cmd) {
     /*
      * Ensure future opens won't allocate controlling TTYs.
      */
-    sa.sa_handler = SIG_IGN;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    if (sigaction(SIGHUP, &sa, nullptr) < 0) {
-        err_quit("%s: can't ignore SIGHUP", cmd);
+    {  // ignore SIGHUP
+        struct sigaction sa = {.sa_handler = SIG_IGN, .sa_flags = 0};
+        sigemptyset(&sa.sa_mask);
+        if (sigaction(SIGHUP, &sa, nullptr) < 0) {
+            err_quit("%s: can't ignore SIGHUP", cmd);
+        }
     }
     pid = fork();
     if (pid < 0) {
@@ -73,9 +71,9 @@ void daemonize(const char *cmd) {
     /*
      * Attach file descriptors 0, 1, and 2 to /dev/null.
      */
-    fd0 = open("/dev/null", O_RDWR);
-    fd1 = dup(0);
-    fd2 = dup(0);
+    const int fd0 = open("/dev/null", O_RDWR);
+    const int fd1 = dup(0);
+    const int fd2 = dup(0);
 
     /*
      * Initialize the log file.

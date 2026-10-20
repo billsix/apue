@@ -245,8 +245,8 @@ static void _db_free(DB *db) {
  */
 char *db_fetch(DBHANDLE h, const char *key) {
     DB *const db = h;
-    char *ptr;
 
+    char *ptr;
     if (_db_find_and_lock(db, key, 0) < 0) {
         ptr = nullptr; /* error, record not found */
         db->cnt_fetcherr++;
@@ -330,11 +330,10 @@ static DBHASH _db_hash(const DB *db, const char *key) {
  * index record chain ptr.
  */
 static off_t _db_readptr(const DB *db, off_t offset) {
-    char asciiptr[PTR_SZ + 1];
-
     if (lseek(db->idxfd, offset, SEEK_SET) == -1) {
         err_dump("_db_readptr: lseek error to ptr field");
     }
+    char asciiptr[PTR_SZ + 1];
     if (read(db->idxfd, asciiptr, PTR_SZ) != PTR_SZ) {
         err_dump("_db_readptr: read error of ptr field");
     }
@@ -647,11 +646,10 @@ static void _db_writeidx(DB *db, const char *key, off_t offset, int whence,
  * the free list, the hash table, or in an index record.
  */
 static void _db_writeptr(const DB *db, off_t offset, off_t ptrval) {
-    char asciiptr[PTR_SZ + 1];
-
     if (ptrval < 0 || ptrval > PTR_MAX) {
         err_quit("_db_writeptr: invalid ptr: %d", ptrval);
     }
+    char asciiptr[PTR_SZ + 1];
     snprintf(asciiptr, sizeof(asciiptr), "%*lld", PTR_SZ, (long long)ptrval);
 
     if (lseek(db->idxfd, offset, SEEK_SET) == -1) {
@@ -780,8 +778,6 @@ doreturn: /* unlock hash chain locked by _db_find_and_lock */
  * of the correct sizes.  We're only called by db_store.
  */
 static int _db_findfree(DB *db, int keylen, int datlen) {
-    int rc;
-
     /*
      * Lock the free list.
      */
@@ -805,6 +801,7 @@ static int _db_findfree(DB *db, int keylen, int datlen) {
         offset = nextoffset;
     }
 
+    int rc;
     if (offset == 0) {
         rc = -1; /* no match found */
     } else {

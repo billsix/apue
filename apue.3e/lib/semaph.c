@@ -88,12 +88,8 @@ static struct sembuf op_op[1] = {
  */
 
 int sem_create(key_t key, int initval) {
-    register int id, semval;
-    union semun {
-        int val;
-        struct semid_ds *buf;
-        unsigned short *array;
-    } semctl_arg;
+    register int id;
+    register int semval;
 
     if (key == IPC_PRIVATE) {
         return (-1); /* not intended for private semaphores */
@@ -149,6 +145,11 @@ again:
          * system calls to initialize [0] and [1].
          */
 
+        union semun {
+            int val;
+            struct semid_ds *buf;
+            unsigned short *array;
+        } semctl_arg;
         semctl_arg.val = initval;
         if (semctl(id, 0, SETVAL, semctl_arg) < 0) {
             err_sys("can SETVAL[0]");

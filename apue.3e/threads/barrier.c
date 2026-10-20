@@ -71,9 +71,6 @@ void merge() {
 }
 
 int main(void) {
-    struct timeval start;
-    struct timeval end;
-
     /*
      * Create the initial set of numbers to sort.
      */
@@ -85,6 +82,7 @@ int main(void) {
     /*
      * Create 8 threads to sort the numbers.
      */
+    struct timeval start;
     gettimeofday(&start, nullptr);
     pthread_barrier_init(&b, nullptr, NTHR + 1);
     for (unsigned long i = 0; i < NTHR; i++) {
@@ -96,6 +94,7 @@ int main(void) {
     }
     pthread_barrier_wait(&b);
     merge();
+    struct timeval end;
     gettimeofday(&end, nullptr);
 
     /*

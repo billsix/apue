@@ -21,9 +21,9 @@ int main(void) {
 }
 
 static void charatatime(const char *str) {
-    int c;
-
     setbuf(stdout, nullptr); /* set unbuffered */
+
+    int c;
     for (const char *ptr = str; (c = *ptr++) != 0;) {
         putc(c, stdout);
     }

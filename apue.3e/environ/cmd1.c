@@ -37,9 +37,7 @@ void do_line(char *ptr) /* process one line of input */
 }
 
 void cmd_add(void) {
-    int token;
-
-    token = get_token();
+    int token = get_token();
     /* rest of processing for this command */
 }
 

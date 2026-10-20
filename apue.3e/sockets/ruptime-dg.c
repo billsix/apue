@@ -36,9 +36,7 @@ int main(int argc, char *argv[]) {
     if (argc != 2) {
         err_quit("usage: ruptime hostname");
     }
-    struct sigaction sa;
-    sa.sa_handler = sigalrm;
-    sa.sa_flags = 0;
+    struct sigaction sa = {.sa_handler = sigalrm, .sa_flags = 0};
     sigemptyset(&sa.sa_mask);
     if (sigaction(SIGALRM, &sa, nullptr) < 0) {
         err_sys("sigaction error");

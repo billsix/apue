@@ -10,9 +10,6 @@
  * connection server and reading a file descriptor back.
  */
 int csopen(char *name, int oflag) {
-    int len;
-    char buf[10];
-    struct iovec iov[3];
     static int fd[2] = {-1, -1};
 
     if (fd[0] < 0) { /* fork/exec our open server first time */
@@ -40,14 +37,16 @@ int csopen(char *name, int oflag) {
         }
         close(fd[1]); /* parent */
     }
+    char buf[10];
     snprintf(buf, sizeof(buf), " %d", oflag); /* oflag to ascii */
-    iov[0].iov_base = CL_OPEN " ";            /* string concatenation */
+    struct iovec iov[3];
+    iov[0].iov_base = CL_OPEN " "; /* string concatenation */
     iov[0].iov_len = strlen(CL_OPEN) + 1;
     iov[1].iov_base = name;
     iov[1].iov_len = strlen(name);
     iov[2].iov_base = buf;
     iov[2].iov_len = strlen(buf) + 1; /* +1 for null at end of buf */
-    len = iov[0].iov_len + iov[1].iov_len + iov[2].iov_len;
+    const int len = iov[0].iov_len + iov[1].iov_len + iov[2].iov_len;
     if (writev(fd[0], &iov[0], 3) != len) {
         err_ret("writev error");
         return (-1);
