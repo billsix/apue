@@ -1,8 +1,9 @@
 # Port the in-container Emacs + LSP (clangd) developer setup from Craft
 
-**Status:** blocked — infrastructure committed + docs reconciled 2026-10-20; blocked on the maintainer's one-time emacs verification (needs network + a live Emacs)
-**Blocked on:** the maintainer running `make update-emacs-packages` (network) and confirming clangd resolves a musl header in a live Emacs — neither is doable autonomously in this sandbox.
-**Recheck:** `git -C . ls-files entrypoint/dotfiles/.emacs.d/elpa | head` returns package files ⇒ the fetch ran; then the only open item is whether the `--query-driver` musl-header check passed (ask the maintainer / see Remaining step 2).
+**Status:** done 2026-10-20 — infrastructure + baked build + docs all committed; MELPA set vendored
+(`ae8c6a7 "added emacs packages"`) and the maintainer confirmed LSP works in a live Emacs ("I think
+port-emacs-lsp-from-craft works"). `--query-driver` alone resolved the musl headers — the `-isystem`
+fallback (Open question 1) was not needed.
 **Priority:** 5
 **Difficulty:** 4 (mostly mechanical copy + path edits; the one real unknown is clangd vs. the musl-clang wrapper — see step 4)
 **Created:** 2026-10-20 (William Emerison Six <billsix@gmail.com>: "make a task to port emacs lsp
@@ -49,21 +50,14 @@ build` once first" unnecessary for LSP. **Craft's `init.el` had the identical la
 `:bind` bug** (`c-mode-base-map` referenced before `cc-mode` loads); the `:after cc-mode` one-liner
 was applied + staged in both apue and Craft the same day.
 
-**Remaining — the maintainer's, cold-start (needs network and/or a live Emacs; nothing autonomous left):**
-1. **Fetch the packages.** From the repo root: `make update-emacs-packages`. It rebuilds the image
-   with `USE_EMACS=1`, reinstalls the MELPA set, strips `*.elc`/`*.eln`, and `git add -f`s the new
-   `entrypoint/dotfiles/.emacs.d/elpa/` (~45 package dirs) — **needs network**. Then commit that
-   staged `elpa/` ("vendor emacs packages").
-2. **Verify LSP end-to-end (the one thing unverifiable in this sandbox).** No `make build` needed
-   first — `make image` bakes `/apue/build/compile_commands.json`. Just `make shell`, then `emacs -nw
-   apue.3e/lib/daemonize.c`.
-   Confirm: lsp-mode attaches (modeline shows `LSP`), completion works, AND a musl libc header (e.g.
-   the `#include <signal.h>` chain) resolves with **no spurious "file not found"**. That last part is
-   the `--query-driver=/apue/musl/bldInstall/bin/*,...` check (the one genuinely new piece vs. Craft).
-3. **If musl headers still 404:** add `-isystem /apue/musl/bldInstall/include` to
-   `lsp-clients-clangd-args` in `entrypoint/dotfiles/.emacs.d/init.el` (see Open question 1), rebuild
-   with `make update-emacs-packages` (or just re-`make shell`), re-verify.
-4. On success, this task is done — archive it to `tasks/archive/<YYYY>/<MM>/<DD>/`.
+**Final verification — all cleared 2026-10-20:**
+1. **Packages fetched + vendored.** The maintainer ran `make update-emacs-packages` and committed the
+   MELPA set (`ae8c6a7 "added emacs packages"`, 549 files under `entrypoint/dotfiles/.emacs.d/elpa/`).
+2. **LSP confirmed end-to-end.** The maintainer confirmed lsp-mode attaches and completion/diagnostics
+   work in a live Emacs. The baked `/apue/build/compile_commands.json` (verified to contain
+   `-I../apue.3e/intro ... -I../apue.3e/include`, so `#include "apue.h"` resolves) means no `make build`
+   is needed first. `--query-driver=/apue/musl/bldInstall/bin/*,...` was sufficient for the musl headers;
+   the `-isystem /apue/musl/bldInstall/include` fallback (Open question 1) was not needed.
 
 ## BLUF
 
@@ -167,11 +161,9 @@ update-emacs-packages:
 
 ## Open questions
 
-1. **(Still open — resolves on the maintainer's live verification.)** clangd vs. the musl-clang
-   wrapper (step 4): is `--query-driver` enough, or does the wrapper need an extra `--isystem`? Can't
-   be settled without running it — the verification step (open a musl-header include in a live Emacs)
-   is the gate. `--query-driver` is in `init.el`; if musl headers still 404, add the musl
-   `-isystem /apue/musl/bldInstall/include` to clangd's args.
+1. ~~clangd vs. the musl-clang wrapper: is `--query-driver` enough, or does the wrapper need an extra
+   `-isystem`?~~ **Resolved 2026-10-20: `--query-driver=/apue/musl/bldInstall/bin/*,...` alone
+   resolved the musl headers in a live Emacs — no `-isystem` fallback needed** (maintainer confirmed).
 2. ~~Keep Craft's full MELPA set or trim?~~ **Resolved: full set, copied verbatim** (maintainer,
    2026-10-20).
 

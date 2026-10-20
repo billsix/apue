@@ -72,7 +72,7 @@ against the live mounted tree, for building and running the examples.) `USE_EMAC
 defaults to `1`, which also bakes the MELPA set
 into the image at build time (**needs network**); pass `USE_EMACS=0` for a C-only
 build that skips it. First-run setup + the clangd-vs-musl-header verification are
-tracked in `tasks/port-emacs-lsp-from-craft.md`.
+recorded in `tasks/archive/2026/10/20/port-emacs-lsp-from-craft.md`.
 
 There is **no `ENTRYPOINT`** in the image — every target passes
 `--entrypoint /bin/bash` (a prior stale entrypoint was removed; see the Dockerfile

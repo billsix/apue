@@ -36,7 +36,7 @@ make update-emacs-packages   # fetch the Emacs packages (needs network)
 
 then inside `make shell` run `emacs -nw apue.3e/<file>.c` for completion and
 diagnostics — including `apue.h` and the musl headers. `USE_EMACS=0` skips the Emacs
-image bake for a C-only build. Details: `tasks/port-emacs-lsp-from-craft.md`.
+image bake for a C-only build. Details: `tasks/archive/2026/10/20/port-emacs-lsp-from-craft.md`.
 
 ## Layout
 
