@@ -21,7 +21,7 @@ int buf_args(char *buf, int (*optfunc)(int, char **)) {
     }
     argc = 0;
     argv[argc] = buf;
-    for (;;) {
+    while (true) {
         char *const ptr = strtok(nullptr, WHITE);
         if (ptr == nullptr) {
             break;

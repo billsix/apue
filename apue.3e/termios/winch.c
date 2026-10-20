@@ -31,7 +31,7 @@ int main(void) {
         err_sys("signal error");
     }
     pr_winsize(STDIN_FILENO); /* print initial size */
-    for (;;) {                /* and sleep forever */
+    while (true) {                /* and sleep forever */
         pause();
     }
 }

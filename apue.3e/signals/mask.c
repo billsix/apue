@@ -28,7 +28,7 @@ int main(void) {
     }
     canjump = 1; /* now sigsetjmp() is OK */
 
-    for (;;) {
+    while (true) {
         pause();
     }
 }
@@ -44,7 +44,7 @@ static void sig_usr1([[maybe_unused]] int signo) {
 
     alarm(3); /* SIGALRM in 3 seconds */
     starttime = time(nullptr);
-    for (;;) { /* busy wait for 5 seconds */
+    while (true) { /* busy wait for 5 seconds */
         if (time(nullptr) > starttime + 5) {
             break;
         }

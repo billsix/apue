@@ -20,7 +20,7 @@ extern int initserver(int, const struct sockaddr *, socklen_t, int);
 
 void serve(int sockfd) {
     set_cloexec(sockfd);
-    for (;;) {
+    while (true) {
         int clfd = accept(sockfd, nullptr, nullptr);
         if (clfd < 0) {
             syslog(LOG_ERR, "ruptimed: accept error: %s", strerror(errno));

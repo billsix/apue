@@ -22,7 +22,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
     struct msghdr msg;
 
     status = -1;
-    for (;;) {
+    while (true) {
         iov[0].iov_base = buf;
         iov[0].iov_len = sizeof(buf);
         msg.msg_iov = iov;

@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
         s = "parent";
         printf("current nice value in parent is %d\n", nice(0) + nzero);
     }
-    for (;;) {
+    while (true) {
         if (++count == 0) {
             err_quit("%s counter wrap", s);
         }

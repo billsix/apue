@@ -18,7 +18,7 @@ static void my_alarm([[maybe_unused]] int signo) {
 int main(void) {
     signal(SIGALRM, my_alarm);
     alarm(1);
-    for (;;) {
+    while (true) {
         const struct passwd *const ptr = getpwnam("sar");
         if (ptr == nullptr) {
             err_sys("getpwnam error");

@@ -5,7 +5,7 @@
 #include "apue.h"
 
 int main(void) {
-    for (;;) {
+    while (true) {
         int c = getchar();
         if (c == EOF) {
             break;

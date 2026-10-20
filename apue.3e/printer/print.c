@@ -28,7 +28,7 @@ void submit_file(int, int, const char *, size_t, bool);
 int main(int argc, char *argv[]) {
     int err = 0;
     bool text = false;
-    for (;;) {
+    while (true) {
         int c = getopt(argc, argv, "t");
         if (c == -1) {
             break;
@@ -139,7 +139,7 @@ void submit_file(int fd, int sockfd, const char *fname, size_t nbytes,
      */
     char buf[IOBUFSZ];
     int nr;
-    for (;;) {
+    while (true) {
         nr = read(fd, buf, IOBUFSZ);
         if (nr == 0) {
             break;

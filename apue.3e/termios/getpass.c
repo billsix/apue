@@ -28,7 +28,7 @@ char *getpass(const char *prompt) {
     fputs(prompt, fp);
 
     char *ptr = buf;
-    for (;;) {
+    while (true) {
         int c = getc(fp);
         if (c == EOF || c == '\n') {
             break;

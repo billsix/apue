@@ -189,7 +189,7 @@ int main(int argc, [[maybe_unused]] char *argv[]) {
 
     log_msg("daemon initialized");
 
-    for (;;) {
+    while (true) {
         fd_set rset = rendezvous;
         if (select(maxfd + 1, &rset, nullptr, nullptr, nullptr) < 0) {
             log_sys("select failed");
@@ -363,7 +363,7 @@ void build_qonstart(void) {
     if (dirp == nullptr) {
         return;
     }
-    for (;;) {
+    while (true) {
         const struct dirent *const entp = readdir(dirp);
         if (entp == nullptr) {
             break;
@@ -465,7 +465,7 @@ void *client_thread(void *arg) {
      */
     bool first = true;
     char buf[IOBUFSZ];
-    for (;;) {
+    while (true) {
         int nr = tread(sockfd, buf, IOBUFSZ, 20);
         if (nr <= 0) {
             break;
@@ -622,7 +622,7 @@ void client_cleanup(void *arg) {
  * LOCKING: acquires and releases configlock.
  */
 void *signal_thread([[maybe_unused]] void *arg) {
-    for (;;) {
+    while (true) {
         int signo;
         const int err = sigwait(&mask, &signo);
         if (err != 0) {
@@ -703,7 +703,7 @@ void *printer_thread([[maybe_unused]] void *arg) {
     char str[64];
     struct timespec ts = {60, 0}; /* 1 minute */
 
-    for (;;) {
+    while (true) {
         /*
          * Get a job to print.
          */
@@ -829,7 +829,7 @@ void *printer_thread([[maybe_unused]] void *arg) {
             }
         }
 
-        for (;;) {
+        while (true) {
             nr = read(fd, buf, IOBUFSZ);
             if (nr <= 0) {
                 break;
@@ -930,7 +930,7 @@ int printer_status(int sfd, const struct job *jp) {
         log_sys("printer_status: can't allocate read buffer");
     }
 
-    for (;;) {
+    while (true) {
         nr = tread(sfd, bp, bufsz, 5);
         if (nr <= 0) {
             break;
@@ -972,7 +972,7 @@ int printer_status(int sfd, const struct job *jp) {
              * IPP status.  Search for the Content-Length.
              */
             i = cp - bp;
-            for (;;) {
+            while (true) {
                 while (*cp != 'C' && *cp != 'c' && i < datsz) {
                     cp++;
                     i++;

@@ -26,7 +26,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         }
 
         /* and cat to stdout */
-        for (;;) {
+        while (true) {
             n = read(fd, buf, BUFFSIZE);
             if (n <= 0) {
                 break;

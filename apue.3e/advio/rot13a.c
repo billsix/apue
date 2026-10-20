@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
         err_sys("can't create %s", argv[2]);
     }
 
-    for (;;) {
+    while (true) {
         int n = read(ifd, buf, BSZ);
         if (n <= 0) {
             break;

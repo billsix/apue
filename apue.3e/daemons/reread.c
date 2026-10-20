@@ -13,7 +13,7 @@ extern int already_running(void);
 void reread(void) { /* ... */ }
 
 void *thr_fn([[maybe_unused]] void *arg) {
-    for (;;) {
+    while (true) {
         int signo;
         const int err = sigwait(&mask, &signo);
         if (err != 0) {

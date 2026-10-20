@@ -51,7 +51,7 @@ void loop(void) {
     client_add(listenfd, 0); /* we use [0] for listenfd */
     pollfd[0].fd = listenfd;
 
-    for (;;) {
+    while (true) {
         if (poll(pollfd, numfd, -1) < 0) {
             log_sys("poll error");
         }

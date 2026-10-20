@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     char slave_name[20];
 
     opterr = 0; /* don't want getopt() writing to stderr */
-    for (;;) {
+    while (true) {
         int c = getopt(argc, argv, OPTSTR);
         if (c == EOF) {
             break;

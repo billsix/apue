@@ -23,7 +23,7 @@ char *tok_ptr; /* global pointer for get_token() */
 void do_line(char *ptr) /* process one line of input */
 {
     tok_ptr = ptr;
-    for (;;) {
+    while (true) {
         int cmd = get_token();
         if (cmd <= 0) {
             break;

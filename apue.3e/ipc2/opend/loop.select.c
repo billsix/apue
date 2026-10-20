@@ -20,7 +20,7 @@ void loop(void) {
     maxfd = listenfd;
     maxi = -1;
 
-    for (;;) {
+    while (true) {
         rset = allset; /* rset gets modified each time around */
         n = select(maxfd + 1, &rset, nullptr, nullptr, nullptr);
         if (n < 0) {

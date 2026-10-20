@@ -29,7 +29,7 @@ int main(void) {
         err_sys("tty_raw error");
     }
     printf("Enter raw mode characters, terminate with DELETE\n");
-    for (;;) {
+    while (true) {
         i = read(STDIN_FILENO, &c, 1);
         if (i != 1) {
             break;
@@ -50,7 +50,7 @@ int main(void) {
         err_sys("tty_cbreak error");
     }
     printf("\nEnter cbreak mode characters, terminate with SIGINT\n");
-    for (;;) {
+    while (true) {
         i = read(STDIN_FILENO, &c, 1);
         if (i != 1) {
             break;

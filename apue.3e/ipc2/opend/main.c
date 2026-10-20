@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     log_open("open.serv", LOG_PID, LOG_USER);
 
     opterr = 0; /* don't want getopt() writing to stderr */
-    for (;;) {
+    while (true) {
         int c = getopt(argc, argv, "d");
         if (c == EOF) {
             break;

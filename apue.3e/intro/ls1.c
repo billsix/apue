@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     if (dp == nullptr) {
         err_sys("can't open %s", argv[1]);
     }
-    for (;;) {
+    while (true) {
         const struct dirent *const dirp = readdir(dp);
         if (dirp == nullptr) {
             break;

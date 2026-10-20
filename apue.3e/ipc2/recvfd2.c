@@ -47,7 +47,7 @@ int recv_ufd(int fd, uid_t *uidptr,
         return (-1);
     }
 #endif
-    for (;;) {
+    while (true) {
         iov[0].iov_base = buf;
         iov[0].iov_len = sizeof(buf);
         msg.msg_iov = iov;

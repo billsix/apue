@@ -4,7 +4,7 @@
 #include "apue.h"
 
 int main(void) {
-    for (;;) {
+    while (true) {
         int c = getc(stdin);
         if (c == EOF) {
             break;

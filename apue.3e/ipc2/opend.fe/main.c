@@ -10,7 +10,7 @@ char *pathname;
 int main(void) {
     char buf[MAXLINE];
 
-    for (;;) { /* read arg buffer from client, process request */
+    while (true) { /* read arg buffer from client, process request */
         int nread = read(STDIN_FILENO, buf, MAXLINE);
         if (nread < 0) {
             err_sys("read error on stream pipe");

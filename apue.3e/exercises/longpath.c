@@ -36,7 +36,7 @@ int main(void) {
      */
     size_t size;
     char *path = path_alloc(&size);
-    for (;;) {
+    while (true) {
         if (getcwd(path, size) != nullptr) {
             break;
         } else {

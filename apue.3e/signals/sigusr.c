@@ -13,7 +13,7 @@ int main(void) {
     if (signal(SIGUSR2, sig_usr) == SIG_ERR) {
         err_sys("can't catch SIGUSR2");
     }
-    for (;;) {
+    while (true) {
         pause();
     }
 }

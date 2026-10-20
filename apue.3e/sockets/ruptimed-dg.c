@@ -24,7 +24,7 @@ void serve(int sockfd) {
     struct sockaddr *const addr = (struct sockaddr *)abuf;
 
     set_cloexec(sockfd);
-    for (;;) {
+    while (true) {
         socklen_t alen = MAXADDRLEN;
         int n = recvfrom(sockfd, buf, BUFLEN, 0, addr, &alen);
         if (n < 0) {

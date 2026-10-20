@@ -14,7 +14,7 @@ void print_uptime(int sockfd) {
     int n;
     char buf[BUFLEN];
 
-    for (;;) {
+    while (true) {
         n = recv(sockfd, buf, BUFLEN, 0);
         if (n <= 0) {
             break;

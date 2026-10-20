@@ -17,7 +17,7 @@ void loop(int ptym, bool ignoreeof) {
     if (child < 0) {
         err_sys("fork error");
     } else if (child == 0) { /* child copies stdin to ptym */
-        for (;;) {
+        while (true) {
             int nread = read(STDIN_FILENO, buf, BUFFSIZE);
             if (nread < 0) {
                 err_sys("read error from stdin");
@@ -46,7 +46,7 @@ void loop(int ptym, bool ignoreeof) {
         err_sys("signal_intr error for SIGTERM");
     }
 
-    for (;;) {
+    while (true) {
         int nread = read(ptym, buf, BUFFSIZE);
         if (nread <= 0) {
             break; /* signal caught, error, or EOF */

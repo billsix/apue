@@ -105,7 +105,7 @@ dopath(Myfunc *func) {
         return (func(fullpath, &statbuf, FTW_DNR));
     }
 
-    for (;;) {
+    while (true) {
         const struct dirent *const dirp = readdir(dp);
         if (dirp == nullptr) {
             break;

@@ -31,7 +31,7 @@ struct threadinfo {
 void *helper(void *arg) {
     struct threadinfo *const tip = arg;
 
-    for (;;) {
+    while (true) {
         memset(&tip->m, 0, sizeof(struct mymesg));
         const int n = msgrcv(tip->qid, &tip->m, MAXMSZ, 0, MSG_NOERROR);
         if (n < 0) {
@@ -81,7 +81,7 @@ int main(void) {
         }
     }
 
-    for (;;) {
+    while (true) {
         if (poll(pfd, NQ, -1) < 0) {
             err_sys("poll error");
         }

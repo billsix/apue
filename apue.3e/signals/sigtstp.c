@@ -41,7 +41,7 @@ int main(void) {
     }
 
     char buf[BUFFSIZE];
-    for (;;) {
+    while (true) {
         n = read(STDIN_FILENO, buf, BUFFSIZE);
         if (n <= 0) {
             break;

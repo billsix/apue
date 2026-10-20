@@ -69,7 +69,7 @@ static char *searchdir(const char *dirname, const struct stat *fdstatp) {
         return (nullptr);
     }
     const int devlen = strlen(pathname);
-    for (;;) {
+    while (true) {
         const struct dirent *const dirp = readdir(dp);
         if (dirp == nullptr) {
             break;

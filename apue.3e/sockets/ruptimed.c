@@ -22,7 +22,7 @@ void serve(int sockfd) {
     char buf[BUFLEN];
 
     set_cloexec(sockfd);
-    for (;;) {
+    while (true) {
         int clfd = accept(sockfd, nullptr, nullptr);
         if (clfd < 0) {
             syslog(LOG_ERR, "ruptimed: accept error: %s", strerror(errno));

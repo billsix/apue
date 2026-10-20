@@ -6,7 +6,7 @@ struct passwd *getpwnam(const char *name) {
     struct passwd *ptr;
 
     setpwent();
-    for (;;) {
+    while (true) {
         ptr = getpwent();
         if (ptr == nullptr) {
             break;

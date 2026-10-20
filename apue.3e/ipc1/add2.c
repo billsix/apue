@@ -8,7 +8,7 @@
 int main(void) {
     char line[MAXLINE];
 
-    for (;;) {
+    while (true) {
         int n = read(STDIN_FILENO, line, MAXLINE);
         if (n <= 0) {
             break;

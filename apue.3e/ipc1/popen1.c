@@ -9,7 +9,7 @@ int main(void) {
         err_sys("popen error");
     }
     char line[MAXLINE];
-    for (;;) {
+    while (true) {
         fputs("prompt> ", stdout);
         fflush(stdout);
         if (fgets(line, MAXLINE, fpin) == nullptr) { /* read from pipe */
