@@ -57,3 +57,8 @@
   :after cc-mode               ; c-mode-base-map is defined by cc-mode; wait for it
   :bind (:map c-mode-base-map
               ("C-c f" . clang-format-buffer)))
+
+;; Enable hideshow (hs-minor-mode) in all programming modes so code regions
+;; (functions, blocks) can be folded/collapsed.  Toggle a block with
+;; `C-c @ C-c`; hide-all / show-all with `C-c @ C-M-h` / `C-c @ C-M-s`.
+(add-hook 'prog-mode-hook #'hs-minor-mode)
