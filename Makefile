@@ -6,7 +6,9 @@ TMUX_MOUNT := $(shell if [ -f $(TMUX_REAL_PATH) ]; then echo "-v $(TMUX_REAL_PAT
 
 # USE_EMACS=1 (the default) bind-mounts the vendored .emacs.d/ into the container
 # so Emacs + lsp-mode/clangd work against the mounted apue.3e tree (:U chowns to
-# the container user, :z relabels for SELinux). USE_EMACS=0 skips the mount. To
+# the container user, :z relabels for SELinux). The image holds only the Emacs binary;
+# init.el byte-compiles the vendored elpa/ into this mount on Emacs's first start (the
+# .elc files are gitignored). USE_EMACS=0 skips the mount and the binary. To
 # REFRESH the vendored elpa packages, use `make update-emacs-packages`.
 USE_EMACS ?= 1
 ifeq ($(USE_EMACS),1)
@@ -103,7 +105,8 @@ format: image ## Format the C code
 # then wipes ONLY .emacs.d/elpa (the hand-written init.el/preferences.el/helm.el/
 # install-melpa-packages.el are left untouched) and reinstalls from MELPA into the
 # host's bind-mounted .emacs.d/elpa. Finally strips compiled *.elc/*.eln
-# (machine-specific) and force-adds the .el sources. Needs network. Stages, does
+# (machine-specific; init.el recompiles them on the next Emacs start) and force-adds
+# the .el sources. Needs network. Stages, does
 # not commit.
 .PHONY: update-emacs-packages
 update-emacs-packages: ## USE_EMACS=1: rebuild image, wipe+reinstall elpa, strip *.elc/*.eln, git add -f

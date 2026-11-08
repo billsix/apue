@@ -28,15 +28,16 @@ container starts with ptrace capability and ASLR disabled.
 
 Emacs with `lsp-mode` + `clangd` is wired up in the container. `make image` bakes
 a build of the examples into `/apue/build`, so clangd has its `compile_commands.json`
-with no extra step. First time, fetch the Emacs packages (needs network):
+with no extra step. The Emacs packages are vendored in
+`entrypoint/dotfiles/.emacs.d/elpa` and byte-compiled on Emacs's first start. Inside
+`make shell` run `emacs -nw apue.3e/<file>.c` for completion and diagnostics —
+including `apue.h` and the musl headers. To refresh the vendored packages:
 
 ```sh
-make update-emacs-packages   # fetch the Emacs packages (needs network)
+make update-emacs-packages   # reinstall the Emacs packages from MELPA (needs network)
 ```
 
-then inside `make shell` run `emacs -nw apue.3e/<file>.c` for completion and
-diagnostics — including `apue.h` and the musl headers. `USE_EMACS=0` skips the Emacs
-image bake for a C-only build. Details: `tasks/archive/2026/10/20/port-emacs-lsp-from-craft.md`.
+`USE_EMACS=0` builds a C-only image without Emacs. Details: `tasks/archive/2026/10/20/port-emacs-lsp-from-craft.md`.
 
 ## Layout
 

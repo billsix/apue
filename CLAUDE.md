@@ -69,9 +69,9 @@ vendored `.emacs.d/` (`lsp-mode` + `clangd`, pointed at
 So `emacs -nw apue.3e/<file>.c` gets completion/diagnostics — including `apue.h` and the
 musl headers — with no prior `make build`. (`make build` still writes `apue.3e/build`
 against the live mounted tree, for building and running the examples.) `USE_EMACS`
-defaults to `1`, which also bakes the MELPA set
-into the image at build time (**needs network**); pass `USE_EMACS=0` for a C-only
-build that skips it. First-run setup + the clangd-vs-musl-header verification are
+defaults to `1`, which installs only the Emacs binary; its packages are the vendored
+`elpa/`, which `init.el` byte-compiles into the mount on Emacs's first start. Pass
+`USE_EMACS=0` for a C-only image without Emacs. First-run setup + the clangd-vs-musl-header verification are
 recorded in `tasks/archive/2026/10/20/port-emacs-lsp-from-craft.md`.
 
 There is **no `ENTRYPOINT`** in the image — every target passes
